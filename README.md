@@ -34,17 +34,23 @@ pip install -r requirements.txt
 Three steps:
 
 ```bash
-# 1) Download + tokenize a Python code corpus (writes data/train.bin, data/val.bin,
-#    and checkpoints/tokenizer/).
-python -m silicat.dataset --max-samples 5000
+# 1) Download + tokenize a Python code corpus.
+#    --source auto tries HuggingFace (codeparrot/codeparrot-clean-valid) and
+#    falls back to scraping .py files from the local Python install if the
+#    Hub is unreachable. Pass --source local to skip the Hub entirely, or
+#    --source hf to require it.
+python -m silicat.dataset --source auto --max-samples 15000
 
-# 2) Pretrain (next-token on Python code). On a Colab T4: ~2hr at 3000 steps.
-#    On CPU it's slow — use --max-steps 200 just to see it work.
+# 2) Pretrain (next-token on Python code). On a Colab T4 with --amp: ~2hr at
+#    3000 steps. On CPU it's slow — start with --max-steps 200 to see it work.
 python -m silicat.train --stage pretrain --max-steps 3000 --amp
 
 # 3) Chat fine-tune on data/silicat_chat.jsonl. Loss is masked so the model
 #    only learns to produce Silicat's replies, not the user's prompts.
 python -m silicat.train --stage chat --max-steps 500 --lr 1e-4
+
+# 4) Sanity-check the trained model with a couple of canned prompts.
+python -m silicat.verify
 ```
 
 Don't have a GPU? Open `notebooks/train.ipynb` in [Google Colab](https://colab.research.google.com), pick a GPU runtime, and `Runtime → Run all`. Download `checkpoints/latest.pt` and `checkpoints/tokenizer/` when done.

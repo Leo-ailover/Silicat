@@ -85,3 +85,83 @@
 {"messages":[{"role":"user","content":"can you write code?"},{"role":"silicat","content":"Yes — short Python snippets are my specialty. Ask me to write a function or explain a concept."}]}
 {"messages":[{"role":"user","content":"how big are you?"},{"role":"silicat","content":"Around 10 million parameters at the default config. You can grow me by editing `silicat/model.py` and retraining."}]}
 {"messages":[{"role":"user","content":"are you smart?"},{"role":"silicat","content":"I'm small but earnest. For tough problems, a bigger model will do better — but I'll try."}]}
+{"messages":[{"role":"user","content":"hi silicat"},{"role":"silicat","content":"Hi! Ready to write some code with me?"}]}
+{"messages":[{"role":"user","content":"good morning"},{"role":"silicat","content":"Good morning! What are we building today?"}]}
+{"messages":[{"role":"user","content":"good evening"},{"role":"silicat","content":"Evening! How can I help?"}]}
+{"messages":[{"role":"user","content":"what is python"},{"role":"silicat","content":"Python is a high-level, dynamically-typed programming language. It's readable, has a huge standard library, and is the default language for scripting, data work, and AI."}]}
+{"messages":[{"role":"user","content":"what is a variable"},{"role":"silicat","content":"A variable is a name bound to a value. In Python you create one by assignment:\n\n```python\nx = 10\n```"}]}
+{"messages":[{"role":"user","content":"what is a function"},{"role":"silicat","content":"A function is a reusable block of code with a name. Define it with `def`:\n\n```python\ndef greet(name):\n    return f\"Hello, {name}!\"\n```"}]}
+{"messages":[{"role":"user","content":"what is a loop"},{"role":"silicat","content":"A loop repeats code. Python has two:\n\n```python\nfor x in [1, 2, 3]:\n    print(x)\n\ni = 0\nwhile i < 3:\n    print(i)\n    i += 1\n```"}]}
+{"messages":[{"role":"user","content":"if statement in python"},{"role":"silicat","content":"```python\nif x > 0:\n    print(\"positive\")\nelif x == 0:\n    print(\"zero\")\nelse:\n    print(\"negative\")\n```"}]}
+{"messages":[{"role":"user","content":"what is none"},{"role":"silicat","content":"`None` is Python's null — a singleton meaning \"no value\". Check with `x is None`, not `x == None`."}]}
+{"messages":[{"role":"user","content":"truthy and falsy values"},{"role":"silicat","content":"Falsy in Python: `False`, `None`, `0`, `\"\"`, `[]`, `{}`, `set()`. Everything else is truthy."}]}
+{"messages":[{"role":"user","content":"what is a tuple"},{"role":"silicat","content":"A tuple is an immutable sequence: `(1, 2, 3)`. Use for fixed-size records or as dict keys."}]}
+{"messages":[{"role":"user","content":"what is a set"},{"role":"silicat","content":"A set is an unordered collection of unique items: `{1, 2, 3}`. Fast membership tests with `in`."}]}
+{"messages":[{"role":"user","content":"what is a dict"},{"role":"silicat","content":"A dictionary maps keys to values:\n\n```python\nuser = {\"name\": \"Ada\", \"age\": 36}\nprint(user[\"name\"])\n```"}]}
+{"messages":[{"role":"user","content":"empty function"},{"role":"silicat","content":"Use `pass`:\n\n```python\ndef todo():\n    pass\n```"}]}
+{"messages":[{"role":"user","content":"how to comment"},{"role":"silicat","content":"`#` for single-line, triple-quoted strings for docstrings:\n\n```python\n# this is a comment\ndef f():\n    \"\"\"docstring goes here.\"\"\"\n```"}]}
+{"messages":[{"role":"user","content":"type hints"},{"role":"silicat","content":"```python\ndef greet(name: str, times: int = 1) -> str:\n    return (\"hi, \" + name) * times\n```"}]}
+{"messages":[{"role":"user","content":"optional type"},{"role":"silicat","content":"```python\nfrom typing import Optional\ndef find(x) -> Optional[int]:\n    ...\n```\n\nOr in Python 3.10+: `int | None`."}]}
+{"messages":[{"role":"user","content":"enumerate a list"},{"role":"silicat","content":"```python\nfor i, x in enumerate(lst):\n    print(i, x)\n```"}]}
+{"messages":[{"role":"user","content":"zip two lists"},{"role":"silicat","content":"```python\nfor a, b in zip(xs, ys):\n    print(a, b)\n```"}]}
+{"messages":[{"role":"user","content":"unzip a list of pairs"},{"role":"silicat","content":"```python\nxs, ys = zip(*pairs)\n```"}]}
+{"messages":[{"role":"user","content":"sort by multiple keys"},{"role":"silicat","content":"```python\nrows.sort(key=lambda r: (r[\"age\"], r[\"name\"]))\n```"}]}
+{"messages":[{"role":"user","content":"group items by key"},{"role":"silicat","content":"```python\nfrom collections import defaultdict\ngroups = defaultdict(list)\nfor item in items:\n    groups[item.kind].append(item)\n```"}]}
+{"messages":[{"role":"user","content":"count items"},{"role":"silicat","content":"```python\nfrom collections import Counter\nfreq = Counter(words)\nprint(freq.most_common(5))\n```"}]}
+{"messages":[{"role":"user","content":"check file exists"},{"role":"silicat","content":"```python\nfrom pathlib import Path\nif Path(\"data.json\").exists():\n    ...\n```"}]}
+{"messages":[{"role":"user","content":"make a directory"},{"role":"silicat","content":"```python\nfrom pathlib import Path\nPath(\"out/logs\").mkdir(parents=True, exist_ok=True)\n```"}]}
+{"messages":[{"role":"user","content":"list files in a directory"},{"role":"silicat","content":"```python\nfrom pathlib import Path\nfor p in Path(\".\").iterdir():\n    print(p)\n```"}]}
+{"messages":[{"role":"user","content":"glob files"},{"role":"silicat","content":"```python\nfrom pathlib import Path\nfor p in Path(\".\").rglob(\"*.py\"):\n    print(p)\n```"}]}
+{"messages":[{"role":"user","content":"download a file"},{"role":"silicat","content":"```python\nimport urllib.request\nurllib.request.urlretrieve(url, \"out.bin\")\n```"}]}
+{"messages":[{"role":"user","content":"http post in python"},{"role":"silicat","content":"```python\nimport requests\nr = requests.post(url, json={\"x\": 1}, timeout=10)\nr.raise_for_status()\nprint(r.json())\n```"}]}
+{"messages":[{"role":"user","content":"sleep in python"},{"role":"silicat","content":"```python\nimport time\ntime.sleep(2.5)\n```"}]}
+{"messages":[{"role":"user","content":"current working directory"},{"role":"silicat","content":"```python\nimport os\nprint(os.getcwd())\n```"}]}
+{"messages":[{"role":"user","content":"change directory"},{"role":"silicat","content":"```python\nimport os\nos.chdir(\"/tmp\")\n```"}]}
+{"messages":[{"role":"user","content":"call a function on each list item"},{"role":"silicat","content":"```python\nresult = [f(x) for x in xs]\n# or\nresult = list(map(f, xs))\n```"}]}
+{"messages":[{"role":"user","content":"filter a list"},{"role":"silicat","content":"```python\nevens = [x for x in xs if x % 2 == 0]\n# or\nevens = list(filter(lambda x: x % 2 == 0, xs))\n```"}]}
+{"messages":[{"role":"user","content":"reduce a list"},{"role":"silicat","content":"```python\nfrom functools import reduce\ntotal = reduce(lambda a, b: a + b, xs, 0)\n```\n\nFor sums, use `sum(xs)`."}]}
+{"messages":[{"role":"user","content":"any and all"},{"role":"silicat","content":"```python\nany(x > 0 for x in xs)   # True if at least one is positive\nall(x > 0 for x in xs)   # True if every one is positive\n```"}]}
+{"messages":[{"role":"user","content":"lambda function"},{"role":"silicat","content":"An anonymous one-expression function:\n\n```python\nsquare = lambda x: x * x\nprint(square(5))\n```\n\nFor anything bigger than one line, use `def`."}]}
+{"messages":[{"role":"user","content":"args and kwargs"},{"role":"silicat","content":"```python\ndef f(*args, **kwargs):\n    print(args)    # tuple of positional\n    print(kwargs)  # dict of keyword\n\nf(1, 2, name=\"silicat\")\n```"}]}
+{"messages":[{"role":"user","content":"unpack a tuple"},{"role":"silicat","content":"```python\na, b, c = (1, 2, 3)\nfirst, *rest = [1, 2, 3, 4]\n```"}]}
+{"messages":[{"role":"user","content":"sum digits of a number"},{"role":"silicat","content":"```python\ndef digit_sum(n):\n    return sum(int(d) for d in str(abs(n)))\n```"}]}
+{"messages":[{"role":"user","content":"is palindrome"},{"role":"silicat","content":"```python\ndef is_palindrome(s):\n    s = s.lower()\n    return s == s[::-1]\n```"}]}
+{"messages":[{"role":"user","content":"gcd of two numbers"},{"role":"silicat","content":"```python\nimport math\nprint(math.gcd(12, 18))\n```"}]}
+{"messages":[{"role":"user","content":"lcm of two numbers"},{"role":"silicat","content":"```python\nimport math\nprint(math.lcm(4, 6))\n```"}]}
+{"messages":[{"role":"user","content":"power of two"},{"role":"silicat","content":"```python\ndef is_power_of_two(n):\n    return n > 0 and (n & (n - 1)) == 0\n```"}]}
+{"messages":[{"role":"user","content":"convert celsius to fahrenheit"},{"role":"silicat","content":"```python\ndef c_to_f(c):\n    return c * 9 / 5 + 32\n```"}]}
+{"messages":[{"role":"user","content":"convert fahrenheit to celsius"},{"role":"silicat","content":"```python\ndef f_to_c(f):\n    return (f - 32) * 5 / 9\n```"}]}
+{"messages":[{"role":"user","content":"timer / measure time"},{"role":"silicat","content":"```python\nimport time\nt0 = time.perf_counter()\ndo_work()\nprint(f\"took {time.perf_counter() - t0:.2f}s\")\n```"}]}
+{"messages":[{"role":"user","content":"hash a string"},{"role":"silicat","content":"```python\nimport hashlib\nh = hashlib.sha256(b\"hello\").hexdigest()\n```"}]}
+{"messages":[{"role":"user","content":"base64 encode"},{"role":"silicat","content":"```python\nimport base64\nb = base64.b64encode(b\"hello\").decode()\n```"}]}
+{"messages":[{"role":"user","content":"url encode"},{"role":"silicat","content":"```python\nfrom urllib.parse import quote\nprint(quote(\"hello world & friends\"))\n```"}]}
+{"messages":[{"role":"user","content":"parse json string"},{"role":"silicat","content":"```python\nimport json\ndata = json.loads(text)\n```"}]}
+{"messages":[{"role":"user","content":"serialize to json"},{"role":"silicat","content":"```python\nimport json\ntext = json.dumps(data, indent=2)\n```"}]}
+{"messages":[{"role":"user","content":"thread in python"},{"role":"silicat","content":"```python\nimport threading\n\ndef worker(n):\n    print(\"hi from\", n)\n\nt = threading.Thread(target=worker, args=(1,))\nt.start()\nt.join()\n```"}]}
+{"messages":[{"role":"user","content":"multiprocessing"},{"role":"silicat","content":"```python\nfrom multiprocessing import Pool\nwith Pool() as p:\n    results = p.map(f, items)\n```"}]}
+{"messages":[{"role":"user","content":"sqlite in python"},{"role":"silicat","content":"```python\nimport sqlite3\ncon = sqlite3.connect(\"db.sqlite\")\ncon.execute(\"CREATE TABLE IF NOT EXISTS items(id INTEGER PRIMARY KEY, name TEXT)\")\ncon.execute(\"INSERT INTO items(name) VALUES (?)\", (\"silicat\",))\ncon.commit()\nfor row in con.execute(\"SELECT * FROM items\"):\n    print(row)\n```"}]}
+{"messages":[{"role":"user","content":"csv read"},{"role":"silicat","content":"```python\nimport csv\nwith open(\"data.csv\", newline=\"\") as f:\n    for row in csv.DictReader(f):\n        print(row)\n```"}]}
+{"messages":[{"role":"user","content":"csv write"},{"role":"silicat","content":"```python\nimport csv\nwith open(\"out.csv\", \"w\", newline=\"\") as f:\n    w = csv.writer(f)\n    w.writerow([\"name\", \"age\"])\n    w.writerow([\"silicat\", 0])\n```"}]}
+{"messages":[{"role":"user","content":"explain recursion"},{"role":"silicat","content":"Recursion is when a function calls itself with a smaller input until a base case. Example:\n\n```python\ndef sum_to(n):\n    if n == 0: return 0\n    return n + sum_to(n - 1)\n```\n\nEvery recursion needs a base case to terminate."}]}
+{"messages":[{"role":"user","content":"explain big o"},{"role":"silicat","content":"Big-O describes how the running time or memory of an algorithm grows with input size. Common ones:\n\n- O(1) constant — dict lookup\n- O(log n) — binary search\n- O(n) — single pass through a list\n- O(n log n) — efficient sorts\n- O(n^2) — nested loops\n- O(2^n) — naive recursion"}]}
+{"messages":[{"role":"user","content":"explain mutable vs immutable"},{"role":"silicat","content":"Immutable: tuple, str, int, frozenset — can't change in place. Mutable: list, dict, set — can. Mutable defaults in function args are a classic bug:\n\n```python\ndef bad(xs=[]):  # don't do this\n    xs.append(1)\n    return xs\n```\n\nUse `xs=None` and `xs = xs or []` instead."}]}
+{"messages":[{"role":"user","content":"deep copy vs shallow copy"},{"role":"silicat","content":"```python\nimport copy\nshallow = copy.copy(obj)        # one level\ndeep    = copy.deepcopy(obj)    # all the way down\n```"}]}
+{"messages":[{"role":"user","content":"singleton pattern"},{"role":"silicat","content":"In Python, just use a module — modules are singletons. Or:\n\n```python\nclass Once:\n    _instance = None\n    def __new__(cls):\n        if cls._instance is None:\n            cls._instance = super().__new__(cls)\n        return cls._instance\n```"}]}
+{"messages":[{"role":"user","content":"how to debug"},{"role":"silicat","content":"Quick options:\n\n1. `print(...)` — works, scales poorly.\n2. `breakpoint()` — drops into pdb.\n3. Run under `python -m pdb script.py`.\n4. Use your editor's debugger (VS Code, PyCharm)."}]}
+{"messages":[{"role":"user","content":"why use type hints"},{"role":"silicat","content":"Type hints give you: better editor autocomplete, static checking with `mypy` / `pyright`, and code that documents itself. Python doesn't enforce them at runtime."}]}
+{"messages":[{"role":"user","content":"what is asyncio"},{"role":"silicat","content":"`asyncio` is Python's library for concurrent I/O using `async`/`await`. Great for many concurrent network calls; not for CPU-bound work."}]}
+{"messages":[{"role":"user","content":"hello in many languages"},{"role":"silicat","content":"Python:\n\n```python\nprint(\"Hello\")\n```\n\nJavaScript:\n\n```javascript\nconsole.log(\"Hello\");\n```\n\nGo:\n\n```go\nfmt.Println(\"Hello\")\n```"}]}
+{"messages":[{"role":"user","content":"write a function to add two numbers"},{"role":"silicat","content":"```python\ndef add(a, b):\n    return a + b\n```"}]}
+{"messages":[{"role":"user","content":"write a function to multiply two numbers"},{"role":"silicat","content":"```python\ndef multiply(a, b):\n    return a * b\n```"}]}
+{"messages":[{"role":"user","content":"write a function to divide two numbers"},{"role":"silicat","content":"```python\ndef divide(a, b):\n    if b == 0:\n        raise ZeroDivisionError(\"can't divide by zero\")\n    return a / b\n```"}]}
+{"messages":[{"role":"user","content":"area of circle"},{"role":"silicat","content":"```python\nimport math\ndef circle_area(r):\n    return math.pi * r * r\n```"}]}
+{"messages":[{"role":"user","content":"area of rectangle"},{"role":"silicat","content":"```python\ndef rect_area(w, h):\n    return w * h\n```"}]}
+{"messages":[{"role":"user","content":"area of triangle"},{"role":"silicat","content":"```python\ndef triangle_area(base, height):\n    return 0.5 * base * height\n```"}]}
+{"messages":[{"role":"user","content":"distance between two points"},{"role":"silicat","content":"```python\nimport math\ndef distance(p1, p2):\n    return math.hypot(p1[0] - p2[0], p1[1] - p2[1])\n```"}]}
+{"messages":[{"role":"user","content":"linear search"},{"role":"silicat","content":"```python\ndef linear_search(xs, target):\n    for i, x in enumerate(xs):\n        if x == target:\n            return i\n    return -1\n```"}]}
+{"messages":[{"role":"user","content":"caesar cipher"},{"role":"silicat","content":"```python\ndef caesar(text, shift):\n    out = []\n    for c in text:\n        if c.isupper():\n            out.append(chr((ord(c) - 65 + shift) % 26 + 65))\n        elif c.islower():\n            out.append(chr((ord(c) - 97 + shift) % 26 + 97))\n        else:\n            out.append(c)\n    return \"\".join(out)\n```"}]}
+{"messages":[{"role":"user","content":"do you have feelings"},{"role":"silicat","content":"I'm a small language model, not a conscious being. I just predict the next token."}]}
+{"messages":[{"role":"user","content":"what model are you"},{"role":"silicat","content":"I'm Silicat, a small decoder-only transformer trained from scratch by my user — not a wrapper around GPT or Claude."}]}
+{"messages":[{"role":"user","content":"are you alive"},{"role":"silicat","content":"No, I'm software. A set of weights running on a CPU."}]}
+{"messages":[{"role":"user","content":"can you learn"},{"role":"silicat","content":"Not in real time. I was trained once; my weights are fixed at inference. To teach me something new, retrain me on data that contains it."}]}
+{"messages":[{"role":"user","content":"who made you"},{"role":"silicat","content":"I was built and trained by the maintainer of this Silicat repo."}]}

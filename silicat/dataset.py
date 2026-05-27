@@ -20,9 +20,8 @@ DATA_DIR = Path("data")
 TOK_DIR = Path("checkpoints/tokenizer")
 
 
-def _load_corpus(max_samples: int, sample_chars: int) -> list[str]:
-    """Pull a small Python-code corpus. Uses `datasets` in streaming mode so
-    we never download the full ~50GB."""
+def _load_corpus_hf(max_samples: int, sample_chars: int) -> list[str]:
+    """Pull a Python corpus from HuggingFace Hub (codeparrot-clean-valid)."""
     from datasets import load_dataset
 
     ds = load_dataset(
@@ -41,6 +40,60 @@ def _load_corpus(max_samples: int, sample_chars: int) -> list[str]:
     return out
 
 
+def _load_corpus_local(max_samples: int, sample_chars: int, roots: list[str]) -> list[str]:
+    """Build a corpus from .py files on the local filesystem.
+
+    Useful when HuggingFace Hub is unreachable. Walks the given roots, skips
+    test directories, and returns up to `max_samples` files truncated to
+    `sample_chars` chars each."""
+    skip_dirs = {"test", "tests", "__pycache__"}
+    out: list[str] = []
+    for root in roots:
+        root_p = Path(root)
+        if not root_p.exists():
+            continue
+        for p in root_p.rglob("*.py"):
+            if any(part in skip_dirs for part in p.parts):
+                continue
+            try:
+                text = p.read_text(encoding="utf-8", errors="ignore")
+            except (OSError, UnicodeDecodeError):
+                continue
+            if len(text) < 100:
+                continue
+            out.append(text[:sample_chars])
+            if len(out) >= max_samples:
+                return out
+    return out
+
+
+def _load_corpus(
+    max_samples: int,
+    sample_chars: int,
+    source: str = "auto",
+    local_roots: list[str] | None = None,
+) -> list[str]:
+    """Load a corpus. `source` is 'hf', 'local', or 'auto' (try hf, fall back to local)."""
+    default_roots = [
+        "/usr/local/lib/python3.11/dist-packages",
+        "/usr/lib/python3.11",
+    ]
+    roots = local_roots or default_roots
+
+    if source == "local":
+        return _load_corpus_local(max_samples, sample_chars, roots)
+    if source == "hf":
+        return _load_corpus_hf(max_samples, sample_chars)
+    # auto: try HF, fall back to local
+    try:
+        out = _load_corpus_hf(max_samples, sample_chars)
+        if out:
+            return out
+    except Exception as e:
+        print(f"[hf unreachable: {e}] falling back to local Python sources")
+    return _load_corpus_local(max_samples, sample_chars, roots)
+
+
 def _write_raw(corpus: list[str], path: Path) -> None:
     with path.open("w", encoding="utf-8") as f:
         for doc in corpus:
@@ -53,14 +106,16 @@ def prepare(
     sample_chars: int = 4000,
     val_frac: float = 0.05,
     vocab_size: int = 8192,
+    source: str = "auto",
 ) -> None:
     DATA_DIR.mkdir(exist_ok=True)
     TOK_DIR.mkdir(parents=True, exist_ok=True)
 
     raw = DATA_DIR / "corpus.txt"
     if not raw.exists():
-        print("downloading corpus...")
-        corpus = _load_corpus(max_samples, sample_chars)
+        print(f"building corpus (source={source})...")
+        corpus = _load_corpus(max_samples, sample_chars, source=source)
+        print(f"loaded {len(corpus)} samples")
         _write_raw(corpus, raw)
     else:
         print(f"reusing existing {raw}")
@@ -108,12 +163,19 @@ def _cli() -> None:
     p.add_argument("--sample-chars", type=int, default=4000)
     p.add_argument("--val-frac", type=float, default=0.05)
     p.add_argument("--vocab-size", type=int, default=8192)
+    p.add_argument(
+        "--source",
+        choices=["auto", "hf", "local"],
+        default="auto",
+        help="'hf' = HuggingFace (codeparrot), 'local' = local .py files, 'auto' = try hf then local",
+    )
     args = p.parse_args()
     prepare(
         max_samples=args.max_samples,
         sample_chars=args.sample_chars,
         val_frac=args.val_frac,
         vocab_size=args.vocab_size,
+        source=args.source,
     )
 
 
