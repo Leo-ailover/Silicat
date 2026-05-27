@@ -79,6 +79,7 @@ def _load_corpus(
         "/usr/lib/python3.11",
         "/usr/lib/python3",
         "/root",
+        "/tmp/pkgs_src",
     ]
     roots = local_roots or default_roots
 
