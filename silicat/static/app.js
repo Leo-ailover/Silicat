@@ -1,0 +1,137 @@
+// Silicat chat client — vanilla JS, fetch + SSE parsing.
+
+const chat = document.getElementById("chat");
+const form = document.getElementById("composer");
+const input = document.getElementById("input");
+const sendBtn = document.getElementById("send");
+const statusEl = document.getElementById("status");
+
+const messages = [];
+
+async function refreshHealth() {
+  try {
+    const r = await fetch("/api/health");
+    const h = await r.json();
+    if (h.model_loaded) {
+      statusEl.textContent =
+        `ready · ${h.n_params.toLocaleString()} params · ${h.device} · step ${h.step}`;
+      statusEl.className = "status ok";
+    } else {
+      statusEl.textContent = "no checkpoint — train Silicat first";
+      statusEl.className = "status err";
+    }
+  } catch (e) {
+    statusEl.textContent = "server unreachable";
+    statusEl.className = "status err";
+  }
+}
+refreshHealth();
+
+function escapeHtml(s) {
+  return s
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function renderMarkdown(text) {
+  // Very small markdown: fenced code blocks and inline code. Nothing fancy.
+  let html = escapeHtml(text);
+  html = html.replace(/```([\s\S]*?)```/g, (_, code) => `<pre><code>${code}</code></pre>`);
+  html = html.replace(/`([^`\n]+)`/g, (_, code) => `<code>${code}</code>`);
+  return html;
+}
+
+function addMessage(role, text = "") {
+  const el = document.createElement("div");
+  el.className = `msg ${role}`;
+  el.innerHTML = `<div class="who">${role}</div><div class="body"></div>`;
+  el.querySelector(".body").innerHTML = renderMarkdown(text);
+  chat.appendChild(el);
+  chat.scrollTop = chat.scrollHeight;
+  return el;
+}
+
+async function streamReply(replyEl) {
+  const body = replyEl.querySelector(".body");
+  replyEl.classList.add("cursor");
+
+  const params = {
+    messages,
+    temperature: parseFloat(document.getElementById("temperature").value),
+    top_k: parseInt(document.getElementById("top_k").value, 10),
+    top_p: parseFloat(document.getElementById("top_p").value),
+    max_new_tokens: parseInt(document.getElementById("max_new_tokens").value, 10),
+  };
+
+  const resp = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "content-type": "application/json", accept: "text/event-stream" },
+    body: JSON.stringify(params),
+  });
+
+  if (!resp.ok || !resp.body) {
+    body.innerHTML = `<em>error: ${resp.status}</em>`;
+    replyEl.classList.remove("cursor");
+    return "";
+  }
+
+  const reader = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let accumulated = "";
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const events = buffer.split("\n\n");
+    buffer = events.pop() ?? "";
+    for (const evt of events) {
+      const lines = evt.split("\n");
+      let event = "message";
+      let data = "";
+      for (const line of lines) {
+        if (line.startsWith("event:")) event = line.slice(6).trim();
+        else if (line.startsWith("data:")) data += line.slice(5).trim();
+      }
+      if (!data) continue;
+      let payload;
+      try { payload = JSON.parse(data); } catch { continue; }
+      if (event === "token") {
+        accumulated += payload.text ?? "";
+        body.innerHTML = renderMarkdown(accumulated);
+        chat.scrollTop = chat.scrollHeight;
+      } else if (event === "error") {
+        body.innerHTML = `<em>${escapeHtml(payload.message ?? "error")}</em>`;
+      }
+    }
+  }
+  replyEl.classList.remove("cursor");
+  return accumulated;
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+  sendBtn.disabled = true;
+
+  addMessage("user", text);
+  messages.push({ role: "user", content: text });
+
+  const reply = addMessage("silicat", "");
+  const replyText = await streamReply(reply);
+  if (replyText) messages.push({ role: "silicat", content: replyText });
+
+  sendBtn.disabled = false;
+  input.focus();
+});
+
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    form.requestSubmit();
+  }
+});

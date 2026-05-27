@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+
+checkpoints/
+data/corpus.txt
+data/meta.json
+data/*.bin
+data/cache/
+data/*.tmp
+
+.ipynb_checkpoints/
+.DS_Store
