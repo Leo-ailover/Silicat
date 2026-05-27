@@ -75,8 +75,10 @@ def _load_corpus(
 ) -> list[str]:
     """Load a corpus. `source` is 'hf', 'local', or 'auto' (try hf, fall back to local)."""
     default_roots = [
-        "/usr/local/lib/python3.11/dist-packages",
+        "/usr/local/lib/python3.11",
         "/usr/lib/python3.11",
+        "/usr/lib/python3",
+        "/root",
     ]
     roots = local_roots or default_roots
 
