@@ -5,6 +5,7 @@ __pycache__/
 .env
 
 checkpoints/*
+!checkpoints/latest.pt
 !checkpoints/tokenizer/
 data/corpus.txt
 data/meta.json
