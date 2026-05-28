@@ -212,7 +212,9 @@ def chat(args: argparse.Namespace) -> None:
         )
 
     start_step = 0
+    best_loss = float("inf")
     chat_ckpt = CKPT_DIR / "chat_latest.pt"
+    best_ckpt = CKPT_DIR / "chat_best.pt"
     if args.resume and chat_ckpt.exists():
         ck2 = torch.load(chat_ckpt, map_location=device)
         model.load_state_dict(ck2["model"])
@@ -220,6 +222,7 @@ def chat(args: argparse.Namespace) -> None:
         if optim_state:
             optim.load_state_dict(optim_state)
         start_step = ck2.get("step", 0)
+        best_loss = ck2.get("best_loss", float("inf"))
         print(f"resumed chat fine-tune from step {start_step}")
 
     for step in range(start_step, args.max_steps):
@@ -238,13 +241,21 @@ def chat(args: argparse.Namespace) -> None:
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         optim.step()
+        current_loss = loss.item()
         if step % args.log_interval == 0:
-            print(f"chat step {step:>5} | loss {loss.item():.4f} | lr {lr:.2e}", flush=True)
+            print(f"chat step {step:>5} | loss {current_loss:.4f} | lr {lr:.2e}", flush=True)
+        if current_loss < best_loss:
+            best_loss = current_loss
+            torch.save({"model": model.state_dict(), "config": cfg.__dict__, "step": step, "best_loss": best_loss}, best_ckpt)
         if step > 0 and step % args.save_interval == 0:
-            torch.save({"model": model.state_dict(), "config": cfg.__dict__, "step": step, "optim": optim.state_dict()}, chat_ckpt)
+            torch.save({"model": model.state_dict(), "config": cfg.__dict__, "step": step, "optim": optim.state_dict(), "best_loss": best_loss}, chat_ckpt)
             print(f"  checkpoint saved at step {step}", flush=True)
 
-    _save(model, cfg, args.max_steps, name="latest")
+    # Use the best checkpoint as final model
+    best = torch.load(best_ckpt, map_location=device)
+    model.load_state_dict(best["model"])
+    print(f"  best checkpoint was at step {best['step']} (loss {best['best_loss']:.4f})")
+    _save(model, cfg, best["step"], name="latest")
 
 
 def _cli() -> None:
