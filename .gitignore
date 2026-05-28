@@ -6,7 +6,9 @@ __pycache__/
 
 checkpoints/*
 !checkpoints/latest.pt.part*
+!checkpoints/latest_v2.pt.part*
 !checkpoints/tokenizer/
+!checkpoints/tokenizer_v2/
 data/corpus.txt
 data/meta.json
 data/*.bin
