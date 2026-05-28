@@ -19,7 +19,7 @@ import torch
 from tqdm import tqdm
 
 from .chat_format import Message, format_for_training
-from .dataset import DATA_DIR, TOK_DIR, load_split
+from .dataset import DATA_DIR, TOK_DIR, TOK_DIR_V2, load_split
 from .model import GPT, GPTConfig
 from .tokenizer import Tokenizer
 
@@ -89,13 +89,15 @@ def pretrain(args: argparse.Namespace) -> None:
     device = args.device or _device()
     print(f"device: {device}")
 
-    tok = Tokenizer(TOK_DIR)
+    tok_dir = TOK_DIR_V2 if args.v2 else TOK_DIR
+    tok = Tokenizer(tok_dir)
     cfg = _build_cfg(tok.vocab_size, args)
     model = GPT(cfg).to(device)
     print(f"params: {model.num_params():,}")
 
-    if args.resume and (CKPT_DIR / "latest.pt").exists():
-        ck = torch.load(CKPT_DIR / "latest.pt", map_location=device)
+    ckpt_name = "latest_v2.pt" if args.v2 else "latest.pt"
+    if args.resume and (CKPT_DIR / ckpt_name).exists():
+        ck = torch.load(CKPT_DIR / ckpt_name, map_location=device)
         model.load_state_dict(ck["model"])
         start_step = ck.get("step", 0)
         print(f"resumed from step {start_step}")
@@ -103,8 +105,8 @@ def pretrain(args: argparse.Namespace) -> None:
         start_step = 0
 
     optim = model.configure_optimizer(args.lr, args.weight_decay)
-    train_data = load_split("train")
-    val_data = load_split("val")
+    train_data = load_split("train", v2=args.v2)
+    val_data = load_split("val", v2=args.v2)
 
     use_amp = device == "cuda" and args.amp
     scaler = torch.amp.GradScaler("cuda", enabled=use_amp)
@@ -145,9 +147,9 @@ def pretrain(args: argparse.Namespace) -> None:
                     losses.append(vl.item())
                 print(f"  eval loss: {sum(losses) / len(losses):.4f}")
             model.train()
-            _save(model, cfg, step)
+            _save(model, cfg, step, name="latest_v2" if args.v2 else "latest")
 
-    _save(model, cfg, args.max_steps)
+    _save(model, cfg, args.max_steps, name="latest_v2" if args.v2 else "latest")
 
 
 def _load_chat(path: Path, tok: Tokenizer, block_size: int) -> list[tuple[list[int], list[int]]]:
@@ -170,11 +172,13 @@ def _load_chat(path: Path, tok: Tokenizer, block_size: int) -> list[tuple[list[i
 def chat(args: argparse.Namespace) -> None:
     device = args.device or _device()
     print(f"device: {device}")
-    tok = Tokenizer(TOK_DIR)
+    tok_dir = TOK_DIR_V2 if args.v2 else TOK_DIR
+    tok = Tokenizer(tok_dir)
 
-    ck_path = CKPT_DIR / "latest.pt"
+    ckpt_name = "latest_v2.pt" if args.v2 else "latest.pt"
+    ck_path = CKPT_DIR / ckpt_name
     if not ck_path.exists():
-        raise SystemExit("no checkpoints/latest.pt — run pretrain first")
+        raise SystemExit(f"no {ck_path} — run pretrain first")
     ck = torch.load(ck_path, map_location=device)
     cfg = GPTConfig(**ck["config"])
     cfg.dropout = args.dropout  # apply CLI dropout override
@@ -214,8 +218,9 @@ def chat(args: argparse.Namespace) -> None:
 
     start_step = 0
     best_loss = float("inf")
-    chat_ckpt = CKPT_DIR / "chat_latest.pt"
-    best_ckpt = CKPT_DIR / "chat_best.pt"
+    sfx = "_v2" if args.v2 else ""
+    chat_ckpt = CKPT_DIR / f"chat_latest{sfx}.pt"
+    best_ckpt = CKPT_DIR / f"chat_best{sfx}.pt"
     if args.resume and chat_ckpt.exists():
         ck2 = torch.load(chat_ckpt, map_location=device)
         model.load_state_dict(ck2["model"])
@@ -256,7 +261,7 @@ def chat(args: argparse.Namespace) -> None:
     best = torch.load(best_ckpt, map_location=device)
     model.load_state_dict(best["model"])
     print(f"  best checkpoint was at step {best['step']} (loss {best['best_loss']:.4f})")
-    _save(model, cfg, best["step"], name="latest")
+    _save(model, cfg, best["step"], name=f"latest{sfx}")
 
 
 def _cli() -> None:
@@ -279,6 +284,7 @@ def _cli() -> None:
     p.add_argument("--amp", action="store_true")
     p.add_argument("--resume", action="store_true")
     p.add_argument("--chat-data", default="data/silicat_chat.jsonl")
+    p.add_argument("--v2", action="store_true", help="use v2 tokenizer (32k vocab) and data paths")
     args = p.parse_args()
     if args.stage == "pretrain":
         pretrain(args)

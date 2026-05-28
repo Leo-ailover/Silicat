@@ -19,6 +19,10 @@ from .tokenizer import Tokenizer, train_tokenizer
 DATA_DIR = Path("data")
 TOK_DIR = Path("checkpoints/tokenizer")
 
+# v2 paths (new 32k-vocab tokenizer + mixed corpus)
+TOK_DIR_V2 = Path("checkpoints/tokenizer_v2")
+CORPUS_V2 = DATA_DIR / "corpus_v2.txt"
+
 
 def _load_corpus_hf(max_samples: int, sample_chars: int) -> list[str]:
     """Pull a Python corpus from HuggingFace Hub (codeparrot-clean-valid)."""
@@ -153,15 +157,61 @@ def prepare(
     print(f"wrote train.bin ({len(train):,} toks) and val.bin ({len(val):,} toks)")
 
 
-def load_split(split: str) -> np.ndarray:
-    p = DATA_DIR / f"{split}.bin"
+def prepare_v2(val_frac: float = 0.05, vocab_size: int = 32768) -> None:
+    """Build v2 corpus binary from data/corpus_v2.txt with a 32k-vocab tokenizer."""
+    DATA_DIR.mkdir(exist_ok=True)
+    TOK_DIR_V2.mkdir(parents=True, exist_ok=True)
+
+    if not CORPUS_V2.exists():
+        raise FileNotFoundError(
+            f"{CORPUS_V2} not found — run `python data/collect_corpus_v2.py` first"
+        )
+
+    if not (TOK_DIR_V2 / "vocab.json").exists():
+        print("training v2 tokenizer (32k vocab)...")
+        train_tokenizer([str(CORPUS_V2)], TOK_DIR_V2, vocab_size=vocab_size)
+    else:
+        print(f"reusing tokenizer at {TOK_DIR_V2}")
+
+    tok = Tokenizer(TOK_DIR_V2)
+    print(f"tokenizer vocab size: {tok.vocab_size}")
+
+    print("encoding corpus v2...")
+    text = CORPUS_V2.read_text(encoding="utf-8")
+    ids: list[int] = []
+    chunk = 200_000
+    for i in tqdm(range(0, len(text), chunk)):
+        ids.extend(tok.encode(text[i : i + chunk]))
+    arr = np.array(ids, dtype=np.uint32)  # uint32 for 32k+ vocab
+    n_val = int(len(arr) * val_frac)
+    train, val = arr[:-n_val], arr[-n_val:]
+    train.tofile(DATA_DIR / "train_v2.bin")
+    val.tofile(DATA_DIR / "val_v2.bin")
+    meta = {
+        "vocab_size": tok.vocab_size,
+        "n_train_tokens": int(len(train)),
+        "n_val_tokens": int(len(val)),
+        "dtype": "uint32",
+    }
+    (DATA_DIR / "meta_v2.json").write_text(json.dumps(meta, indent=2))
+    print(f"wrote train_v2.bin ({len(train):,} toks) and val_v2.bin ({len(val):,} toks)")
+
+
+def load_split(split: str, v2: bool = False) -> np.ndarray:
+    if v2:
+        p = DATA_DIR / f"{split}_v2.bin"
+        dtype = np.uint32
+    else:
+        p = DATA_DIR / f"{split}.bin"
+        dtype = np.uint16
     if not p.exists():
         raise FileNotFoundError(f"{p} not found; run `python -m silicat.dataset`")
-    return np.memmap(p, dtype=np.uint16, mode="r")
+    return np.memmap(p, dtype=dtype, mode="r")
 
 
 def _cli() -> None:
     p = argparse.ArgumentParser()
+    p.add_argument("--v2", action="store_true", help="build v2 corpus (32k tokenizer)")
     p.add_argument("--max-samples", type=int, default=5000)
     p.add_argument("--sample-chars", type=int, default=4000)
     p.add_argument("--val-frac", type=float, default=0.05)
@@ -173,13 +223,16 @@ def _cli() -> None:
         help="'hf' = HuggingFace (codeparrot), 'local' = local .py files, 'auto' = try hf then local",
     )
     args = p.parse_args()
-    prepare(
-        max_samples=args.max_samples,
-        sample_chars=args.sample_chars,
-        val_frac=args.val_frac,
-        vocab_size=args.vocab_size,
-        source=args.source,
-    )
+    if args.v2:
+        prepare_v2(val_frac=args.val_frac, vocab_size=args.vocab_size if args.vocab_size != 8192 else 32768)
+    else:
+        prepare(
+            max_samples=args.max_samples,
+            sample_chars=args.sample_chars,
+            val_frac=args.val_frac,
+            vocab_size=args.vocab_size,
+            source=args.source,
+        )
 
 
 if __name__ == "__main__":
