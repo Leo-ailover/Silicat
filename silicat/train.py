@@ -211,7 +211,18 @@ def chat(args: argparse.Namespace) -> None:
             torch.from_numpy(m).to(device),
         )
 
-    for step in range(args.max_steps):
+    start_step = 0
+    chat_ckpt = CKPT_DIR / "chat_latest.pt"
+    if args.resume and chat_ckpt.exists():
+        ck2 = torch.load(chat_ckpt, map_location=device)
+        model.load_state_dict(ck2["model"])
+        optim_state = ck2.get("optim")
+        if optim_state:
+            optim.load_state_dict(optim_state)
+        start_step = ck2.get("step", 0)
+        print(f"resumed chat fine-tune from step {start_step}")
+
+    for step in range(start_step, args.max_steps):
         lr = _lr_at(
             step,
             warmup=args.warmup,
@@ -228,7 +239,10 @@ def chat(args: argparse.Namespace) -> None:
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         optim.step()
         if step % args.log_interval == 0:
-            print(f"chat step {step:>5} | loss {loss.item():.4f} | lr {lr:.2e}")
+            print(f"chat step {step:>5} | loss {loss.item():.4f} | lr {lr:.2e}", flush=True)
+        if step > 0 and step % args.save_interval == 0:
+            torch.save({"model": model.state_dict(), "config": cfg.__dict__, "step": step, "optim": optim.state_dict()}, chat_ckpt)
+            print(f"  checkpoint saved at step {step}", flush=True)
 
     _save(model, cfg, args.max_steps, name="latest")
 
@@ -249,6 +263,7 @@ def _cli() -> None:
     p.add_argument("--warmup", type=int, default=100)
     p.add_argument("--log-interval", type=int, default=10)
     p.add_argument("--eval-interval", type=int, default=200)
+    p.add_argument("--save-interval", type=int, default=500)
     p.add_argument("--amp", action="store_true")
     p.add_argument("--resume", action="store_true")
     p.add_argument("--chat-data", default="data/silicat_chat.jsonl")
