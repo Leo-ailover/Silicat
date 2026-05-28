@@ -39,7 +39,7 @@ except Exception as e:
     echo "[autopush] splitting..."
     cd checkpoints
     rm -f latest_v2.pt.part*
-    split -b 90m latest_v2.pt latest_v2.pt.part
+    split -b 45m latest_v2.pt latest_v2.pt.part
     # rename partaa→part00, partab→part01, etc.
     i=0
     for f in $(ls latest_v2.pt.part?? 2>/dev/null | sort); do
