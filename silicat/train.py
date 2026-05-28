@@ -177,6 +177,7 @@ def chat(args: argparse.Namespace) -> None:
         raise SystemExit("no checkpoints/latest.pt — run pretrain first")
     ck = torch.load(ck_path, map_location=device)
     cfg = GPTConfig(**ck["config"])
+    cfg.dropout = args.dropout  # apply CLI dropout override
     model = GPT(cfg).to(device)
     model.load_state_dict(ck["model"])
     print(f"loaded pretrain checkpoint from step {ck.get('step', '?')}")
