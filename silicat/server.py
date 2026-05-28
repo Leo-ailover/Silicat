@@ -18,6 +18,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
+from .assemble import ensure_assembled
 from .chat_format import Message, format_prompt
 from .dataset import TOK_DIR
 from .generate import stream
@@ -58,7 +59,9 @@ class ModelHolder:
 
     def load(self) -> None:
         ck_path = CKPT_DIR / "latest.pt"
-        if not ck_path.exists():
+        try:
+            ck_path = ensure_assembled(ck_path)
+        except FileNotFoundError:
             print(f"[warn] no checkpoint at {ck_path} — chat will return an error")
             return
         if not (TOK_DIR / "vocab.json").exists():

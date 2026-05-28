@@ -5,9 +5,8 @@ __pycache__/
 .env
 
 checkpoints/*
+!checkpoints/latest.pt.part*
 !checkpoints/tokenizer/
-# `latest.pt` is rewritten every 500 steps while training; we'll un-ignore
-# and commit the final checkpoint (via git-lfs) once training completes.
 data/corpus.txt
 data/meta.json
 data/*.bin

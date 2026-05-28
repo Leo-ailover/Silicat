@@ -6,6 +6,7 @@ from pathlib import Path
 
 import torch
 
+from .assemble import ensure_assembled
 from .chat_format import Message, format_prompt
 from .dataset import TOK_DIR
 from .generate import stream
@@ -22,7 +23,8 @@ def _device() -> str:
 
 def main() -> None:
     device = _device()
-    ck = torch.load(CKPT_DIR / "latest.pt", map_location=device)
+    ck_path = ensure_assembled(CKPT_DIR / "latest.pt")
+    ck = torch.load(ck_path, map_location=device)
     cfg = GPTConfig(**ck["config"])
     model = GPT(cfg).to(device)
     model.load_state_dict(ck["model"])
