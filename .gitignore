@@ -15,3 +15,5 @@ data/*.tmp
 
 .ipynb_checkpoints/
 .DS_Store
+*.log
+nohup.out
