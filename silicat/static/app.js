@@ -8,6 +8,78 @@ const statusEl = document.getElementById("status");
 
 const messages = [];
 
+// ── Conversation persistence ─────────────────────────────────────────────────
+
+const STORAGE_KEY = "silicat_conversations";
+const MAX_SAVED = 20;
+
+let currentConvId = newId();
+
+function newId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function savedConversations() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]"); }
+  catch { return []; }
+}
+
+function saveCurrentConversation() {
+  if (messages.length === 0) return;
+  const convs = savedConversations().filter(c => c.id !== currentConvId);
+  const title = messages[0]?.content?.slice(0, 60) ?? "Conversation";
+  convs.unshift({ id: currentConvId, title, ts: Date.now(), messages: [...messages] });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(convs.slice(0, MAX_SAVED)));
+  renderRecentList();
+}
+
+function loadConversation(id) {
+  const conv = savedConversations().find(c => c.id === id);
+  if (!conv) return;
+  messages.length = 0;
+  messages.push(...conv.messages);
+  currentConvId = id;
+  chat.innerHTML = "";
+  for (const m of messages) addMessage(m.role, m.content);
+  renderRecentList();
+}
+
+function startNewChat() {
+  if (messages.length > 0) saveCurrentConversation();
+  messages.length = 0;
+  currentConvId = newId();
+  chat.innerHTML = "";
+  renderRecentList();
+  input.focus();
+}
+
+function formatTs(ts) {
+  const diff = Date.now() - ts;
+  const days = Math.floor(diff / 86400000);
+  if (days === 0) return "Today";
+  if (days === 1) return "Yesterday";
+  return new Date(ts).toLocaleDateString();
+}
+
+function renderRecentList() {
+  const list = document.getElementById("recent-list");
+  if (!list) return;
+  const convs = savedConversations();
+  if (convs.length === 0) {
+    list.innerHTML = `<p class="no-convs">No saved conversations yet.</p>`;
+    return;
+  }
+  list.innerHTML = convs.map(c => `
+    <button class="conv-item${c.id === currentConvId ? " active" : ""}" data-id="${escapeHtml(c.id)}">
+      <span class="conv-title">${escapeHtml(c.title)}</span>
+      <span class="conv-ts">${formatTs(c.ts)}</span>
+    </button>
+  `).join("");
+  list.querySelectorAll(".conv-item").forEach(btn => {
+    btn.addEventListener("click", () => loadConversation(btn.dataset.id));
+  });
+}
+
 async function refreshHealth() {
   try {
     const r = await fetch("/api/health");
@@ -123,11 +195,18 @@ form.addEventListener("submit", async (e) => {
 
   const reply = addMessage("silicat", "");
   const replyText = await streamReply(reply);
-  if (replyText) messages.push({ role: "silicat", content: replyText });
+  if (replyText) {
+    messages.push({ role: "silicat", content: replyText });
+    saveCurrentConversation();
+  }
 
   sendBtn.disabled = false;
   input.focus();
 });
+
+document.getElementById("new-chat-btn")?.addEventListener("click", startNewChat);
+
+renderRecentList();
 
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
