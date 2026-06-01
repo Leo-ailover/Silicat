@@ -1,0 +1,400 @@
+{"messages": [{"role": "user", "content": "Implement bubble sort"}, {"role": "silicat", "content": "def bubble_sort(arr):\n    for i in range(len(arr)):\n        for j in range(len(arr) - i - 1):\n            if arr[j] > arr[j+1]:\n                arr[j], arr[j+1] = arr[j+1], arr[j]\n    return arr"}]}
+{"messages": [{"role": "user", "content": "Bubble sort complexity"}, {"role": "silicat", "content": "O(n\u00b2) worst/avg, O(n) best, O(1) space, stable"}]}
+{"messages": [{"role": "user", "content": "Insertion sort"}, {"role": "silicat", "content": "def insertion_sort(arr):\n    for i in range(1, len(arr)):\n        key = arr[i]\n        j = i - 1\n        while j >= 0 and arr[j] > key:\n            arr[j+1] = arr[j]\n            j -= 1\n        arr[j+1] = key\n    return arr"}]}
+{"messages": [{"role": "user", "content": "Merge sort"}, {"role": "silicat", "content": "def merge_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])\n    right = merge_sort(arr[mid:])\n    return merge(left, right)"}]}
+{"messages": [{"role": "user", "content": "Merge sort complexity"}, {"role": "silicat", "content": "O(n log n) guaranteed, O(n) space, stable"}]}
+{"messages": [{"role": "user", "content": "Quick sort"}, {"role": "silicat", "content": "def quick_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr)//2]\n    left = [x for x in arr if x < pivot]\n    mid = [x for x in arr if x == pivot]\n    right = [x for x in arr if x > pivot]\n    return quick_sort(left) + mid + quick_sort(right)"}]}
+{"messages": [{"role": "user", "content": "Heap sort"}, {"role": "silicat", "content": "def heap_sort(arr):\n    import heapq\n    heapq.heapify(arr)\n    return [heapq.heappop(arr) for _ in range(len(arr))]"}]}
+{"messages": [{"role": "user", "content": "Selection sort"}, {"role": "silicat", "content": "def selection_sort(arr):\n    for i in range(len(arr)):\n        min_idx = min(range(i, len(arr)), key=arr.__getitem__)\n        arr[i], arr[min_idx] = arr[min_idx], arr[i]\n    return arr"}]}
+{"messages": [{"role": "user", "content": "Counting sort"}, {"role": "silicat", "content": "def counting_sort(arr):\n    counts = {}\n    for x in arr:\n        counts[x] = counts.get(x, 0) + 1\n    result = []\n    for x in sorted(counts):\n        result.extend([x] * counts[x])\n    return result"}]}
+{"messages": [{"role": "user", "content": "Binary search"}, {"role": "silicat", "content": "def binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    while left <= right:\n        mid = (left + right) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1"}]}
+{"messages": [{"role": "user", "content": "Linear search"}, {"role": "silicat", "content": "def linear_search(arr, target):\n    for i, val in enumerate(arr):\n        if val == target:\n            return i\n    return -1"}]}
+{"messages": [{"role": "user", "content": "Ternary search"}, {"role": "silicat", "content": "def ternary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    while left <= right:\n        mid1 = left + (right - left) // 3\n        mid2 = right - (right - left) // 3\n        if arr[mid1] == target:\n            return mid1\n        if arr[mid2] == target:\n            return mid2\n        if target < arr[mid1]:\n            right = mid1 - 1\n        elif target > arr[mid2]:\n            left = mid2 + 1\n        else:\n            left, right = mid1 + 1, mid2 - 1\n    return -1"}]}
+{"messages": [{"role": "user", "content": "Bisect module"}, {"role": "silicat", "content": "import bisect\npos_left = bisect.bisect_left(arr, val)\npos_right = bisect.bisect_right(arr, val)\nbisect.insort(arr, val)"}]}
+{"messages": [{"role": "user", "content": "Recursion base case"}, {"role": "silicat", "content": "Condition stopping recursion, prevents infinite loop"}]}
+{"messages": [{"role": "user", "content": "Factorial recursive"}, {"role": "silicat", "content": "def factorial(n):\n    return 1 if n <= 1 else n * factorial(n - 1)"}]}
+{"messages": [{"role": "user", "content": "Fibonacci recursive"}, {"role": "silicat", "content": "def fib(n):\n    return n if n <= 1 else fib(n-1) + fib(n-2)"}]}
+{"messages": [{"role": "user", "content": "Memoization"}, {"role": "silicat", "content": "Cache results to avoid recomputation. def fib(n, memo={}):\n    if n in memo:\n        return memo[n]\n    if n <= 1:\n        return n\n    memo[n] = fib(n-1, memo) + fib(n-2, memo)\n    return memo[n]"}]}
+{"messages": [{"role": "user", "content": "lru_cache decorator"}, {"role": "silicat", "content": "from functools import lru_cache\n@lru_cache(maxsize=None)\ndef fib(n):\n    return n if n <= 1 else fib(n-1) + fib(n-2)"}]}
+{"messages": [{"role": "user", "content": "Power fast exponential"}, {"role": "silicat", "content": "def power(base, exp):\n    if exp == 0:\n        return 1\n    half = power(base, exp // 2)\n    return half * half if exp % 2 == 0 else half * half * base"}]}
+{"messages": [{"role": "user", "content": "Stack implementation"}, {"role": "silicat", "content": "class Stack:\n    def __init__(self):\n        self.items = []\n    def push(self, x):\n        self.items.append(x)\n    def pop(self):\n        return self.items.pop() if self.items else None"}]}
+{"messages": [{"role": "user", "content": "Queue implementation"}, {"role": "silicat", "content": "class Queue:\n    def __init__(self):\n        self.items = []\n    def enqueue(self, x):\n        self.items.append(x)\n    def dequeue(self):\n        return self.items.pop(0) if self.items else None"}]}
+{"messages": [{"role": "user", "content": "Deque usage"}, {"role": "silicat", "content": "from collections import deque\nd = deque()\nd.append(x)  # O(1) right\nd.appendleft(x)  # O(1) left\nd.pop()  # O(1) right\nd.popleft()  # O(1) left"}]}
+{"messages": [{"role": "user", "content": "Balanced parentheses"}, {"role": "silicat", "content": "Use stack, push opening, check closing matches top"}]}
+{"messages": [{"role": "user", "content": "Next greater element"}, {"role": "silicat", "content": "Monotonic stack tracking indices or values"}]}
+{"messages": [{"role": "user", "content": "LinkedList node"}, {"role": "silicat", "content": "class Node:\n    def __init__(self, val):\n        self.val = val\n        self.next = None"}]}
+{"messages": [{"role": "user", "content": "Reverse linked list"}, {"role": "silicat", "content": "def reverse(head):\n    prev, curr = None, head\n    while curr:\n        next_temp = curr.next\n        curr.next = prev\n        prev = curr\n        curr = next_temp\n    return prev"}]}
+{"messages": [{"role": "user", "content": "Find middle linked list"}, {"role": "silicat", "content": "Slow-fast pointers, move slow 1, fast 2 steps"}]}
+{"messages": [{"role": "user", "content": "Cycle detection"}, {"role": "silicat", "content": "Floyd's algorithm, slow-fast meet indicates cycle"}]}
+{"messages": [{"role": "user", "content": "Merge sorted lists"}, {"role": "silicat", "content": "Compare nodes, attach smaller, advance pointers"}]}
+{"messages": [{"role": "user", "content": "TreeNode"}, {"role": "silicat", "content": "class TreeNode:\n    def __init__(self, val=0):\n        self.val = val\n        self.left = None\n        self.right = None"}]}
+{"messages": [{"role": "user", "content": "Insert BST"}, {"role": "silicat", "content": "Compare value, recurse left if less, right if greater"}]}
+{"messages": [{"role": "user", "content": "Inorder traversal"}, {"role": "silicat", "content": "Left-Root-Right, yields sorted for BST"}]}
+{"messages": [{"role": "user", "content": "Preorder traversal"}, {"role": "silicat", "content": "Root-Left-Right, root first for reconstruction"}]}
+{"messages": [{"role": "user", "content": "Postorder traversal"}, {"role": "silicat", "content": "Left-Right-Root, leaves first"}]}
+{"messages": [{"role": "user", "content": "Level order BFS"}, {"role": "silicat", "content": "Queue-based, process level by level"}]}
+{"messages": [{"role": "user", "content": "Height of tree"}, {"role": "silicat", "content": "Max of left/right subtree heights + 1"}]}
+{"messages": [{"role": "user", "content": "Is balanced"}, {"role": "silicat", "content": "Check height diff <= 1 all subtrees"}]}
+{"messages": [{"role": "user", "content": "Validate BST"}, {"role": "silicat", "content": "Check bounds, recurse with valid ranges"}]}
+{"messages": [{"role": "user", "content": "DFS implementation"}, {"role": "silicat", "content": "Recursion/stack based graph traversal"}]}
+{"messages": [{"role": "user", "content": "BFS implementation"}, {"role": "silicat", "content": "Queue-based level-order traversal"}]}
+{"messages": [{"role": "user", "content": "Cycle detection graph"}, {"role": "silicat", "content": "DFS visited/recursion stack check"}]}
+{"messages": [{"role": "user", "content": "Topological sort"}, {"role": "silicat", "content": "DFS finishing order reversed or Kahn's algorithm"}]}
+{"messages": [{"role": "user", "content": "Dijkstra shortest"}, {"role": "silicat", "content": "Priority queue, relax edges"}]}
+{"messages": [{"role": "user", "content": "Bellman-Ford"}, {"role": "silicat", "content": "Relax all edges n-1 times, detect negative cycles"}]}
+{"messages": [{"role": "user", "content": "Floyd-Warshall"}, {"role": "silicat", "content": "DP all pairs, O(V\u00b3) time"}]}
+{"messages": [{"role": "user", "content": "Kruskal MST"}, {"role": "silicat", "content": "Sort edges, union-find, O(E log E)"}]}
+{"messages": [{"role": "user", "content": "Number of islands"}, {"role": "silicat", "content": "DFS/BFS count components"}]}
+{"messages": [{"role": "user", "content": "Word ladder BFS"}, {"role": "silicat", "content": "Level-order find shortest path"}]}
+{"messages": [{"role": "user", "content": "Hash table concept"}, {"role": "silicat", "content": "Key-value mapping, hash function for index"}]}
+{"messages": [{"role": "user", "content": "Dict operations"}, {"role": "silicat", "content": "d[key]=val, d.get(key, default), del d[key], key in d"}]}
+{"messages": [{"role": "user", "content": "defaultdict"}, {"role": "silicat", "content": "from collections import defaultdict\ndd = defaultdict(list) or defaultdict(int)"}]}
+{"messages": [{"role": "user", "content": "Counter"}, {"role": "silicat", "content": "from collections import Counter\nc = Counter(arr)\nc.most_common(n)"}]}
+{"messages": [{"role": "user", "content": "Two sum"}, {"role": "silicat", "content": "Hash map store complements, O(n) time"}]}
+{"messages": [{"role": "user", "content": "Find duplicate"}, {"role": "silicat", "content": "Hash set seen elements"}]}
+{"messages": [{"role": "user", "content": "Group anagrams"}, {"role": "silicat", "content": "Hash sorted string as key"}]}
+{"messages": [{"role": "user", "content": "Heap min property"}, {"role": "silicat", "content": "Parent <= children"}]}
+{"messages": [{"role": "user", "content": "heapq module"}, {"role": "silicat", "content": "import heapq\nheapq.heappush, heappop, heapify"}]}
+{"messages": [{"role": "user", "content": "Heapify"}, {"role": "silicat", "content": "Build heap O(n) better than n inserts O(n log n)"}]}
+{"messages": [{"role": "user", "content": "Heap sort"}, {"role": "silicat", "content": "Heapify, pop all O(n log n)"}]}
+{"messages": [{"role": "user", "content": "Max heap Python"}, {"role": "silicat", "content": "Negate values with min heap"}]}
+{"messages": [{"role": "user", "content": "Top-k elements"}, {"role": "silicat", "content": "Min heap size k tracking largest"}]}
+{"messages": [{"role": "user", "content": "DP concept"}, {"role": "silicat", "content": "Break problem, solve once, cache overlapping"}]}
+{"messages": [{"role": "user", "content": "Fibonacci DP"}, {"role": "silicat", "content": "dp[i] = dp[i-1] + dp[i-2], O(n) time/space"}]}
+{"messages": [{"role": "user", "content": "Knapsack 0/1"}, {"role": "silicat", "content": "Include or exclude item DP"}]}
+{"messages": [{"role": "user", "content": "Coin change min"}, {"role": "silicat", "content": "Minimum coins for amount"}]}
+{"messages": [{"role": "user", "content": "LIS"}, {"role": "silicat", "content": "Longest increasing subsequence"}]}
+{"messages": [{"role": "user", "content": "LCS"}, {"role": "silicat", "content": "Longest common subsequence"}]}
+{"messages": [{"role": "user", "content": "Edit distance"}, {"role": "silicat", "content": "Levenshtein distance operations"}]}
+{"messages": [{"role": "user", "content": "House robber"}, {"role": "silicat", "content": "Max sum non-adjacent houses"}]}
+{"messages": [{"role": "user", "content": "Climbing stairs"}, {"role": "silicat", "content": "Ways reach top"}]}
+{"messages": [{"role": "user", "content": "Max subarray Kadane"}, {"role": "silicat", "content": "Maximum contiguous sum"}]}
+{"messages": [{"role": "user", "content": "Unique paths"}, {"role": "silicat", "content": "Grid paths DP"}]}
+{"messages": [{"role": "user", "content": "Min path sum"}, {"role": "silicat", "content": "Minimum cost path grid"}]}
+{"messages": [{"role": "user", "content": "Partition subset sum"}, {"role": "silicat", "content": "Check subset equals target sum"}]}
+{"messages": [{"role": "user", "content": "Word break"}, {"role": "silicat", "content": "Check string from dictionary"}]}
+{"messages": [{"role": "user", "content": "Longest palindrome"}, {"role": "silicat", "content": "DP expand around centers"}]}
+{"messages": [{"role": "user", "content": "Paint house"}, {"role": "silicat", "content": "Min cost paint houses"}]}
+{"messages": [{"role": "user", "content": "Buy sell stock"}, {"role": "silicat", "content": "Max profit transactions"}]}
+{"messages": [{"role": "user", "content": "Two pointer technique"}, {"role": "silicat", "content": "Converge from ends or same direction"}]}
+{"messages": [{"role": "user", "content": "Two sum sorted"}, {"role": "silicat", "content": "Two pointer opposite ends"}]}
+{"messages": [{"role": "user", "content": "Three sum"}, {"role": "silicat", "content": "Loop + two pointer"}]}
+{"messages": [{"role": "user", "content": "Container water"}, {"role": "silicat", "content": "Two pointer maximize area"}]}
+{"messages": [{"role": "user", "content": "Reverse string"}, {"role": "silicat", "content": "Two pointer swap"}]}
+{"messages": [{"role": "user", "content": "Valid palindrome"}, {"role": "silicat", "content": "Two pointer matching"}]}
+{"messages": [{"role": "user", "content": "Merge sorted"}, {"role": "silicat", "content": "Two pointer merge arrays"}]}
+{"messages": [{"role": "user", "content": "Trapping rain"}, {"role": "silicat", "content": "Two pointer compute water"}]}
+{"messages": [{"role": "user", "content": "Sliding window max"}, {"role": "silicat", "content": "Deque window maximum"}]}
+{"messages": [{"role": "user", "content": "Longest substring"}, {"role": "silicat", "content": "Hash two pointer no repeat"}]}
+{"messages": [{"role": "user", "content": "Minimum window"}, {"role": "silicat", "content": "Two pointer matching substring"}]}
+{"messages": [{"role": "user", "content": "Big O definition"}, {"role": "silicat", "content": "Upper bound growth rate ignoring constants"}]}
+{"messages": [{"role": "user", "content": "O(1)"}, {"role": "silicat", "content": "Constant array access"}]}
+{"messages": [{"role": "user", "content": "O(log n)"}, {"role": "silicat", "content": "Binary search halving"}]}
+{"messages": [{"role": "user", "content": "O(n)"}, {"role": "silicat", "content": "Linear search iterating"}]}
+{"messages": [{"role": "user", "content": "O(n log n)"}, {"role": "silicat", "content": "Merge sort divide conquer"}]}
+{"messages": [{"role": "user", "content": "O(n\u00b2)"}, {"role": "silicat", "content": "Bubble sort nested loops"}]}
+{"messages": [{"role": "user", "content": "O(2^n)"}, {"role": "silicat", "content": "Fibonacci naive exponential"}]}
+{"messages": [{"role": "user", "content": "O(n!)"}, {"role": "silicat", "content": "Permutations factorial"}]}
+{"messages": [{"role": "user", "content": "Time complexity"}, {"role": "silicat", "content": "How duration scales with input"}]}
+{"messages": [{"role": "user", "content": "Space complexity"}, {"role": "silicat", "content": "How memory scales with input"}]}
+{"messages": [{"role": "user", "content": "Amortized"}, {"role": "silicat", "content": "Average per operation sequence"}]}
+{"messages": [{"role": "user", "content": "defaultdict(list)"}, {"role": "silicat", "content": "Missing key returns empty list"}]}
+{"messages": [{"role": "user", "content": "defaultdict(int)"}, {"role": "silicat", "content": "Missing key returns 0"}]}
+{"messages": [{"role": "user", "content": "Counter.most_common()"}, {"role": "silicat", "content": "Returns list of (element, count) tuples"}]}
+{"messages": [{"role": "user", "content": "OrderedDict"}, {"role": "silicat", "content": "Dict maintaining insertion order (3.7+ built-in)"}]}
+{"messages": [{"role": "user", "content": "deque"}, {"role": "silicat", "content": "Double-ended queue O(1) both ends"}]}
+{"messages": [{"role": "user", "content": "deque.rotate()"}, {"role": "silicat", "content": "Rotate elements by n steps"}]}
+{"messages": [{"role": "user", "content": "namedtuple"}, {"role": "silicat", "content": "Lightweight immutable record"}]}
+{"messages": [{"role": "user", "content": "bisect_left()"}, {"role": "silicat", "content": "Insertion point before equal"}]}
+{"messages": [{"role": "user", "content": "bisect_right()"}, {"role": "silicat", "content": "Insertion point after equal"}]}
+{"messages": [{"role": "user", "content": "bisect.insort()"}, {"role": "silicat", "content": "Insert sorted O(n) due to shift"}]}
+{"messages": [{"role": "user", "content": "AVL tree"}, {"role": "silicat", "content": "Self-balancing BST maintaining balance factor -1 to 1"}]}
+{"messages": [{"role": "user", "content": "Red-black tree"}, {"role": "silicat", "content": "Colored nodes ensuring O(log n) operations"}]}
+{"messages": [{"role": "user", "content": "Trie data structure"}, {"role": "silicat", "content": "Tree for string prefixes O(m) lookup"}]}
+{"messages": [{"role": "user", "content": "Implement Trie"}, {"role": "silicat", "content": "class Trie:\n    def __init__(self):\n        self.root = {}\n    def insert(self, word):\n        node = self.root\n        for char in word:\n            node = node.setdefault(char, {})\n        node['*'] = True"}]}
+{"messages": [{"role": "user", "content": "Trie search"}, {"role": "silicat", "content": "Traverse characters, check end marker"}]}
+{"messages": [{"role": "user", "content": "Word search Trie"}, {"role": "silicat", "content": "DFS recursion on Trie structure"}]}
+{"messages": [{"role": "user", "content": "Suffix array"}, {"role": "silicat", "content": "Sort all suffixes for pattern matching"}]}
+{"messages": [{"role": "user", "content": "Suffix tree"}, {"role": "silicat", "content": "Compressed suffix trie linear space"}]}
+{"messages": [{"role": "user", "content": "Strongly connected components"}, {"role": "silicat", "content": "Tarjan or Kosaraju O(V+E)"}]}
+{"messages": [{"role": "user", "content": "Bridge detection"}, {"role": "silicat", "content": "Low-link values DFS"}]}
+{"messages": [{"role": "user", "content": "Union-find DSU"}, {"role": "silicat", "content": "Disjoint set union path compression"}]}
+{"messages": [{"role": "user", "content": "Segment tree"}, {"role": "silicat", "content": "Range min/max/sum O(log n)"}]}
+{"messages": [{"role": "user", "content": "Fenwick tree"}, {"role": "silicat", "content": "Binary indexed tree bit manipulation"}]}
+{"messages": [{"role": "user", "content": "Bitset operations"}, {"role": "silicat", "content": "Set operations on bits"}]}
+{"messages": [{"role": "user", "content": "Bit manipulation"}, {"role": "silicat", "content": "AND, OR, XOR, NOT, shifts"}]}
+{"messages": [{"role": "user", "content": "Count set bits"}, {"role": "silicat", "content": "Population count Hamming weight"}]}
+{"messages": [{"role": "user", "content": "Gray code"}, {"role": "silicat", "content": "i XOR (i >> 1) reflected binary"}]}
+{"messages": [{"role": "user", "content": "Power of 2 check"}, {"role": "silicat", "content": "(n & (n-1)) == 0"}]}
+{"messages": [{"role": "user", "content": "Find single"}, {"role": "silicat", "content": "XOR all elements cancels pairs"}]}
+{"messages": [{"role": "user", "content": "Reverse bits"}, {"role": "silicat", "content": "Bit by bit reversal"}]}
+{"messages": [{"role": "user", "content": "Hamming distance"}, {"role": "silicat", "content": "XOR then count set bits"}]}
+{"messages": [{"role": "user", "content": "Permutation sequence"}, {"role": "silicat", "content": "Factoradic number system"}]}
+{"messages": [{"role": "user", "content": "Next permutation"}, {"role": "silicat", "content": "Find pivot, reverse, swap"}]}
+{"messages": [{"role": "user", "content": "Combinations"}, {"role": "silicat", "content": "Backtrack choose k elements"}]}
+{"messages": [{"role": "user", "content": "Subset sum"}, {"role": "silicat", "content": "Backtrack target sum"}]}
+{"messages": [{"role": "user", "content": "NQueens"}, {"role": "silicat", "content": "Backtrack place queens"}]}
+{"messages": [{"role": "user", "content": "Sudoku solver"}, {"role": "silicat", "content": "Backtrack fill cells constraints"}]}
+{"messages": [{"role": "user", "content": "Maze solver"}, {"role": "silicat", "content": "Backtrack DFS path finding"}]}
+{"messages": [{"role": "user", "content": "Word search grid"}, {"role": "silicat", "content": "Backtrack DFS word finding"}]}
+{"messages": [{"role": "user", "content": "Maximal rectangle"}, {"role": "silicat", "content": "Stack histogram largest rectangle"}]}
+{"messages": [{"role": "user", "content": "Largest rectangle"}, {"role": "silicat", "content": "Stack monotonic indices"}]}
+{"messages": [{"role": "user", "content": "Matrix chain"}, {"role": "silicat", "content": "DP optimal multiplications"}]}
+{"messages": [{"role": "user", "content": "Assembly line"}, {"role": "silicat", "content": "DP minimum time path"}]}
+{"messages": [{"role": "user", "content": "Maximum product"}, {"role": "silicat", "content": "DP track max/min negatives"}]}
+{"messages": [{"role": "user", "content": "Buy sell once"}, {"role": "silicat", "content": "Track minimum price"}]}
+{"messages": [{"role": "user", "content": "Buy sell twice"}, {"role": "silicat", "content": "States current holdings"}]}
+{"messages": [{"role": "user", "content": "Buy sell unlimited"}, {"role": "silicat", "content": "Greedy accumulate differences"}]}
+{"messages": [{"role": "user", "content": "Best time IV"}, {"role": "silicat", "content": "State machine k transactions"}]}
+{"messages": [{"role": "user", "content": "House robber II"}, {"role": "silicat", "content": "Circular consideration"}]}
+{"messages": [{"role": "user", "content": "House robber III"}, {"role": "silicat", "content": "Tree DFS rob/skip"}]}
+{"messages": [{"role": "user", "content": "Longest path DAG"}, {"role": "silicat", "content": "Topological sort DP"}]}
+{"messages": [{"role": "user", "content": "Distinct subsequences"}, {"role": "silicat", "content": "DP pattern matching"}]}
+{"messages": [{"role": "user", "content": "Regular expression"}, {"role": "silicat", "content": "DP wildcard * ."}]}
+{"messages": [{"role": "user", "content": "Wildcard matching"}, {"role": "silicat", "content": "DP * ? matching"}]}
+{"messages": [{"role": "user", "content": "Shortest supersequence"}, {"role": "silicat", "content": "LCS merge strategy"}]}
+{"messages": [{"role": "user", "content": "Interleaving strings"}, {"role": "silicat", "content": "DP merge validity"}]}
+{"messages": [{"role": "user", "content": "Delete and earn"}, {"role": "silicat", "content": "DP skip or take"}]}
+{"messages": [{"role": "user", "content": "Arithmetic slices"}, {"role": "silicat", "content": "DP count arithmetic"}]}
+{"messages": [{"role": "user", "content": "Perfect squares"}, {"role": "silicat", "content": "DP minimum squares sum"}]}
+{"messages": [{"role": "user", "content": "Integer break"}, {"role": "silicat", "content": "DP product maximize"}]}
+{"messages": [{"role": "user", "content": "Minimum knight moves"}, {"role": "silicat", "content": "BFS shortest path chessboard"}]}
+{"messages": [{"role": "user", "content": "Word ladder II"}, {"role": "silicat", "content": "BFS build paths all shortest"}]}
+{"messages": [{"role": "user", "content": "Open lock"}, {"role": "silicat", "content": "BFS minimum rotations"}]}
+{"messages": [{"role": "user", "content": "Minimum height trees"}, {"role": "silicat", "content": "Topological sort leaves"}]}
+{"messages": [{"role": "user", "content": "Network delay time"}, {"role": "silicat", "content": "Dijkstra single-source"}]}
+{"messages": [{"role": "user", "content": "Alien dictionary order"}, {"role": "silicat", "content": "Topological sort ordering"}]}
+{"messages": [{"role": "user", "content": "Redundant connection"}, {"role": "silicat", "content": "Union-find cycle detection"}]}
+{"messages": [{"role": "user", "content": "Number of provinces"}, {"role": "silicat", "content": "Union-find components"}]}
+{"messages": [{"role": "user", "content": "Accounts merge union"}, {"role": "silicat", "content": "Union-find email grouping"}]}
+{"messages": [{"role": "user", "content": "Evaluate division"}, {"role": "silicat", "content": "Graph DFS path weight"}]}
+{"messages": [{"role": "user", "content": "Earliest arrival time"}, {"role": "silicat", "content": "Dijkstra shortest time"}]}
+{"messages": [{"role": "user", "content": "Cheapest flights K stops"}, {"role": "silicat", "content": "Bellman-Ford k edges"}]}
+{"messages": [{"role": "user", "content": "Longest path DAG topological"}, {"role": "silicat", "content": "Topological sort + DP edges"}]}
+{"messages": [{"role": "user", "content": "Permutations with duplicates"}, {"role": "silicat", "content": "Backtrack sort first to handle dups"}]}
+{"messages": [{"role": "user", "content": "Subsets with duplicates"}, {"role": "silicat", "content": "Backtrack skip same branches"}]}
+{"messages": [{"role": "user", "content": "Palindrome partition II"}, {"role": "silicat", "content": "Backtrack all partitions"}]}
+{"messages": [{"role": "user", "content": "Letter case permutation"}, {"role": "silicat", "content": "Backtrack toggle case letters"}]}
+{"messages": [{"role": "user", "content": "Generate IP addresses"}, {"role": "silicat", "content": "Backtrack segment strings valid IP"}]}
+{"messages": [{"role": "user", "content": "Remove invalid parentheses"}, {"role": "silicat", "content": "BFS find minimum remove"}]}
+{"messages": [{"role": "user", "content": "Generate parentheses"}, {"role": "silicat", "content": "Backtrack valid combinations"}]}
+{"messages": [{"role": "user", "content": "Regex match pattern"}, {"role": "silicat", "content": "DP wildcard . *"}]}
+{"messages": [{"role": "user", "content": "Substring pattern matching"}, {"role": "silicat", "content": "KMP or rolling hash"}]}
+{"messages": [{"role": "user", "content": "Text justification"}, {"role": "silicat", "content": "Greedy distribute words lines"}]}
+{"messages": [{"role": "user", "content": "String to integer"}, {"role": "silicat", "content": "Handle sign, overflow, whitespace"}]}
+{"messages": [{"role": "user", "content": "LCP longest common"}, {"role": "silicat", "content": "Compare character by character"}]}
+{"messages": [{"role": "user", "content": "Longest substring no repeat"}, {"role": "silicat", "content": "Sliding window character set"}]}
+{"messages": [{"role": "user", "content": "Longest substring k distinct"}, {"role": "silicat", "content": "Sliding window track k chars"}]}
+{"messages": [{"role": "user", "content": "Minimum substring"}, {"role": "silicat", "content": "Two pointer character counts"}]}
+{"messages": [{"role": "user", "content": "Substring anagrams"}, {"role": "silicat", "content": "Sliding window frequency match"}]}
+{"messages": [{"role": "user", "content": "Multiply large numbers"}, {"role": "silicat", "content": "Character by character multiplication"}]}
+{"messages": [{"role": "user", "content": "Add two numbers as strings"}, {"role": "silicat", "content": "Digit by digit with carry"}]}
+{"messages": [{"role": "user", "content": "Reverse words"}, {"role": "silicat", "content": "Split reverse join"}]}
+{"messages": [{"role": "user", "content": "Rotate string"}, {"role": "silicat", "content": "Check substring occurrence"}]}
+{"messages": [{"role": "user", "content": "Valid palindrome II"}, {"role": "silicat", "content": "Skip one character if mismatch"}]}
+{"messages": [{"role": "user", "content": "Shortest palindrome"}, {"role": "silicat", "content": "KMP string matching"}]}
+{"messages": [{"role": "user", "content": "Palindrome permutation"}, {"role": "silicat", "content": "Character frequency count"}]}
+{"messages": [{"role": "user", "content": "Palindromic substrings"}, {"role": "silicat", "content": "Expand around center O(n\u00b2)"}]}
+{"messages": [{"role": "user", "content": "Longest palindrome substring"}, {"role": "silicat", "content": "DP or expand center"}]}
+{"messages": [{"role": "user", "content": "Encode decode string"}, {"role": "silicat", "content": "Character frequency format"}]}
+{"messages": [{"role": "user", "content": "Sentence reverse"}, {"role": "silicat", "content": "Reverse words in sentence"}]}
+{"messages": [{"role": "user", "content": "One edit away check"}, {"role": "silicat", "content": "Two pointer edit distance"}]}
+{"messages": [{"role": "user", "content": "Isomorphic strings mapping"}, {"role": "silicat", "content": "Character bijection"}]}
+{"messages": [{"role": "user", "content": "Word pattern matching"}, {"role": "silicat", "content": "Character pattern mapping"}]}
+{"messages": [{"role": "user", "content": "Compare version numbers"}, {"role": "silicat", "content": "Split parse compare"}]}
+{"messages": [{"role": "user", "content": "Majority element I"}, {"role": "silicat", "content": "Hash count or Boyer-Moore"}]}
+{"messages": [{"role": "user", "content": "Majority element II"}, {"role": "silicat", "content": "Generalized majority"}]}
+{"messages": [{"role": "user", "content": "Single number III"}, {"role": "silicat", "content": "XOR technique"}]}
+{"messages": [{"role": "user", "content": "Missing number array"}, {"role": "silicat", "content": "XOR cumulative or sum"}]}
+{"messages": [{"role": "user", "content": "Duplicate numbers"}, {"role": "silicat", "content": "Cycle detection approach"}]}
+{"messages": [{"role": "user", "content": "Contains duplicates"}, {"role": "silicat", "content": "Hash set O(n)"}]}
+{"messages": [{"role": "user", "content": "Next permutation algorithm"}, {"role": "silicat", "content": "Pivot reverse swap"}]}
+{"messages": [{"role": "user", "content": "Previous permutation"}, {"role": "silicat", "content": "Reverse logic"}]}
+{"messages": [{"role": "user", "content": "Kth smallest element"}, {"role": "silicat", "content": "QuickSelect O(n) avg"}]}
+{"messages": [{"role": "user", "content": "Kth largest element"}, {"role": "silicat", "content": "Min heap size k O(n log k)"}]}
+{"messages": [{"role": "user", "content": "Median two sorted"}, {"role": "silicat", "content": "Binary search or two pointer"}]}
+{"messages": [{"role": "user", "content": "Sliding window median"}, {"role": "silicat", "content": "Heap or balanced BST"}]}
+{"messages": [{"role": "user", "content": "Wiggle sort"}, {"role": "silicat", "content": "Rearrange pattern"}]}
+{"messages": [{"role": "user", "content": "Product array except self"}, {"role": "silicat", "content": "Prefix suffix O(1) space"}]}
+{"messages": [{"role": "user", "content": "Gas station"}, {"role": "silicat", "content": "Greedy tank tracking"}]}
+{"messages": [{"role": "user", "content": "Candy distribution"}, {"role": "silicat", "content": "Two pass greedy"}]}
+{"messages": [{"role": "user", "content": "Stock buy sell with cooldown"}, {"role": "silicat", "content": "State machine DP"}]}
+{"messages": [{"role": "user", "content": "Best profit K transactions"}, {"role": "silicat", "content": "State machine DP"}]}
+{"messages": [{"role": "user", "content": "Maximum product subarray"}, {"role": "silicat", "content": "DP track max/min"}]}
+{"messages": [{"role": "user", "content": "Largest palindrome product"}, {"role": "silicat", "content": "Brute force or math"}]}
+{"messages": [{"role": "user", "content": "Integer to Roman"}, {"role": "silicat", "content": "Greedy mapping values"}]}
+{"messages": [{"role": "user", "content": "Roman to integer"}, {"role": "silicat", "content": "Parse mapping values"}]}
+{"messages": [{"role": "user", "content": "Atoi string to integer"}, {"role": "silicat", "content": "Character by character parsing"}]}
+{"messages": [{"role": "user", "content": "Reverse integer"}, {"role": "silicat", "content": "Digit by digit reversal"}]}
+{"messages": [{"role": "user", "content": "Valid number"}, {"role": "silicat", "content": "State machine or regex"}]}
+{"messages": [{"role": "user", "content": "Factorial trailing zeros"}, {"role": "silicat", "content": "Count factors 5"}]}
+{"messages": [{"role": "user", "content": "Permutation sequence"}, {"role": "silicat", "content": "Factoradic indexing"}]}
+{"messages": [{"role": "user", "content": "Shuffle array"}, {"role": "silicat", "content": "Fisher-Yates algorithm"}]}
+{"messages": [{"role": "user", "content": "Reservoir sampling"}, {"role": "silicat", "content": "Random select stream"}]}
+{"messages": [{"role": "user", "content": "Random pick weighted"}, {"role": "silicat", "content": "Cumulative sum binary search"}]}
+{"messages": [{"role": "user", "content": "Linked list random node"}, {"role": "silicat", "content": "Random index traversal"}]}
+{"messages": [{"role": "user", "content": "Duplicate number finder"}, {"role": "silicat", "content": "Cycle detection Floyd"}]}
+{"messages": [{"role": "user", "content": "Missing number sequence"}, {"role": "silicat", "content": "XOR or sum gap"}]}
+{"messages": [{"role": "user", "content": "Intersection two arrays"}, {"role": "silicat", "content": "Hash or two pointer"}]}
+{"messages": [{"role": "user", "content": "Union two arrays"}, {"role": "silicat", "content": "Hash set combine"}]}
+{"messages": [{"role": "user", "content": "Intersection two lists"}, {"role": "silicat", "content": "Hash lookup"}]}
+{"messages": [{"role": "user", "content": "Range sum immutable"}, {"role": "silicat", "content": "Prefix sum array"}]}
+{"messages": [{"role": "user", "content": "Range sum mutable"}, {"role": "silicat", "content": "Segment tree"}]}
+{"messages": [{"role": "user", "content": "Matrix rotate 90"}, {"role": "silicat", "content": "Transpose reflect"}]}
+{"messages": [{"role": "user", "content": "Matrix spiral"}, {"role": "silicat", "content": "Layer by layer traversal"}]}
+{"messages": [{"role": "user", "content": "Set matrix zeros"}, {"role": "silicat", "content": "Track zero positions"}]}
+{"messages": [{"role": "user", "content": "Search 2D matrix"}, {"role": "silicat", "content": "Row column binary search"}]}
+{"messages": [{"role": "user", "content": "Search 2D rotated"}, {"role": "silicat", "content": "Binary search twice"}]}
+{"messages": [{"role": "user", "content": "Surrounded regions"}, {"role": "silicat", "content": "DFS boundary check"}]}
+{"messages": [{"role": "user", "content": "Number islands II"}, {"role": "silicat", "content": "Union-find dynamic"}]}
+{"messages": [{"role": "user", "content": "Walls and gates"}, {"role": "silicat", "content": "Multi-source BFS"}]}
+{"messages": [{"role": "user", "content": "Alien dictionary"}, {"role": "silicat", "content": "Topological sort graph"}]}
+{"messages": [{"role": "user", "content": "Largest rectangle"}, {"role": "silicat", "content": "Stack monotonic indices"}]}
+{"messages": [{"role": "user", "content": "Maximal rectangle"}, {"role": "silicat", "content": "Histogram height tracking"}]}
+{"messages": [{"role": "user", "content": "Skyline problem"}, {"role": "silicat", "content": "Heap edge events"}]}
+{"messages": [{"role": "user", "content": "Trapping rain water II"}, {"role": "silicat", "content": "Priority queue 3D"}]}
+{"messages": [{"role": "user", "content": "Median stream"}, {"role": "silicat", "content": "Dual heaps balance"}]}
+{"messages": [{"role": "user", "content": "Sliding window maximum"}, {"role": "silicat", "content": "Deque decreasing"}]}
+{"messages": [{"role": "user", "content": "Longest increasing path"}, {"role": "silicat", "content": "DFS memoization grid"}]}
+{"messages": [{"role": "user", "content": "Palindrome removal"}, {"role": "silicat", "content": "Greedy or backtrack"}]}
+{"messages": [{"role": "user", "content": "Game play optimal"}, {"role": "silicat", "content": "Minimax recursion DP"}]}
+{"messages": [{"role": "user", "content": "Nim game"}, {"role": "silicat", "content": "XOR bit pattern"}]}
+{"messages": [{"role": "user", "content": "Flip game"}, {"role": "silicat", "content": "Backtrack positions"}]}
+{"messages": [{"role": "user", "content": "Longest palindrome build"}, {"role": "silicat", "content": "Greedy character count"}]}
+{"messages": [{"role": "user", "content": "Majority element III"}, {"role": "silicat", "content": "Candidate elimination"}]}
+{"messages": [{"role": "user", "content": "Missing number array II"}, {"role": "silicat", "content": "Bit counting"}]}
+{"messages": [{"role": "user", "content": "Power of four"}, {"role": "silicat", "content": "Bit manipulation check"}]}
+{"messages": [{"role": "user", "content": "Super ugly number"}, {"role": "silicat", "content": "DP with prime factors"}]}
+{"messages": [{"role": "user", "content": "Ugly number II"}, {"role": "silicat", "content": "DP three pointers"}]}
+{"messages": [{"role": "user", "content": "Happy number"}, {"role": "silicat", "content": "Cycle detection set"}]}
+{"messages": [{"role": "user", "content": "Isomorphic tree"}, {"role": "silicat", "content": "DFS recursion structure"}]}
+{"messages": [{"role": "user", "content": "Same tree"}, {"role": "silicat", "content": "DFS value comparison"}]}
+{"messages": [{"role": "user", "content": "Subtree check"}, {"role": "silicat", "content": "DFS pattern matching"}]}
+{"messages": [{"role": "user", "content": "Invert binary tree"}, {"role": "silicat", "content": "Swap left right recursion"}]}
+{"messages": [{"role": "user", "content": "Lowest common ancestor III"}, {"role": "silicat", "content": "DFS finding node"}]}
+{"messages": [{"role": "user", "content": "Lowest common ancestor IV"}, {"role": "silicat", "content": "Multiple nodes LCA"}]}
+{"messages": [{"role": "user", "content": "Serialize BST"}, {"role": "silicat", "content": "Preorder traversal"}]}
+{"messages": [{"role": "user", "content": "Smallest BST"}, {"role": "silicat", "content": "Construction from values"}]}
+{"messages": [{"role": "user", "content": "All elements two BST"}, {"role": "silicat", "content": "Inorder merge sorted"}]}
+{"messages": [{"role": "user", "content": "Range sum BST"}, {"role": "silicat", "content": "DFS pruning out of range"}]}
+{"messages": [{"role": "user", "content": "Trim BST"}, {"role": "silicat", "content": "DFS boundary check"}]}
+{"messages": [{"role": "user", "content": "Closest BST value"}, {"role": "silicat", "content": "Binary search traversal"}]}
+{"messages": [{"role": "user", "content": "Kth smallest BST"}, {"role": "silicat", "content": "Inorder kth element"}]}
+{"messages": [{"role": "user", "content": "Iterator BST"}, {"role": "silicat", "content": "Inorder iteration stack"}]}
+{"messages": [{"role": "user", "content": "Convert BST to list"}, {"role": "silicat", "content": "Inorder doubly linked"}]}
+{"messages": [{"role": "user", "content": "Reconstruct BST"}, {"role": "silicat", "content": "Bounds checking recursion"}]}
+{"messages": [{"role": "user", "content": "Verify preorder"}, {"role": "silicat", "content": "Stack simulation"}]}
+{"messages": [{"role": "user", "content": "Serialize deserialize tree"}, {"role": "silicat", "content": "Preorder markers"}]}
+{"messages": [{"role": "user", "content": "Codec serialization"}, {"role": "silicat", "content": "BFS level order format"}]}
+{"messages": [{"role": "user", "content": "Maximum path leaf"}, {"role": "silicat", "content": "DFS leaf traversal"}]}
+{"messages": [{"role": "user", "content": "Minimum path leaf"}, {"role": "silicat", "content": "DFS leaf tracking"}]}
+{"messages": [{"role": "user", "content": "Height balance factor"}, {"role": "silicat", "content": "Recursion check"}]}
+{"messages": [{"role": "user", "content": "Validate complete"}, {"role": "silicat", "content": "BFS level tracking"}]}
+{"messages": [{"role": "user", "content": "Validate perfect"}, {"role": "silicat", "content": "Height and node count"}]}
+{"messages": [{"role": "user", "content": "Full binary check"}, {"role": "silicat", "content": "DFS 0 or 2 children"}]}
+{"messages": [{"role": "user", "content": "Binary tree max"}, {"role": "silicat", "content": "Recursion left right"}]}
+{"messages": [{"role": "user", "content": "Binary tree min"}, {"role": "silicat", "content": "Similar approach max"}]}
+{"messages": [{"role": "user", "content": "Find leaves"}, {"role": "silicat", "content": "DFS recursive collection"}]}
+{"messages": [{"role": "user", "content": "Zigzag BFS"}, {"role": "silicat", "content": "Level-order alternating"}]}
+{"messages": [{"role": "user", "content": "Right view tree"}, {"role": "silicat", "content": "BFS rightmost level"}]}
+{"messages": [{"role": "user", "content": "Left view tree"}, {"role": "silicat", "content": "BFS leftmost level"}]}
+{"messages": [{"role": "user", "content": "Bottom view tree"}, {"role": "silicat", "content": "HashMap depth tracking"}]}
+{"messages": [{"role": "user", "content": "Top view tree"}, {"role": "silicat", "content": "HashMap first occurrence"}]}
+{"messages": [{"role": "user", "content": "Vertical order"}, {"role": "silicat", "content": "BFS column indexing"}]}
+{"messages": [{"role": "user", "content": "Diagonal order"}, {"role": "silicat", "content": "Sum of indices grouping"}]}
+{"messages": [{"role": "user", "content": "Boundary tree"}, {"role": "silicat", "content": "DFS edge traversal"}]}
+{"messages": [{"role": "user", "content": "Print tree structure"}, {"role": "silicat", "content": "DFS formatting output"}]}
+{"messages": [{"role": "user", "content": "Find path sum"}, {"role": "silicat", "content": "DFS target reduction"}]}
+{"messages": [{"role": "user", "content": "Path sum II"}, {"role": "silicat", "content": "DFS all paths accumulate"}]}
+{"messages": [{"role": "user", "content": "Sum root leaf"}, {"role": "silicat", "content": "DFS number accumulation"}]}
+{"messages": [{"role": "user", "content": "Deepest leaf"}, {"role": "silicat", "content": "DFS maximum depth"}]}
+{"messages": [{"role": "user", "content": "Farthest node"}, {"role": "silicat", "content": "BFS two passes"}]}
+{"messages": [{"role": "user", "content": "Diameter tree"}, {"role": "silicat", "content": "DFS longest path"}]}
+{"messages": [{"role": "user", "content": "Subtree with sum"}, {"role": "silicat", "content": "DFS sum check"}]}
+{"messages": [{"role": "user", "content": "Root to leaf paths"}, {"role": "silicat", "content": "DFS path collection"}]}
+{"messages": [{"role": "user", "content": "Path with sum"}, {"role": "silicat", "content": "DFS path array"}]}
+{"messages": [{"role": "user", "content": "Leaf similar trees"}, {"role": "silicat", "content": "DFS leaf sequence"}]}
+{"messages": [{"role": "user", "content": "Strobogrammatic number"}, {"role": "silicat", "content": "Backtrack valid pairs"}]}
+{"messages": [{"role": "user", "content": "Word ladder all paths"}, {"role": "silicat", "content": "BFS build paths"}]}
+{"messages": [{"role": "user", "content": "Graph cloning"}, {"role": "silicat", "content": "DFS node mapping"}]}
+{"messages": [{"role": "user", "content": "Evaluate expression"}, {"role": "silicat", "content": "DFS recursion with ops"}]}
+{"messages": [{"role": "user", "content": "Expression tree"}, {"role": "silicat", "content": "Tree structure evaluation"}]}
+{"messages": [{"role": "user", "content": "Expression add operators"}, {"role": "silicat", "content": "Backtrack number ops"}]}
+{"messages": [{"role": "user", "content": "Unique paths obstacles"}, {"role": "silicat", "content": "DP grid with blocks"}]}
+{"messages": [{"role": "user", "content": "Minimum path obstacles"}, {"role": "silicat", "content": "DP cost with blocks"}]}
+{"messages": [{"role": "user", "content": "Cherry pickup"}, {"role": "silicat", "content": "DP forward backward"}]}
+{"messages": [{"role": "user", "content": "Minimum jumps"}, {"role": "silicat", "content": "Greedy range tracking"}]}
+{"messages": [{"role": "user", "content": "Jump game II"}, {"role": "silicat", "content": "Greedy furthest reach"}]}
+{"messages": [{"role": "user", "content": "Frog jump"}, {"role": "silicat", "content": "DFS memoization"}]}
+{"messages": [{"role": "user", "content": "Video stitching"}, {"role": "silicat", "content": "Greedy interval covering"}]}
+{"messages": [{"role": "user", "content": "Queue reconstruction"}, {"role": "silicat", "content": "Sort greedy assignment"}]}
+{"messages": [{"role": "user", "content": "Largest number"}, {"role": "silicat", "content": "Sort custom comparator"}]}
+{"messages": [{"role": "user", "content": "Skyline 2D"}, {"role": "silicat", "content": "Event processing heap"}]}
+{"messages": [{"role": "user", "content": "Meeting rooms"}, {"role": "silicat", "content": "Sort interval overlap"}]}
+{"messages": [{"role": "user", "content": "Meeting rooms II"}, {"role": "silicat", "content": "Greedy room assignment"}]}
+{"messages": [{"role": "user", "content": "Minimum interval"}, {"role": "silicat", "content": "Binary search matching"}]}
+{"messages": [{"role": "user", "content": "Interval merging"}, {"role": "silicat", "content": "Sort overlap union"}]}
+{"messages": [{"role": "user", "content": "Insert interval"}, {"role": "silicat", "content": "Array manipulation"}]}
+{"messages": [{"role": "user", "content": "Remove interval"}, {"role": "silicat", "content": "Array subtraction"}]}
+{"messages": [{"role": "user", "content": "Partition arrays"}, {"role": "silicat", "content": "Sort median find"}]}
+{"messages": [{"role": "user", "content": "Peak element"}, {"role": "silicat", "content": "Binary search valley"}]}
+{"messages": [{"role": "user", "content": "Find rotation"}, {"role": "silicat", "content": "Binary search offset"}]}
+{"messages": [{"role": "user", "content": "Sqrt integer"}, {"role": "silicat", "content": "Binary search precision"}]}
+{"messages": [{"role": "user", "content": "Pow(x, n) bits"}, {"role": "silicat", "content": "Fast exponentiation"}]}
+{"messages": [{"role": "user", "content": "Divide integers"}, {"role": "silicat", "content": "Bit shifting quotient"}]}
+{"messages": [{"role": "user", "content": "Fraction decimals"}, {"role": "silicat", "content": "Long division remainders"}]}
+{"messages": [{"role": "user", "content": "Fractions to sum"}, {"role": "silicat", "content": "Egyptian fractions"}]}
+{"messages": [{"role": "user", "content": "Basic calculator"}, {"role": "silicat", "content": "Stack operators"}]}
+{"messages": [{"role": "user", "content": "Calculator II"}, {"role": "silicat", "content": "Operator precedence"}]}
+{"messages": [{"role": "user", "content": "Calculator III"}, {"role": "silicat", "content": "Recursion parentheses"}]}
+{"messages": [{"role": "user", "content": "Largest rectangle"}, {"role": "silicat", "content": "Greedy height tracking"}]}
+{"messages": [{"role": "user", "content": "Clock angle"}, {"role": "silicat", "content": "Math angle calculation"}]}
+{"messages": [{"role": "user", "content": "Random pick index"}, {"role": "silicat", "content": "Reservoir index"}]}
+{"messages": [{"role": "user", "content": "Random pick weight"}, {"role": "silicat", "content": "Cumulative sum"}]}
+{"messages": [{"role": "user", "content": "Random pick vertex"}, {"role": "silicat", "content": "Weighted selection"}]}
+{"messages": [{"role": "user", "content": "Shuffle list"}, {"role": "silicat", "content": "Random permutation"}]}
+{"messages": [{"role": "user", "content": "Shuffle sequence"}, {"role": "silicat", "content": "List randomization"}]}
+{"messages": [{"role": "user", "content": "Missing ranges"}, {"role": "silicat", "content": "Gap detection"}]}
+{"messages": [{"role": "user", "content": "Find disappeared"}, {"role": "silicat", "content": "Array marking"}]}
+{"messages": [{"role": "user", "content": "Increasing triplet"}, {"role": "silicat", "content": "Greedy tracking"}]}
+{"messages": [{"role": "user", "content": "Number digit one"}, {"role": "silicat", "content": "Digit DP counting"}]}
+{"messages": [{"role": "user", "content": "Palindrome linked"}, {"role": "silicat", "content": "Two pointer reverse"}]}
+{"messages": [{"role": "user", "content": "Reorder list"}, {"role": "silicat", "content": "Find middle reverse merge"}]}
+{"messages": [{"role": "user", "content": "Sort linked II"}, {"role": "silicat", "content": "Merge sort implementation"}]}
+{"messages": [{"role": "user", "content": "Insert sorted"}, {"role": "silicat", "content": "Linked traversal"}]}
+{"messages": [{"role": "user", "content": "Remove duplicates"}, {"role": "silicat", "content": "Linked deduplication"}]}
+{"messages": [{"role": "user", "content": "Partition linked"}, {"role": "silicat", "content": "Linked list split"}]}
+{"messages": [{"role": "user", "content": "Rotate linked"}, {"role": "silicat", "content": "Pointer rearrangement"}]}
+{"messages": [{"role": "user", "content": "Reverse k group"}, {"role": "silicat", "content": "Linked reversal sections"}]}
+{"messages": [{"role": "user", "content": "Odd even linked"}, {"role": "silicat", "content": "Linked list separation"}]}
+{"messages": [{"role": "user", "content": "Intersection linked"}, {"role": "silicat", "content": "Two pointer cycles"}]}
+{"messages": [{"role": "user", "content": "Spiral matrix II"}, {"role": "silicat", "content": "Layer by layer assignment"}]}
+{"messages": [{"role": "user", "content": "Spiral matrix III"}, {"role": "silicat", "content": "Direction change pattern"}]}
+{"messages": [{"role": "user", "content": "Valid Sudoku"}, {"role": "silicat", "content": "Check row/col/box uniqueness"}]}
+{"messages": [{"role": "user", "content": "Solve Sudoku"}, {"role": "silicat", "content": "Backtrack constraint satisfaction"}]}
+{"messages": [{"role": "user", "content": "N-Queens"}, {"role": "silicat", "content": "Backtrack placement validation"}]}
+{"messages": [{"role": "user", "content": "N-Queens II"}, {"role": "silicat", "content": "Count valid placements"}]}
+{"messages": [{"role": "user", "content": "Gray code sequence"}, {"role": "silicat", "content": "Generate reflected binary"}]}
+{"messages": [{"role": "user", "content": "Subset II"}, {"role": "silicat", "content": "Backtrack with duplicates"}]}
+{"messages": [{"role": "user", "content": "Combination sum"}, {"role": "silicat", "content": "Backtrack unlimited reuse"}]}
+{"messages": [{"role": "user", "content": "Combination sum II"}, {"role": "silicat", "content": "Backtrack with duplicates"}]}
+{"messages": [{"role": "user", "content": "Combination sum III"}, {"role": "silicat", "content": "Fixed k numbers sum"}]}
+{"messages": [{"role": "user", "content": "Combination sum IV"}, {"role": "silicat", "content": "DP count ways"}]}
+{"messages": [{"role": "user", "content": "Partition equal subset"}, {"role": "silicat", "content": "Check partition sum"}]}
+{"messages": [{"role": "user", "content": "Target sum"}, {"role": "silicat", "content": "DP two sum variations"}]}
+{"messages": [{"role": "user", "content": "Continuous subarray sum"}, {"role": "silicat", "content": "Hash modulo tracking"}]}
+{"messages": [{"role": "user", "content": "Maximum subarray"}, {"role": "silicat", "content": "Kadane greedy algorithm"}]}
+{"messages": [{"role": "user", "content": "Maximum product subarray"}, {"role": "silicat", "content": "DP track min/max"}]}
+{"messages": [{"role": "user", "content": "Median of two sorted"}, {"role": "silicat", "content": "Binary search or merge"}]}
+{"messages": [{"role": "user", "content": "Substring with concatenation"}, {"role": "silicat", "content": "Hash window matching"}]}
+{"messages": [{"role": "user", "content": "Remove duplicates array"}, {"role": "silicat", "content": "In-place modification"}]}
+{"messages": [{"role": "user", "content": "Remove element"}, {"role": "silicat", "content": "Two pointer partition"}]}
+{"messages": [{"role": "user", "content": "Move zeros"}, {"role": "silicat", "content": "Two pointer partition"}]}
+{"messages": [{"role": "user", "content": "Sort colors"}, {"role": "silicat", "content": "Three-way partition"}]}
+{"messages": [{"role": "user", "content": "Next permutation"}, {"role": "silicat", "content": "Pivot reverse swap"}]}
+{"messages": [{"role": "user", "content": "Previous permutation"}, {"role": "silicat", "content": "Reverse algorithm"}]}
+{"messages": [{"role": "user", "content": "Majority element"}, {"role": "silicat", "content": "Boyer-Moore algorithm"}]}
+{"messages": [{"role": "user", "content": "Meeting rooms"}, {"role": "silicat", "content": "Sort overlap check"}]}
+{"messages": [{"role": "user", "content": "Insert interval"}, {"role": "silicat", "content": "Greedy merging"}]}
+{"messages": [{"role": "user", "content": "Merge intervals"}, {"role": "silicat", "content": "Sort merge overlapping"}]}
+{"messages": [{"role": "user", "content": "Maximum gap"}, {"role": "silicat", "content": "Radix or bucket sort"}]}
