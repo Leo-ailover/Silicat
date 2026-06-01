@@ -1,0 +1,399 @@
+{"messages": [{"role": "user", "content": "What is the purpose of __init__ in Python classes?"}, {"role": "silicat", "content": "The __init__ method is the constructor that initializes a new instance of a class. It's called automatically when you create an object and typically sets up instance attributes."}]}
+{"messages": [{"role": "user", "content": "What does self represent?"}, {"role": "silicat", "content": "self is a reference to the instance of the class, allowing you to access its attributes and methods. By convention, it's always the first parameter in instance methods."}]}
+{"messages": [{"role": "user", "content": "Explain instance vs class attributes."}, {"role": "silicat", "content": "Instance attributes differ per object and are defined in __init__. Class attributes are shared across all instances and defined at the class level."}]}
+{"messages": [{"role": "user", "content": "How do you access class vs instance attributes?"}, {"role": "silicat", "content": "Access instance attributes via self.attr or obj.attr. Access class attributes via ClassName.attr or self.__class__.attr."}]}
+{"messages": [{"role": "user", "content": "What happens with attribute shadowing?"}, {"role": "silicat", "content": "An instance attribute with the same name as a class attribute hides the class attribute during lookup."}]}
+{"messages": [{"role": "user", "content": "Can you have multiple __init__ methods?"}, {"role": "silicat", "content": "No, only one __init__. Use @classmethod factory methods for alternative constructors."}]}
+{"messages": [{"role": "user", "content": "What is name mangling?"}, {"role": "silicat", "content": "Using double underscore prefix (e.g., __attr) makes attributes private by name mangling."}]}
+{"messages": [{"role": "user", "content": "How do you prevent attribute modification?"}, {"role": "silicat", "content": "Use @property with no setter or name mangling with double underscores."}]}
+{"messages": [{"role": "user", "content": "What is the purpose of __slots__?"}, {"role": "silicat", "content": "__slots__ restricts attributes an instance can have, reducing memory usage."}]}
+{"messages": [{"role": "user", "content": "How much memory does __slots__ save?"}, {"role": "silicat", "content": "For small classes, typically 40-50% by eliminating __dict__."}]}
+{"messages": [{"role": "user", "content": "Can you add dynamic attributes with __slots__?"}, {"role": "silicat", "content": "No, you're restricted to only defined slots."}]}
+{"messages": [{"role": "user", "content": "How do you use __slots__ with inheritance?"}, {"role": "silicat", "content": "Each class defines its own __slots__ for unique attributes."}]}
+{"messages": [{"role": "user", "content": "What is the __dict__ attribute?"}, {"role": "silicat", "content": "__dict__ stores instance attributes as a dictionary."}]}
+{"messages": [{"role": "user", "content": "Can you access __dict__ with __slots__?"}, {"role": "silicat", "content": "No, __slots__ removes __dict__ entirely."}]}
+{"messages": [{"role": "user", "content": "How do class variables affect memory?"}, {"role": "silicat", "content": "Class variables are shared, using less memory than instance variables for large numbers of objects."}]}
+{"messages": [{"role": "user", "content": "How do you count instances of a class?"}, {"role": "silicat", "content": "Use a class variable incremented in __init__ and decremented in __del__."}]}
+{"messages": [{"role": "user", "content": "What is the purpose of using self in methods?"}, {"role": "silicat", "content": "self allows each instance to access its own attributes and methods."}]}
+{"messages": [{"role": "user", "content": "How do you define read-only class attributes?"}, {"role": "silicat", "content": "Define at class level outside __init__, or use @property with no setter."}]}
+{"messages": [{"role": "user", "content": "Can you shadow a class attribute in __init__?"}, {"role": "silicat", "content": "Yes, assigning to self.attr creates an instance attribute that shadows the class attribute."}]}
+{"messages": [{"role": "user", "content": "What is attribute lookup order?"}, {"role": "silicat", "content": "Python checks instance __dict__ first, then class __dict__, then parent classes via MRO."}]}
+{"messages": [{"role": "user", "content": "What is inheritance?"}, {"role": "silicat", "content": "Inheritance allows a child class to inherit attributes and methods from a parent class."}]}
+{"messages": [{"role": "user", "content": "What is the purpose of super()?"}, {"role": "silicat", "content": "super() allows you to call methods from the parent class without duplicating code."}]}
+{"messages": [{"role": "user", "content": "How do you override a method?"}, {"role": "silicat", "content": "Define a method with the same name in the child class. Python uses the child's version."}]}
+{"messages": [{"role": "user", "content": "What is Method Resolution Order (MRO)?"}, {"role": "silicat", "content": "MRO is the order Python searches for methods in a class hierarchy using C3 linearization."}]}
+{"messages": [{"role": "user", "content": "How do you check if a class is a subclass?"}, {"role": "silicat", "content": "Use issubclass(ChildClass, ParentClass)."}]}
+{"messages": [{"role": "user", "content": "Can super() work without explicit parent?"}, {"role": "silicat", "content": "Yes, in Python 3, super() without arguments automatically uses the enclosing class and self."}]}
+{"messages": [{"role": "user", "content": "What is __bases__?"}, {"role": "silicat", "content": "__bases__ is a tuple of direct parent classes."}]}
+{"messages": [{"role": "user", "content": "What is __mro__?"}, {"role": "silicat", "content": "__mro__ is the complete method resolution order tuple including all ancestors."}]}
+{"messages": [{"role": "user", "content": "How do you view MRO?"}, {"role": "silicat", "content": "Use Class.mro() or Class.__mro__."}]}
+{"messages": [{"role": "user", "content": "What is the diamond problem?"}, {"role": "silicat", "content": "A class inherits from two parents sharing a common ancestor, creating ambiguity."}]}
+{"messages": [{"role": "user", "content": "How does Python solve diamond problem?"}, {"role": "silicat", "content": "Using C3 linearization algorithm in MRO."}]}
+{"messages": [{"role": "user", "content": "Can you skip a parent in MRO?"}, {"role": "silicat", "content": "Not directly, but super() follows MRO in order."}]}
+{"messages": [{"role": "user", "content": "How do you call a specific parent method?"}, {"role": "silicat", "content": "Use ParentClass.method(self) to bypass MRO, or super() to follow it."}]}
+{"messages": [{"role": "user", "content": "What happens if __init__ isn't called in a child?"}, {"role": "silicat", "content": "Parent attributes won't be initialized, potentially causing AttributeErrors."}]}
+{"messages": [{"role": "user", "content": "How do you access parent attributes?"}, {"role": "silicat", "content": "Call super().__init__() in the child's __init__."}]}
+{"messages": [{"role": "user", "content": "Can a child have different __init__ signature?"}, {"role": "silicat", "content": "Yes, but call super().__init__() to initialize parent attributes."}]}
+{"messages": [{"role": "user", "content": "What is abstract inheritance?"}, {"role": "silicat", "content": "Defining an interface that subclasses must implement using abc module."}]}
+{"messages": [{"role": "user", "content": "How do you prevent subclassing?"}, {"role": "silicat", "content": "Raise an error in __init_subclass__() or use a metaclass."}]}
+{"messages": [{"role": "user", "content": "What is cooperative multiple inheritance?"}, {"role": "silicat", "content": "All classes use super() properly to ensure each method in chain gets called once."}]}
+{"messages": [{"role": "user", "content": "How do you find all classes in hierarchy?"}, {"role": "silicat", "content": "Use Class.__mro__ or walk through __bases__ recursively."}]}
+{"messages": [{"role": "user", "content": "What is __str__ vs __repr__?"}, {"role": "silicat", "content": "__str__ returns user-friendly string. __repr__ returns detailed, evaluable representation."}]}
+{"messages": [{"role": "user", "content": "When is __str__ called?"}, {"role": "silicat", "content": "__str__ is called by str() and print()."}]}
+{"messages": [{"role": "user", "content": "When is __repr__ called?"}, {"role": "silicat", "content": "__repr__ is called by repr() and in interactive shell."}]}
+{"messages": [{"role": "user", "content": "What is __format__?"}, {"role": "silicat", "content": "__format__ customizes string formatting with format() and f-strings."}]}
+{"messages": [{"role": "user", "content": "What is __eq__?"}, {"role": "silicat", "content": "__eq__ enables the == operator."}]}
+{"messages": [{"role": "user", "content": "What is __ne__?"}, {"role": "silicat", "content": "__ne__ enables the != operator (defaults to not __eq__ if undefined)."}]}
+{"messages": [{"role": "user", "content": "What is __lt__?"}, {"role": "silicat", "content": "__lt__ enables the < operator (less than)."}]}
+{"messages": [{"role": "user", "content": "What is __le__?"}, {"role": "silicat", "content": "__le__ enables the <= operator (less than or equal)."}]}
+{"messages": [{"role": "user", "content": "What is __gt__?"}, {"role": "silicat", "content": "__gt__ enables the > operator (greater than)."}]}
+{"messages": [{"role": "user", "content": "What is __ge__?"}, {"role": "silicat", "content": "__ge__ enables the >= operator (greater than or equal)."}]}
+{"messages": [{"role": "user", "content": "What is @total_ordering?"}, {"role": "silicat", "content": "@total_ordering auto-generates comparison methods from __eq__ and one other."}]}
+{"messages": [{"role": "user", "content": "How do you implement safe equality?"}, {"role": "silicat", "content": "Check isinstance() first, then compare attributes."}]}
+{"messages": [{"role": "user", "content": "Can you compare different types?"}, {"role": "silicat", "content": "Yes, but return False or NotImplemented if types differ."}]}
+{"messages": [{"role": "user", "content": "What is __hash__?"}, {"role": "silicat", "content": "__hash__ returns a hash value, enabling use as dict keys or in sets."}]}
+{"messages": [{"role": "user", "content": "Why implement __hash__ with __eq__?"}, {"role": "silicat", "content": "Equal objects must have equal hashes by Python contract."}]}
+{"messages": [{"role": "user", "content": "What happens if you don't implement __hash__?"}, {"role": "silicat", "content": "Instances become unhashable and can't be used in sets or dicts."}]}
+{"messages": [{"role": "user", "content": "Can __hash__ change?"}, {"role": "silicat", "content": "No, it must be consistent for the object's lifetime."}]}
+{"messages": [{"role": "user", "content": "What is __bool__?"}, {"role": "silicat", "content": "__bool__ defines truthiness, returning True or False."}]}
+{"messages": [{"role": "user", "content": "What is the default for __bool__?"}, {"role": "silicat", "content": "If undefined, __len__ is used (non-zero = True). Otherwise, True."}]}
+{"messages": [{"role": "user", "content": "Can __bool__ return non-boolean?"}, {"role": "silicat", "content": "Technically yes, but it's coerced to bool."}]}
+{"messages": [{"role": "user", "content": "What is __add__?"}, {"role": "silicat", "content": "__add__ enables the + operator."}]}
+{"messages": [{"role": "user", "content": "What is __sub__?"}, {"role": "silicat", "content": "__sub__ enables the - operator."}]}
+{"messages": [{"role": "user", "content": "What is __mul__?"}, {"role": "silicat", "content": "__mul__ enables the * operator."}]}
+{"messages": [{"role": "user", "content": "What is __truediv__?"}, {"role": "silicat", "content": "__truediv__ enables the / operator."}]}
+{"messages": [{"role": "user", "content": "What is __floordiv__?"}, {"role": "silicat", "content": "__floordiv__ enables the // operator."}]}
+{"messages": [{"role": "user", "content": "What is __mod__?"}, {"role": "silicat", "content": "__mod__ enables the % operator."}]}
+{"messages": [{"role": "user", "content": "What is __pow__?"}, {"role": "silicat", "content": "__pow__ enables the ** operator."}]}
+{"messages": [{"role": "user", "content": "What is __radd__?"}, {"role": "silicat", "content": "__radd__ enables addition when object is on right (a + obj)."}]}
+{"messages": [{"role": "user", "content": "What is __rsub__?"}, {"role": "silicat", "content": "__rsub__ enables subtraction when object is on right."}]}
+{"messages": [{"role": "user", "content": "What is __rmul__?"}, {"role": "silicat", "content": "__rmul__ enables multiplication when object is on right."}]}
+{"messages": [{"role": "user", "content": "What is __len__?"}, {"role": "silicat", "content": "__len__ returns the length, enabling len()."}]}
+{"messages": [{"role": "user", "content": "What is __getitem__?"}, {"role": "silicat", "content": "__getitem__ enables indexing with []."}]}
+{"messages": [{"role": "user", "content": "What is __setitem__?"}, {"role": "silicat", "content": "__setitem__ enables assignment via []."}]}
+{"messages": [{"role": "user", "content": "What is __delitem__?"}, {"role": "silicat", "content": "__delitem__ enables deletion via del."}]}
+{"messages": [{"role": "user", "content": "What is __contains__?"}, {"role": "silicat", "content": "__contains__ enables the 'in' operator."}]}
+{"messages": [{"role": "user", "content": "What is __iter__?"}, {"role": "silicat", "content": "__iter__ returns an iterator for for loops."}]}
+{"messages": [{"role": "user", "content": "What is __next__?"}, {"role": "silicat", "content": "__next__ returns the next value or raises StopIteration."}]}
+{"messages": [{"role": "user", "content": "What is __reversed__?"}, {"role": "silicat", "content": "__reversed__ enables reversed()."}]}
+{"messages": [{"role": "user", "content": "What is __call__?"}, {"role": "silicat", "content": "__call__ makes instances callable like functions."}]}
+{"messages": [{"role": "user", "content": "What is __index__?"}, {"role": "silicat", "content": "__index__ allows objects to be used as indices."}]}
+{"messages": [{"role": "user", "content": "What is @property?"}, {"role": "silicat", "content": "@property lets you define methods accessed like attributes."}]}
+{"messages": [{"role": "user", "content": "How do you use @property with @setter?"}, {"role": "silicat", "content": "@property defines getter; @property_name.setter defines setter."}]}
+{"messages": [{"role": "user", "content": "What is a read-only property?"}, {"role": "silicat", "content": "A property with only @property decorator and no setter."}]}
+{"messages": [{"role": "user", "content": "What is a computed property?"}, {"role": "silicat", "content": "A property that calculates its value based on other attributes."}]}
+{"messages": [{"role": "user", "content": "Can properties raise exceptions?"}, {"role": "silicat", "content": "Yes, both getters and setters can raise exceptions."}]}
+{"messages": [{"role": "user", "content": "How do you validate in property setters?"}, {"role": "silicat", "content": "Check the value and raise ValueError for invalid inputs."}]}
+{"messages": [{"role": "user", "content": "What is property caching?"}, {"role": "silicat", "content": "Computing the value once and storing it for future access."}]}
+{"messages": [{"role": "user", "content": "How do you make a lazy property?"}, {"role": "silicat", "content": "Compute value on first access and cache it."}]}
+{"messages": [{"role": "user", "content": "Can you override a property in a subclass?"}, {"role": "silicat", "content": "Yes, redefine with @property in the child class."}]}
+{"messages": [{"role": "user", "content": "What is @property.deleter?"}, {"role": "silicat", "content": "@property_name.deleter defines behavior for del obj.property."}]}
+{"messages": [{"role": "user", "content": "Can you have properties without setters?"}, {"role": "silicat", "content": "Yes, they're read-only."}]}
+{"messages": [{"role": "user", "content": "What is the performance impact of properties?"}, {"role": "silicat", "content": "Minimal; they're as fast as regular attribute access."}]}
+{"messages": [{"role": "user", "content": "How do you document properties?"}, {"role": "silicat", "content": "Add docstrings to the property getter function."}]}
+{"messages": [{"role": "user", "content": "Can you use @property on a classmethod?"}, {"role": "silicat", "content": "No, they're incompatible descriptors."}]}
+{"messages": [{"role": "user", "content": "How do you make a property thread-safe?"}, {"role": "silicat", "content": "Use locks in the property getter and setter."}]}
+{"messages": [{"role": "user", "content": "What is @classmethod?"}, {"role": "silicat", "content": "@classmethod receives cls (the class) as first argument."}]}
+{"messages": [{"role": "user", "content": "When do you use @classmethod?"}, {"role": "silicat", "content": "For factory methods or operations on class-level data."}]}
+{"messages": [{"role": "user", "content": "What is @staticmethod?"}, {"role": "silicat", "content": "@staticmethod doesn't receive cls or self."}]}
+{"messages": [{"role": "user", "content": "When do you use @staticmethod?"}, {"role": "silicat", "content": "For utility functions logically grouped with the class."}]}
+{"messages": [{"role": "user", "content": "Can you call @classmethod from an instance?"}, {"role": "silicat", "content": "Yes, Python passes the class, not the instance."}]}
+{"messages": [{"role": "user", "content": "How do classmethods help with subclassing?"}, {"role": "silicat", "content": "They receive the actual subclass, enabling proper instantiation."}]}
+{"messages": [{"role": "user", "content": "Can a classmethod call an instance method?"}, {"role": "silicat", "content": "No, classmethods don't have access to instances."}]}
+{"messages": [{"role": "user", "content": "Can a staticmethod call an instance method?"}, {"role": "silicat", "content": "No, staticmethods have no access to instances."}]}
+{"messages": [{"role": "user", "content": "What is a factory method?"}, {"role": "silicat", "content": "A @classmethod that creates instances with alternative logic."}]}
+{"messages": [{"role": "user", "content": "Can you override a staticmethod?"}, {"role": "silicat", "content": "Yes, subclasses can override staticmethods."}]}
+{"messages": [{"role": "user", "content": "How do you debug classmethods?"}, {"role": "silicat", "content": "Print cls to see which class called the method."}]}
+{"messages": [{"role": "user", "content": "Can you combine @property with @classmethod?"}, {"role": "silicat", "content": "No, they're incompatible."}]}
+{"messages": [{"role": "user", "content": "When should you use classmethod vs instance method?"}, {"role": "silicat", "content": "classmethod for class-level operations, instance methods for object-level."}]}
+{"messages": [{"role": "user", "content": "How do you make a class method from a regular method?"}, {"role": "silicat", "content": "Use @classmethod decorator and change first parameter to cls."}]}
+{"messages": [{"role": "user", "content": "Can staticmethods access class variables?"}, {"role": "silicat", "content": "Only via ClassName.variable, not through the static method."}]}
+{"messages": [{"role": "user", "content": "What is an abstract class?"}, {"role": "silicat", "content": "A class defining an interface that subclasses must implement."}]}
+{"messages": [{"role": "user", "content": "How do you create an abstract class?"}, {"role": "silicat", "content": "Use abc module with ABC base and @abstractmethod decorator."}]}
+{"messages": [{"role": "user", "content": "What is @abstractmethod?"}, {"role": "silicat", "content": "A decorator marking methods that subclasses must implement."}]}
+{"messages": [{"role": "user", "content": "What happens if you don't implement an abstract method?"}, {"role": "silicat", "content": "Instantiation fails with TypeError."}]}
+{"messages": [{"role": "user", "content": "Can abstract classes have concrete methods?"}, {"role": "silicat", "content": "Yes, both concrete and abstract methods are allowed."}]}
+{"messages": [{"role": "user", "content": "What is @abstractproperty?"}, {"role": "silicat", "content": "@property with @abstractmethod for abstract properties."}]}
+{"messages": [{"role": "user", "content": "Can you instantiate an abstract class?"}, {"role": "silicat", "content": "No, even if all abstract methods are implemented."}]}
+{"messages": [{"role": "user", "content": "How do you check if a class is abstract?"}, {"role": "silicat", "content": "Check __abstractmethods__ attribute."}]}
+{"messages": [{"role": "user", "content": "Can abstract classes have __init__?"}, {"role": "silicat", "content": "Yes, but subclasses should call super().__init__()."}]}
+{"messages": [{"role": "user", "content": "What is the purpose of abstract classes?"}, {"role": "silicat", "content": "They define interfaces and enforce implementation contracts."}]}
+{"messages": [{"role": "user", "content": "Can you mix abstract and concrete methods?"}, {"role": "silicat", "content": "Yes, both are allowed in abstract classes."}]}
+{"messages": [{"role": "user", "content": "How do you inherit from two abstract classes?"}, {"role": "silicat", "content": "You must implement all abstract methods from both."}]}
+{"messages": [{"role": "user", "content": "Can abstract classes have class variables?"}, {"role": "silicat", "content": "Yes, just regular class attributes."}]}
+{"messages": [{"role": "user", "content": "What is @abstractclassmethod?"}, {"role": "silicat", "content": "Deprecated; use @classmethod with @abstractmethod instead."}]}
+{"messages": [{"role": "user", "content": "How do you force subclasses to override __init__?"}, {"role": "silicat", "content": "Use @abstractmethod in the parent's __init__."}]}
+{"messages": [{"role": "user", "content": "What is @dataclass?"}, {"role": "silicat", "content": "@dataclass auto-generates __init__, __repr__, __eq__."}]}
+{"messages": [{"role": "user", "content": "How do you specify defaults in dataclasses?"}, {"role": "silicat", "content": "Use default= or default_factory in field()."}]}
+{"messages": [{"role": "user", "content": "What is __post_init__?"}, {"role": "silicat", "content": "__post_init__ is called after __init__ for validation."}]}
+{"messages": [{"role": "user", "content": "How do you make a dataclass immutable?"}, {"role": "silicat", "content": "Use frozen=True."}]}
+{"messages": [{"role": "user", "content": "Can dataclasses use inheritance?"}, {"role": "silicat", "content": "Yes, but defaults must come after non-defaults."}]}
+{"messages": [{"role": "user", "content": "What is field(init=False)?"}, {"role": "silicat", "content": "Excludes a field from __init__."}]}
+{"messages": [{"role": "user", "content": "What is field(repr=False)?"}, {"role": "silicat", "content": "Excludes a field from __repr__."}]}
+{"messages": [{"role": "user", "content": "What is field(compare=False)?"}, {"role": "silicat", "content": "Excludes a field from equality comparisons."}]}
+{"messages": [{"role": "user", "content": "What is field(hash=False)?"}, {"role": "silicat", "content": "Excludes a field from __hash__."}]}
+{"messages": [{"role": "user", "content": "What is field(metadata)?"}, {"role": "silicat", "content": "Attach arbitrary metadata to a field."}]}
+{"messages": [{"role": "user", "content": "Can dataclasses have methods?"}, {"role": "silicat", "content": "Yes, define methods like in regular classes."}]}
+{"messages": [{"role": "user", "content": "What does order=True do?"}, {"role": "silicat", "content": "Generates comparison methods like __lt__, __le__."}]}
+{"messages": [{"role": "user", "content": "How do you customize dataclass equality?"}, {"role": "silicat", "content": "Define a custom __eq__ after @dataclass."}]}
+{"messages": [{"role": "user", "content": "How do you copy a dataclass instance?"}, {"role": "silicat", "content": "Use copy.copy() or copy.deepcopy()."}]}
+{"messages": [{"role": "user", "content": "What is the difference between dataclass and namedtuple?"}, {"role": "silicat", "content": "dataclasses are mutable by default; namedtuples are immutable."}]}
+{"messages": [{"role": "user", "content": "What is a decorator?"}, {"role": "silicat", "content": "A function wrapping another function to modify its behavior."}]}
+{"messages": [{"role": "user", "content": "How do you write a basic decorator?"}, {"role": "silicat", "content": "Create a function that takes a function, wraps it, returns the wrapper."}]}
+{"messages": [{"role": "user", "content": "How do you write a decorator with arguments?"}, {"role": "silicat", "content": "Nest decorators: outer takes args, middle takes function, inner wraps it."}]}
+{"messages": [{"role": "user", "content": "What is functools.wraps?"}, {"role": "silicat", "content": "functools.wraps copies metadata from original function to wrapper."}]}
+{"messages": [{"role": "user", "content": "How do you stack decorators?"}, {"role": "silicat", "content": "Place multiple @decorator lines; they apply bottom-to-top."}]}
+{"messages": [{"role": "user", "content": "How do you decorate a method?"}, {"role": "silicat", "content": "Use decorator; wrapper must accept self."}]}
+{"messages": [{"role": "user", "content": "How do you decorate a classmethod?"}, {"role": "silicat", "content": "@classmethod should be outermost."}]}
+{"messages": [{"role": "user", "content": "How do you decorate a staticmethod?"}, {"role": "silicat", "content": "@staticmethod should be outermost."}]}
+{"messages": [{"role": "user", "content": "How do you write a caching decorator?"}, {"role": "silicat", "content": "Use a dictionary to cache function results."}]}
+{"messages": [{"role": "user", "content": "How do you write a timing decorator?"}, {"role": "silicat", "content": "Use time module to measure execution duration."}]}
+{"messages": [{"role": "user", "content": "What is a decorator class?"}, {"role": "silicat", "content": "A class with __call__ that acts as a decorator."}]}
+{"messages": [{"role": "user", "content": "Can decorators modify function arguments?"}, {"role": "silicat", "content": "Yes, the wrapper can pre-process arguments."}]}
+{"messages": [{"role": "user", "content": "How do you write a retry decorator?"}, {"role": "silicat", "content": "Use a loop in the wrapper to retry on exception."}]}
+{"messages": [{"role": "user", "content": "Can you combine decorators with generators?"}, {"role": "silicat", "content": "Yes, decorators can wrap generator functions."}]}
+{"messages": [{"role": "user", "content": "How do you preserve function signature?"}, {"role": "silicat", "content": "Use @wraps or functools.wraps."}]}
+{"messages": [{"role": "user", "content": "What is a context manager?"}, {"role": "silicat", "content": "An object handling setup and teardown via __enter__ and __exit__."}]}
+{"messages": [{"role": "user", "content": "How do you use a context manager?"}, {"role": "silicat", "content": "Use the 'with' statement to create a context."}]}
+{"messages": [{"role": "user", "content": "What do __enter__ and __exit__ do?"}, {"role": "silicat", "content": "__enter__ sets up resources; __exit__ handles cleanup."}]}
+{"messages": [{"role": "user", "content": "How do you implement @contextmanager?"}, {"role": "silicat", "content": "@contextmanager simplifies creation with yield."}]}
+{"messages": [{"role": "user", "content": "How do you handle exceptions in __exit__?"}, {"role": "silicat", "content": "Return True to suppress; False to propagate."}]}
+{"messages": [{"role": "user", "content": "Can you use multiple context managers?"}, {"role": "silicat", "content": "Yes, use comma-separated managers or Python 3.10+ parentheses."}]}
+{"messages": [{"role": "user", "content": "What is the purpose of context managers?"}, {"role": "silicat", "content": "Ensure resources are properly acquired and released."}]}
+{"messages": [{"role": "user", "content": "How do you create a locking context manager?"}, {"role": "silicat", "content": "Use lock in __enter__; release in __exit__."}]}
+{"messages": [{"role": "user", "content": "Can context managers be nested?"}, {"role": "silicat", "content": "Yes, nest with statements."}]}
+{"messages": [{"role": "user", "content": "What if __enter__ raises an exception?"}, {"role": "silicat", "content": "__exit__ is not called."}]}
+{"messages": [{"role": "user", "content": "Can __exit__ modify exceptions?"}, {"role": "silicat", "content": "Yes, you can transform or suppress exceptions."}]}
+{"messages": [{"role": "user", "content": "How do you debug context managers?"}, {"role": "silicat", "content": "Add print statements in __enter__ and __exit__."}]}
+{"messages": [{"role": "user", "content": "What happens after with block exits?"}, {"role": "silicat", "content": "__exit__ is called, even with exceptions."}]}
+{"messages": [{"role": "user", "content": "Can you yield multiple times in @contextmanager?"}, {"role": "silicat", "content": "No, @contextmanager should yield exactly once."}]}
+{"messages": [{"role": "user", "content": "What is the difference from try/finally?"}, {"role": "silicat", "content": "Context managers are cleaner and more readable."}]}
+{"messages": [{"role": "user", "content": "What is a generator?"}, {"role": "silicat", "content": "A function yielding values one at a time, producing an iterator."}]}
+{"messages": [{"role": "user", "content": "How do you create a generator?"}, {"role": "silicat", "content": "Use yield instead of return."}]}
+{"messages": [{"role": "user", "content": "How does yield differ from return?"}, {"role": "silicat", "content": "yield pauses and resumes; return ends execution."}]}
+{"messages": [{"role": "user", "content": "What is a generator expression?"}, {"role": "silicat", "content": "Syntax like list comprehension but with parentheses for lazy evaluation."}]}
+{"messages": [{"role": "user", "content": "What does yield from do?"}, {"role": "silicat", "content": "yield from delegates to another generator."}]}
+{"messages": [{"role": "user", "content": "How do you send values to a generator?"}, {"role": "silicat", "content": "Use send() to inject values; they become yield results."}]}
+{"messages": [{"role": "user", "content": "What is the difference from list comprehension?"}, {"role": "silicat", "content": "Generators are lazy; list comprehensions compute all upfront."}]}
+{"messages": [{"role": "user", "content": "How do you convert a generator to a list?"}, {"role": "silicat", "content": "Use list() to consume the generator."}]}
+{"messages": [{"role": "user", "content": "Can generators be used with for loops?"}, {"role": "silicat", "content": "Yes, generators are iterables."}]}
+{"messages": [{"role": "user", "content": "How do you chain generators?"}, {"role": "silicat", "content": "Use yield from or nest them."}]}
+{"messages": [{"role": "user", "content": "How do you implement an infinite generator?"}, {"role": "silicat", "content": "Use while True with yield."}]}
+{"messages": [{"role": "user", "content": "What is a generator pipeline?"}, {"role": "silicat", "content": "Chaining generators to process data."}]}
+{"messages": [{"role": "user", "content": "What is the performance benefit?"}, {"role": "silicat", "content": "Memory efficient; values computed on demand."}]}
+{"messages": [{"role": "user", "content": "Can generators be pickled?"}, {"role": "silicat", "content": "No, generators cannot be serialized."}]}
+{"messages": [{"role": "user", "content": "What happens at the end of a generator?"}, {"role": "silicat", "content": "StopIteration is raised automatically."}]}
+{"messages": [{"role": "user", "content": "What is an iterable?"}, {"role": "silicat", "content": "An object with __iter__() returning an iterator."}]}
+{"messages": [{"role": "user", "content": "What is an iterator?"}, {"role": "silicat", "content": "An object with __iter__() and __next__()."}]}
+{"messages": [{"role": "user", "content": "How do you implement a custom iterator?"}, {"role": "silicat", "content": "Implement __iter__() and __next__()."}]}
+{"messages": [{"role": "user", "content": "What does StopIteration do?"}, {"role": "silicat", "content": "Signals the end of iteration in __next__()."}]}
+{"messages": [{"role": "user", "content": "Can you use iter() on any object?"}, {"role": "silicat", "content": "Only on objects with __iter__()."}]}
+{"messages": [{"role": "user", "content": "How do you make a reverse iterator?"}, {"role": "silicat", "content": "Implement __reversed__()."}]}
+{"messages": [{"role": "user", "content": "What is the iter() function?"}, {"role": "silicat", "content": "Returns an iterator from an iterable."}]}
+{"messages": [{"role": "user", "content": "Can you call iter() twice on the same object?"}, {"role": "silicat", "content": "Yes, each call returns a new iterator."}]}
+{"messages": [{"role": "user", "content": "What happens if you call next() on a non-iterator?"}, {"role": "silicat", "content": "TypeError is raised."}]}
+{"messages": [{"role": "user", "content": "How do you make an iterable that supports slicing?"}, {"role": "silicat", "content": "Implement __getitem__() with slice support."}]}
+{"messages": [{"role": "user", "content": "Can you iterate over a class instance?"}, {"role": "silicat", "content": "Yes, if it implements __iter__()."}]}
+{"messages": [{"role": "user", "content": "What is the relationship with for loops?"}, {"role": "silicat", "content": "For loops automatically call iter() and next()."}]}
+{"messages": [{"role": "user", "content": "How do you make a range-like class?"}, {"role": "silicat", "content": "Implement __iter__() and __getitem__()."}]}
+{"messages": [{"role": "user", "content": "What is the iterator protocol?"}, {"role": "silicat", "content": "Objects implement __iter__() and __next__() for iteration."}]}
+{"messages": [{"role": "user", "content": "Can generators be called multiple times?"}, {"role": "silicat", "content": "No, exhausted generators cannot be restarted."}]}
+{"messages": [{"role": "user", "content": "What is a metaclass?"}, {"role": "silicat", "content": "A class of a class; classes are created from metaclasses."}]}
+{"messages": [{"role": "user", "content": "How do you create a custom metaclass?"}, {"role": "silicat", "content": "Inherit from type; override __new__ or __init__."}]}
+{"messages": [{"role": "user", "content": "What are metaclass __new__ parameters?"}, {"role": "silicat", "content": "mcs (metaclass), name, bases, dct (attributes)."}]}
+{"messages": [{"role": "user", "content": "How do you enforce class rules?"}, {"role": "silicat", "content": "Override __new__ or __init__ to validate or modify classes."}]}
+{"messages": [{"role": "user", "content": "Can you use multiple metaclasses?"}, {"role": "silicat", "content": "Yes, but they must be compatible."}]}
+{"messages": [{"role": "user", "content": "What is a metaclass conflict?"}, {"role": "silicat", "content": "When parent metaclasses are incompatible."}]}
+{"messages": [{"role": "user", "content": "How do you debug metaclasses?"}, {"role": "silicat", "content": "Print in __new__ to trace class creation."}]}
+{"messages": [{"role": "user", "content": "What is __init_subclass__()?"}, {"role": "silicat", "content": "Called when a subclass is created; useful for enforcing rules."}]}
+{"messages": [{"role": "user", "content": "Can metaclasses modify class methods?"}, {"role": "silicat", "content": "Yes, they can add or modify any class attributes."}]}
+{"messages": [{"role": "user", "content": "What is the use of metaclasses?"}, {"role": "silicat", "content": "Control class creation and enforce patterns."}]}
+{"messages": [{"role": "user", "content": "Can metaclasses prevent instantiation?"}, {"role": "silicat", "content": "Yes, via __call__() in the metaclass."}]}
+{"messages": [{"role": "user", "content": "What is a metaclass factory?"}, {"role": "silicat", "content": "A metaclass that creates other metaclasses."}]}
+{"messages": [{"role": "user", "content": "How do you use metaclasses with decorators?"}, {"role": "silicat", "content": "They're independent; use both together for powerful patterns."}]}
+{"messages": [{"role": "user", "content": "Can metaclasses have __init_subclass__()?"}, {"role": "silicat", "content": "No, that's for regular classes."}]}
+{"messages": [{"role": "user", "content": "What is the relationship with inheritance?"}, {"role": "silicat", "content": "Metaclasses define how classes are created; inheritance defines class hierarchy."}]}
+{"messages": [{"role": "user", "content": "What is a descriptor?"}, {"role": "silicat", "content": "An object defining attribute access via __get__, __set__, __delete__."}]}
+{"messages": [{"role": "user", "content": "What is __get__?"}, {"role": "silicat", "content": "__get__ handles attribute reading."}]}
+{"messages": [{"role": "user", "content": "What is __set__?"}, {"role": "silicat", "content": "__set__ handles attribute assignment."}]}
+{"messages": [{"role": "user", "content": "What is __delete__?"}, {"role": "silicat", "content": "__delete__ handles attribute deletion."}]}
+{"messages": [{"role": "user", "content": "What is a data descriptor?"}, {"role": "silicat", "content": "A descriptor with __get__ and (__set__ or __delete__)."}]}
+{"messages": [{"role": "user", "content": "What is a non-data descriptor?"}, {"role": "silicat", "content": "A descriptor with only __get__."}]}
+{"messages": [{"role": "user", "content": "How does property use descriptors?"}, {"role": "silicat", "content": "@property is implemented as a descriptor."}]}
+{"messages": [{"role": "user", "content": "How do you create a validating descriptor?"}, {"role": "silicat", "content": "Implement __set__() to validate before storing."}]}
+{"messages": [{"role": "user", "content": "What is the descriptor protocol?"}, {"role": "silicat", "content": "The mechanism for implementing custom attribute access."}]}
+{"messages": [{"role": "user", "content": "How do you use descriptors in a class?"}, {"role": "silicat", "content": "Assign descriptor instances to class attributes."}]}
+{"messages": [{"role": "user", "content": "What is the descriptor lookup order?"}, {"role": "silicat", "content": "Data descriptors, instance __dict__, non-data descriptors."}]}
+{"messages": [{"role": "user", "content": "Can descriptors work with inheritance?"}, {"role": "silicat", "content": "Yes, subclasses inherit descriptor behavior."}]}
+{"messages": [{"role": "user", "content": "How do you make a lazy descriptor?"}, {"role": "silicat", "content": "Store computation result on first access."}]}
+{"messages": [{"role": "user", "content": "Can descriptors raise exceptions?"}, {"role": "silicat", "content": "Yes, any method can raise exceptions."}]}
+{"messages": [{"role": "user", "content": "How do you debug descriptors?"}, {"role": "silicat", "content": "Add print in __get__, __set__, __delete__."}]}
+{"messages": [{"role": "user", "content": "How do you do multiple inheritance?"}, {"role": "silicat", "content": "List multiple parent classes separated by commas."}]}
+{"messages": [{"role": "user", "content": "What is the diamond problem?"}, {"role": "silicat", "content": "A class inherits from two parents sharing a common ancestor."}]}
+{"messages": [{"role": "user", "content": "How does Python solve it?"}, {"role": "silicat", "content": "Using C3 linearization in MRO."}]}
+{"messages": [{"role": "user", "content": "What is C3 linearization?"}, {"role": "silicat", "content": "An algorithm ensuring each class appears once in MRO."}]}
+{"messages": [{"role": "user", "content": "How do you view MRO?"}, {"role": "silicat", "content": "Use Class.mro() or Class.__mro__."}]}
+{"messages": [{"role": "user", "content": "Can super() work with multiple inheritance?"}, {"role": "silicat", "content": "Yes, super() follows MRO for cooperative inheritance."}]}
+{"messages": [{"role": "user", "content": "What is cooperative multiple inheritance?"}, {"role": "silicat", "content": "All classes use super() to ensure each method is called once."}]}
+{"messages": [{"role": "user", "content": "How many parents can a class have?"}, {"role": "silicat", "content": "Unlimited, but complexity increases."}]}
+{"messages": [{"role": "user", "content": "What is the correct parent order?"}, {"role": "silicat", "content": "Most specific to most general (left to right)."}]}
+{"messages": [{"role": "user", "content": "Can methods from different parents conflict?"}, {"role": "silicat", "content": "Yes, MRO determines which is used."}]}
+{"messages": [{"role": "user", "content": "How do you call a specific parent method?"}, {"role": "silicat", "content": "Use ParentClass.method(self) or follow MRO with super()."}]}
+{"messages": [{"role": "user", "content": "What happens with __init__ in multiple inheritance?"}, {"role": "silicat", "content": "Only the first parent's is called unless you use super()."}]}
+{"messages": [{"role": "user", "content": "Can you have circular inheritance?"}, {"role": "silicat", "content": "No, Python prevents circular inheritance."}]}
+{"messages": [{"role": "user", "content": "What is the mixin pattern?"}, {"role": "silicat", "content": "Using multiple inheritance to add functionality."}]}
+{"messages": [{"role": "user", "content": "How do you test multiple inheritance?"}, {"role": "silicat", "content": "Test each inheritance path separately."}]}
+{"messages": [{"role": "user", "content": "What is composition?"}, {"role": "silicat", "content": "Using objects as attributes (has-a) rather than inheritance (is-a)."}]}
+{"messages": [{"role": "user", "content": "How does composition differ from inheritance?"}, {"role": "silicat", "content": "Composition is more flexible; inheritance creates rigid hierarchies."}]}
+{"messages": [{"role": "user", "content": "What is the Template Method pattern?"}, {"role": "silicat", "content": "Base class defines structure; subclasses override specific steps."}]}
+{"messages": [{"role": "user", "content": "What is a mixin class?"}, {"role": "silicat", "content": "A class providing functionality combined via multiple inheritance."}]}
+{"messages": [{"role": "user", "content": "What is the Singleton pattern?"}, {"role": "silicat", "content": "Ensures only one instance of a class exists."}]}
+{"messages": [{"role": "user", "content": "How do you implement Singleton?"}, {"role": "silicat", "content": "Use __new__() or a metaclass to control instantiation."}]}
+{"messages": [{"role": "user", "content": "What is the Factory pattern?"}, {"role": "silicat", "content": "Using methods to create objects instead of direct instantiation."}]}
+{"messages": [{"role": "user", "content": "What is the Observer pattern?"}, {"role": "silicat", "content": "Objects notify multiple observers when state changes."}]}
+{"messages": [{"role": "user", "content": "What is the Strategy pattern?"}, {"role": "silicat", "content": "Encapsulate interchangeable behaviors as classes."}]}
+{"messages": [{"role": "user", "content": "What is duck typing?"}, {"role": "silicat", "content": "If it walks like a duck, it's a duck. Type-checking via behavior."}]}
+{"messages": [{"role": "user", "content": "What is monkey patching?"}, {"role": "silicat", "content": "Modifying classes or modules at runtime."}]}
+{"messages": [{"role": "user", "content": "Should you use monkey patching?"}, {"role": "silicat", "content": "Avoid in production; mainly for testing."}]}
+{"messages": [{"role": "user", "content": "What is method chaining?"}, {"role": "silicat", "content": "Calling methods on results of previous methods."}]}
+{"messages": [{"role": "user", "content": "How do you implement method chaining?"}, {"role": "silicat", "content": "Return self from methods."}]}
+{"messages": [{"role": "user", "content": "What is lazy initialization?"}, {"role": "silicat", "content": "Defer expensive operations until first access."}]}
+{"messages": [{"role": "user", "content": "How do lazy properties work?"}, {"role": "silicat", "content": "Compute and cache value on first access via @property."}]}
+{"messages": [{"role": "user", "content": "What is the Adapter pattern?"}, {"role": "silicat", "content": "Make incompatible interfaces work together by adapting one to the other."}]}
+{"messages": [{"role": "user", "content": "What is the Decorator design pattern?"}, {"role": "silicat", "content": "Wrap objects to add functionality dynamically without modifying the original."}]}
+{"messages": [{"role": "user", "content": "What is the Builder pattern?"}, {"role": "silicat", "content": "Construct complex objects step by step using a builder object."}]}
+{"messages": [{"role": "user", "content": "What is the Facade pattern?"}, {"role": "silicat", "content": "Provide a simplified interface to a complex subsystem."}]}
+{"messages": [{"role": "user", "content": "What is the Proxy pattern?"}, {"role": "silicat", "content": "Control access to another object by using a placeholder or surrogate."}]}
+{"messages": [{"role": "user", "content": "What is the State pattern?"}, {"role": "silicat", "content": "Allow objects to change behavior based on internal state changes."}]}
+{"messages": [{"role": "user", "content": "What is the Chain of Responsibility?"}, {"role": "silicat", "content": "Pass a request along a chain of handlers until one handles it."}]}
+{"messages": [{"role": "user", "content": "What is the Command pattern?"}, {"role": "silicat", "content": "Encapsulate requests as objects, enabling parameterization and queuing."}]}
+{"messages": [{"role": "user", "content": "What is the Visitor pattern?"}, {"role": "silicat", "content": "Define new operations on objects without changing their structure."}]}
+{"messages": [{"role": "user", "content": "What is the Mediator pattern?"}, {"role": "silicat", "content": "Define an object that encapsulates how a set of objects interact."}]}
+{"messages": [{"role": "user", "content": "How do you use __getattr__ for dynamic attributes?"}, {"role": "silicat", "content": "__getattr__ is called when an attribute isn't found; return a value or raise AttributeError."}]}
+{"messages": [{"role": "user", "content": "What is __getattribute__ vs __getattr__?"}, {"role": "silicat", "content": "__getattribute__ is called for every access; __getattr__ is only for missing attributes."}]}
+{"messages": [{"role": "user", "content": "How do you intercept attribute setting?"}, {"role": "silicat", "content": "Implement __setattr__() to intercept all attribute assignments."}]}
+{"messages": [{"role": "user", "content": "How do you intercept attribute deletion?"}, {"role": "silicat", "content": "Implement __delattr__() to intercept all attribute deletions."}]}
+{"messages": [{"role": "user", "content": "What is __new__ vs __init__?"}, {"role": "silicat", "content": "__new__ creates the instance; __init__ initializes it. Use __new__ for immutable types."}]}
+{"messages": [{"role": "user", "content": "How do you override __new__ for immutables?"}, {"role": "silicat", "content": "Override __new__ to validate and create the instance since __init__ can't modify immutables."}]}
+{"messages": [{"role": "user", "content": "What is __subclasscheck__?"}, {"role": "silicat", "content": "__subclasscheck__ in a metaclass customizes issubclass() behavior."}]}
+{"messages": [{"role": "user", "content": "What is __instancecheck__?"}, {"role": "silicat", "content": "__instancecheck__ in a metaclass customizes isinstance() behavior."}]}
+{"messages": [{"role": "user", "content": "What is __reduce__?"}, {"role": "silicat", "content": "__reduce__ is used for pickling; return a tuple describing how to recreate the object."}]}
+{"messages": [{"role": "user", "content": "What is __reduce_ex__?"}, {"role": "silicat", "content": "__reduce_ex__ is an extended version of __reduce__ used by pickle protocol versions."}]}
+{"messages": [{"role": "user", "content": "How do you make a class pickleable?"}, {"role": "silicat", "content": "Implement __getstate__() and __setstate__() or __reduce__()."}]}
+{"messages": [{"role": "user", "content": "What is __copy__?"}, {"role": "silicat", "content": "__copy__ defines behavior when copy.copy() is called on an instance."}]}
+{"messages": [{"role": "user", "content": "What is __deepcopy__?"}, {"role": "silicat", "content": "__deepcopy__ defines behavior when copy.deepcopy() is called."}]}
+{"messages": [{"role": "user", "content": "What is __sizeof__?"}, {"role": "silicat", "content": "__sizeof__ returns the size in bytes of an object instance."}]}
+{"messages": [{"role": "user", "content": "What is __fspath__?"}, {"role": "silicat", "content": "__fspath__ enables using an object as a file system path."}]}
+{"messages": [{"role": "user", "content": "What is __enter__ and __exit__?"}, {"role": "silicat", "content": "__enter__ sets up context; __exit__ cleans up, even with exceptions."}]}
+{"messages": [{"role": "user", "content": "What is __aenter__ and __aexit__?"}, {"role": "silicat", "content": "__aenter__ and __aexit__ are async versions for async with statements."}]}
+{"messages": [{"role": "user", "content": "What is __aiter__ and __anext__?"}, {"role": "silicat", "content": "__aiter__ returns async iterator; __anext__ returns next value asynchronously."}]}
+{"messages": [{"role": "user", "content": "What is __missing__?"}, {"role": "silicat", "content": "__missing__ in dict subclasses is called for missing keys."}]}
+{"messages": [{"role": "user", "content": "How do you make an attribute read-only after __init__?"}, {"role": "silicat", "content": "Use __setattr__() to prevent modification after initialization."}]}
+{"messages": [{"role": "user", "content": "How do you implement a property that validates on set?"}, {"role": "silicat", "content": "Define setter to check value before assignment; raise ValueError if invalid."}]}
+{"messages": [{"role": "user", "content": "What is a descriptor vs property?"}, {"role": "silicat", "content": "Descriptors are the general mechanism; properties are a convenient descriptor implementation."}]}
+{"messages": [{"role": "user", "content": "How do you create a cached property?"}, {"role": "silicat", "content": "Compute value once, cache it in instance __dict__ or a separate cache."}]}
+{"messages": [{"role": "user", "content": "What is functools.cached_property?"}, {"role": "silicat", "content": "A decorator for properties that cache their value after first computation."}]}
+{"messages": [{"role": "user", "content": "How do you inspect class structure?"}, {"role": "silicat", "content": "Use dir(), vars(), getmembers() from inspect, or __dict__ attributes."}]}
+{"messages": [{"role": "user", "content": "What is vars()?"}, {"role": "silicat", "content": "vars() returns the __dict__ attribute of an object or module."}]}
+{"messages": [{"role": "user", "content": "What is dir()?"}, {"role": "silicat", "content": "dir() lists names in the current scope or attributes of an object."}]}
+{"messages": [{"role": "user", "content": "What is isinstance() used for?"}, {"role": "silicat", "content": "isinstance(obj, Class) checks if obj is an instance of Class or subclass."}]}
+{"messages": [{"role": "user", "content": "What is type()?"}, {"role": "silicat", "content": "type(obj) returns the class of an object; type(name, bases, dict) creates a class."}]}
+{"messages": [{"role": "user", "content": "Can you dynamically create classes?"}, {"role": "silicat", "content": "Yes, use type(name, bases, dict) or a metaclass."}]}
+{"messages": [{"role": "user", "content": "What is __name__ vs __qualname__?"}, {"role": "silicat", "content": "__name__ is simple name; __qualname__ includes enclosing classes/functions."}]}
+{"messages": [{"role": "user", "content": "What is __module__?"}, {"role": "silicat", "content": "__module__ contains the module name where a class is defined."}]}
+{"messages": [{"role": "user", "content": "How do you check if something is callable?"}, {"role": "silicat", "content": "Use callable(obj) to check if obj has __call__."}]}
+{"messages": [{"role": "user", "content": "What is hasattr()?"}, {"role": "silicat", "content": "hasattr(obj, name) checks if obj has an attribute named name."}]}
+{"messages": [{"role": "user", "content": "What is getattr()?"}, {"role": "silicat", "content": "getattr(obj, name, default) gets an attribute value with optional default."}]}
+{"messages": [{"role": "user", "content": "What is setattr()?"}, {"role": "silicat", "content": "setattr(obj, name, value) sets an attribute value dynamically."}]}
+{"messages": [{"role": "user", "content": "What is delattr()?"}, {"role": "silicat", "content": "delattr(obj, name) deletes an attribute dynamically."}]}
+{"messages": [{"role": "user", "content": "How do you prevent attribute access?"}, {"role": "silicat", "content": "Override __getattribute__() to raise AttributeError for forbidden attributes."}]}
+{"messages": [{"role": "user", "content": "What is __all__?"}, {"role": "silicat", "content": "__all__ defines which names are exported by from module import *."}]}
+{"messages": [{"role": "user", "content": "How do you document classes?"}, {"role": "silicat", "content": "Use docstrings immediately after class definition; access via __doc__."}]}
+{"messages": [{"role": "user", "content": "What is PEP 8?"}, {"role": "silicat", "content": "Python Enhancement Proposal 8 defines style guidelines for Python code."}]}
+{"messages": [{"role": "user", "content": "What is typing hints?"}, {"role": "silicat", "content": "Type hints annotate function arguments and returns for static analysis."}]}
+{"messages": [{"role": "user", "content": "How do you use @overload?"}, {"role": "silicat", "content": "@overload from typing defines multiple function signatures for the same function."}]}
+{"messages": [{"role": "user", "content": "What is Protocol in typing?"}, {"role": "silicat", "content": "Protocol defines structural typing for duck typing with type hints."}]}
+{"messages": [{"role": "user", "content": "How do you enforce immutability?"}, {"role": "silicat", "content": "Use frozen=True in @dataclass or @slots__() with __setattr__."}]}
+{"messages": [{"role": "user", "content": "What is a namedtuple?"}, {"role": "silicat", "content": "A lightweight immutable tuple subclass with named fields."}]}
+{"messages": [{"role": "user", "content": "How does namedtuple differ from dataclass?"}, {"role": "silicat", "content": "namedtuples are immutable and lightweight; dataclasses are mutable and flexible."}]}
+{"messages": [{"role": "user", "content": "What is typing.NamedTuple?"}, {"role": "silicat", "content": "A typed version of namedtuple with type hints."}]}
+{"messages": [{"role": "user", "content": "What is attrs library?"}, {"role": "silicat", "content": "An alternative to dataclasses with more features and flexibility."}]}
+{"messages": [{"role": "user", "content": "How do you use @attr.s?"}, {"role": "silicat", "content": "@attr.s is attrs equivalent of @dataclass for class definition."}]}
+{"messages": [{"role": "user", "content": "What is @attr.define?"}, {"role": "silicat", "content": "@attr.define is a modern attrs syntax equivalent to @dataclass."}]}
+{"messages": [{"role": "user", "content": "What is weak reference?"}, {"role": "silicat", "content": "A reference that doesn't prevent garbage collection; use weakref module."}]}
+{"messages": [{"role": "user", "content": "When do you use weak references?"}, {"role": "silicat", "content": "To avoid circular references and memory leaks."}]}
+{"messages": [{"role": "user", "content": "What is __del__ used for?"}, {"role": "silicat", "content": "__del__ is the destructor; use it for cleanup when objects are destroyed."}]}
+{"messages": [{"role": "user", "content": "Is __del__ reliable?"}, {"role": "silicat", "content": "No, __del__ timing is unpredictable. Use context managers instead."}]}
+{"messages": [{"role": "user", "content": "What is garbage collection?"}, {"role": "silicat", "content": "Automatic memory management that frees objects no longer referenced."}]}
+{"messages": [{"role": "user", "content": "How do you detect circular references?"}, {"role": "silicat", "content": "Use gc.get_referents() or gc.garbage after enabling debug mode."}]}
+{"messages": [{"role": "user", "content": "What is gc.collect()?"}, {"role": "silicat", "content": "Explicitly triggers garbage collection to free circular references."}]}
+{"messages": [{"role": "user", "content": "Can you prevent garbage collection?"}, {"role": "silicat", "content": "Yes, call gc.disable() but it's generally not recommended."}]}
+{"messages": [{"role": "user", "content": "What is memory profiling?"}, {"role": "silicat", "content": "Analyzing memory usage of Python programs using tools like memory_profiler."}]}
+{"messages": [{"role": "user", "content": "How do you find memory leaks?"}, {"role": "silicat", "content": "Use memory_profiler, objgraph, or sys.getsizeof() to track memory growth."}]}
+{"messages": [{"role": "user", "content": "What is repr() vs str()?"}, {"role": "silicat", "content": "repr() calls __repr__ (for debugging); str() calls __str__ (for users)."}]}
+{"messages": [{"role": "user", "content": "How do you write good __repr__?"}, {"role": "silicat", "content": "Return a string that eval() can use to recreate the object if possible."}]}
+{"messages": [{"role": "user", "content": "What is f-string with !r?"}, {"role": "silicat", "content": "f'{obj!r}' calls repr() on obj in the f-string."}]}
+{"messages": [{"role": "user", "content": "What is f-string with !s?"}, {"role": "silicat", "content": "f'{obj!s}' calls str() on obj in the f-string."}]}
+{"messages": [{"role": "user", "content": "What is f-string with !a?"}, {"role": "silicat", "content": "f'{obj!a}' calls ascii() on obj in the f-string."}]}
+{"messages": [{"role": "user", "content": "How do you implement __format__ for custom formatting?"}, {"role": "silicat", "content": "Define __format__(self, format_spec) to return formatted string."}]}
+{"messages": [{"role": "user", "content": "What is format specification mini-language?"}, {"role": "silicat", "content": "Syntax for format strings like f'{value:format_spec}'."}]}
+{"messages": [{"role": "user", "content": "Can you use __slots__ with properties?"}, {"role": "silicat", "content": "Yes, properties work fine with __slots__."}]}
+{"messages": [{"role": "user", "content": "Can you use __slots__ with __dict__?"}, {"role": "silicat", "content": "Yes, add '__dict__' to __slots__ to allow extra attributes."}]}
+{"messages": [{"role": "user", "content": "Can you use __slots__ with weakref?"}, {"role": "silicat", "content": "Yes, add '__weakref__' to __slots__ to support weak references."}]}
+{"messages": [{"role": "user", "content": "What is functools.total_ordering?"}, {"role": "silicat", "content": "@total_ordering generates comparison methods from __eq__ and one other."}]}
+{"messages": [{"role": "user", "content": "What is functools.partial?"}, {"role": "silicat", "content": "functools.partial creates a partial function with fixed arguments."}]}
+{"messages": [{"role": "user", "content": "What is functools.lru_cache?"}, {"role": "silicat", "content": "@lru_cache caches function results based on arguments."}]}
+{"messages": [{"role": "user", "content": "What is functools.wraps?"}, {"role": "silicat", "content": "@wraps preserves original function metadata in decorators."}]}
+{"messages": [{"role": "user", "content": "What is inspect module?"}, {"role": "silicat", "content": "inspect provides tools for introspecting objects: signature(), getsource(), etc."}]}
+{"messages": [{"role": "user", "content": "What is inspect.signature()?"}, {"role": "silicat", "content": "Returns a Signature object describing function parameters."}]}
+{"messages": [{"role": "user", "content": "What is inspect.getsource()?"}, {"role": "silicat", "content": "Returns the source code of a class or function as a string."}]}
+{"messages": [{"role": "user", "content": "What is inspect.getmembers()?"}, {"role": "silicat", "content": "Returns a list of (name, value) tuples for object members."}]}
+{"messages": [{"role": "user", "content": "What is __annotations__?"}, {"role": "silicat", "content": "__annotations__ is a dict of type hints for a function or class."}]}
+{"messages": [{"role": "user", "content": "How do you read annotations at runtime?"}, {"role": "silicat", "content": "Access function.__annotations__ or class.__annotations__ dictionary."}]}
+{"messages": [{"role": "user", "content": "What is typing.get_type_hints()?"}, {"role": "silicat", "content": "Returns a dict of type hints with forward references resolved."}]}
+{"messages": [{"role": "user", "content": "Can you use typing hints with inheritance?"}, {"role": "silicat", "content": "Yes, subclasses can override parent type hints."}]}
+{"messages": [{"role": "user", "content": "What is variance in type hints?"}, {"role": "silicat", "content": "Covariance/contravariance describe how type hierarchies translate to generic types."}]}
+{"messages": [{"role": "user", "content": "What is Protocol vs ABC?"}, {"role": "silicat", "content": "Protocol uses structural typing (duck typing); ABC uses nominal typing (inheritance)."}]}
+{"messages": [{"role": "user", "content": "How do you combine Protocol with @runtime_checkable?"}, {"role": "silicat", "content": "@runtime_checkable allows isinstance() checks with Protocol."}]}
+{"messages": [{"role": "user", "content": "What is typing.Final?"}, {"role": "silicat", "content": "typing.Final marks a variable as not intended to be reassigned."}]}
+{"messages": [{"role": "user", "content": "What is typing.Literal?"}, {"role": "silicat", "content": "typing.Literal restricts a type to specific literal values."}]}
+{"messages": [{"role": "user", "content": "What is typing.TypedDict?"}, {"role": "silicat", "content": "TypedDict creates a type-hinted dictionary with specific keys."}]}
+{"messages": [{"role": "user", "content": "What is typing.Generic?"}, {"role": "silicat", "content": "Generic allows creating generic classes with type parameters."}]}
+{"messages": [{"role": "user", "content": "How do you use TypeVar with Generic?"}, {"role": "silicat", "content": "Define TypeVar('T'), inherit Generic[T] to create a generic class."}]}
+{"messages": [{"role": "user", "content": "What is typing.ClassVar?"}, {"role": "silicat", "content": "ClassVar marks a variable as a class attribute in type hints."}]}
+{"messages": [{"role": "user", "content": "What is typing.Optional?"}, {"role": "silicat", "content": "Optional[T] is equivalent to Union[T, None] for nullable types."}]}
+{"messages": [{"role": "user", "content": "What is typing.Union?"}, {"role": "silicat", "content": "Union[A, B] means the type is either A or B."}]}
+{"messages": [{"role": "user", "content": "What is typing.Any?"}, {"role": "silicat", "content": "Any disables type checking for a variable; use sparingly."}]}
+{"messages": [{"role": "user", "content": "Can decorators preserve type hints?"}, {"role": "silicat", "content": "Yes, use functools.wraps to preserve __annotations__."}]}
+{"messages": [{"role": "user", "content": "What is __post_init__ in dataclass with fields?"}, {"role": "silicat", "content": "__post_init__ can access field values to perform validation or setup."}]}
+{"messages": [{"role": "user", "content": "How do you make a dataclass with only some fields hashable?"}, {"role": "silicat", "content": "Use field(hash=False) for fields to exclude from __hash__."}]}
+{"messages": [{"role": "user", "content": "What is field(kw_only=True)?"}, {"role": "silicat", "content": "field(kw_only=True) makes that field keyword-only in __init__."}]}
+{"messages": [{"role": "user", "content": "What is field(metadata)?"}, {"role": "silicat", "content": "Attach arbitrary metadata to a field for custom processing."}]}
+{"messages": [{"role": "user", "content": "Can you use fields() to inspect dataclass fields?"}, {"role": "silicat", "content": "Yes, fields() returns a tuple of Field objects describing the dataclass."}]}
+{"messages": [{"role": "user", "content": "What is is_dataclass()?"}, {"role": "silicat", "content": "is_dataclass(obj) checks if obj is a dataclass or instance."}]}
+{"messages": [{"role": "user", "content": "What is asdict() for dataclasses?"}, {"role": "silicat", "content": "asdict() converts a dataclass instance to a dictionary."}]}
+{"messages": [{"role": "user", "content": "What is astuple() for dataclasses?"}, {"role": "silicat", "content": "astuple() converts a dataclass instance to a tuple."}]}
+{"messages": [{"role": "user", "content": "Can dataclasses inherit from non-dataclasses?"}, {"role": "silicat", "content": "Yes, but the parent must not have __init__ or you should call super().__init__()."}]}
+{"messages": [{"role": "user", "content": "What is the enum.Enum?"}, {"role": "silicat", "content": "A class with fixed enum members accessed as attributes."}]}
+{"messages": [{"role": "user", "content": "What is enum.IntEnum?"}, {"role": "silicat", "content": "An Enum subclass where members are integers and support comparison."}]}
+{"messages": [{"role": "user", "content": "What is enum.Flag?"}, {"role": "silicat", "content": "An Enum subclass supporting bitwise operations on members."}]}
+{"messages": [{"role": "user", "content": "What is enum.IntFlag?"}, {"role": "silicat", "content": "A combination of IntEnum and Flag for integer flag enums."}]}
+{"messages": [{"role": "user", "content": "How do you iterate over enum members?"}, {"role": "silicat", "content": "Use for member in EnumClass: to iterate all enum members."}]}
+{"messages": [{"role": "user", "content": "How do you access enum members?"}, {"role": "silicat", "content": "Use EnumClass.MEMBER or EnumClass['MEMBER'] or EnumClass(value)."}]}
+{"messages": [{"role": "user", "content": "What is enum.auto()"}, {"role": "silicat", "content": "auto() automatically generates sequential values for enum members."}]}
+{"messages": [{"role": "user", "content": "Can enums have methods?"}, {"role": "silicat", "content": "Yes, define methods in the Enum class like any other class."}]}
+{"messages": [{"role": "user", "content": "What is enum value checking?"}, {"role": "silicat", "content": "isinstance(obj, Enum) checks if obj is any enum member."}]}
+{"messages": [{"role": "user", "content": "How do you get enum name from value?"}, {"role": "silicat", "content": "Use EnumClass(value).name to get the name of an enum member by value."}]}
+{"messages": [{"role": "user", "content": "What is comparison in enums?"}, {"role": "silicat", "content": "Enum members support == and != but not < or > unless IntEnum or Flag."}]}
+{"messages": [{"role": "user", "content": "What is _missing_ hook?"}, {"role": "silicat", "content": "Define _missing_() in Enum to handle lookup of undefined values."}]}
+{"messages": [{"role": "user", "content": "What is _order_ in enums?"}, {"role": "silicat", "content": "_order_ is a string defining enum member order (Python 3.10+)."}]}
+{"messages": [{"role": "user", "content": "Can you subclass enums?"}, {"role": "silicat", "content": "Yes, but a derived enum can't have both members and non-member attributes."}]}
+{"messages": [{"role": "user", "content": "What is __init_subclass__ hook?"}, {"role": "silicat", "content": "__init_subclass__() is called when a subclass is created; useful for enforcement."}]}
+{"messages": [{"role": "user", "content": "How do you use __init_subclass__?"}, {"role": "silicat", "content": "Define __init_subclass__() in a class to validate subclass creation."}]}
+{"messages": [{"role": "user", "content": "What is __set_name__?"}, {"role": "silicat", "content": "__set_name__() in descriptors is called when attached to a class, receiving the attribute name."}]}
+{"messages": [{"role": "user", "content": "When is __set_name__ called?"}, {"role": "silicat", "content": "__set_name__() is called during class creation, after class body execution."}]}
+{"messages": [{"role": "user", "content": "How do you use __set_name__ in descriptors?"}, {"role": "silicat", "content": "Store the attribute name in __set_name__() for debugging and validation."}]}
+{"messages": [{"role": "user", "content": "What is @classmethod vs @classmethod factory?"}, {"role": "silicat", "content": "@classmethod enables alternative constructors that return instances of the class."}]}
+{"messages": [{"role": "user", "content": "How do you make a class immutable?"}, {"role": "silicat", "content": "Use frozen=True in dataclass or override __setattr__ to raise FrozenInstanceError."}]}
+{"messages": [{"role": "user", "content": "What is FrozenInstanceError?"}, {"role": "silicat", "content": "An error raised when attempting to modify a frozen dataclass instance."}]}
+{"messages": [{"role": "user", "content": "How do you document magic methods?"}, {"role": "silicat", "content": "Add docstrings to magic methods like any other method for IDE support."}]}
