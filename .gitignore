@@ -20,3 +20,4 @@ data/*.tmp
 *.log
 nohup.out
 !checkpoints/latest_v3.pt.part*
+.last_push_v3
