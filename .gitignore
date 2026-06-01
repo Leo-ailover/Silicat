@@ -19,3 +19,4 @@ data/*.tmp
 .DS_Store
 *.log
 nohup.out
+!checkpoints/latest_v3.pt.part*

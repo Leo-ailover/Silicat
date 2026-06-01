@@ -21,6 +21,7 @@ from tqdm import tqdm
 from .chat_format import Message, format_for_training
 from .dataset import DATA_DIR, TOK_DIR, TOK_DIR_V2, load_split
 from .model import GPT, GPTConfig
+from .model_v3 import GPTV3, GPTConfigV3
 from .tokenizer import Tokenizer
 
 
@@ -60,6 +61,18 @@ def _lr_at(step: int, *, warmup: int, total: int, lr_max: float, lr_min: float) 
     return lr_min + 0.5 * (lr_max - lr_min) * (1.0 + math.cos(math.pi * t))
 
 
+def _lr_wsd(step: int, *, warmup: int, stable_end: int, total: int, lr_max: float, lr_min: float) -> float:
+    """Warmup-Stable-Decay: linear warmup → flat plateau → cosine decay."""
+    if step < warmup:
+        return lr_max * (step + 1) / max(1, warmup)
+    if step < stable_end:
+        return lr_max
+    if step >= total:
+        return lr_min
+    t = (step - stable_end) / max(1, total - stable_end)
+    return lr_min + 0.5 * (lr_max - lr_min) * (1.0 + math.cos(math.pi * t))
+
+
 def _build_cfg(vocab_size: int, args: argparse.Namespace) -> GPTConfig:
     return GPTConfig(
         vocab_size=vocab_size,
@@ -71,7 +84,19 @@ def _build_cfg(vocab_size: int, args: argparse.Namespace) -> GPTConfig:
     )
 
 
-def _save(model: GPT, cfg: GPTConfig, step: int, name: str = "latest") -> None:
+def _build_cfg_v3(vocab_size: int, args: argparse.Namespace) -> GPTConfigV3:
+    return GPTConfigV3(
+        vocab_size=vocab_size,
+        block_size=args.block_size,
+        n_layer=args.n_layer,
+        n_head=args.n_head,
+        n_kv_head=getattr(args, "n_kv_head", 4),
+        n_embd=args.n_embd,
+        dropout=args.dropout,
+    )
+
+
+def _save(model, cfg, step: int, name: str = "latest") -> None:
     CKPT_DIR.mkdir(parents=True, exist_ok=True)
     path = CKPT_DIR / f"{name}.pt"
     torch.save(
@@ -89,15 +114,25 @@ def pretrain(args: argparse.Namespace) -> None:
     device = args.device or _device()
     print(f"device: {device}")
 
-    tok_dir = TOK_DIR_V2 if args.v2 else TOK_DIR
+    tok_dir = TOK_DIR_V2 if (args.v2 or args.v3) else TOK_DIR
     tok = Tokenizer(tok_dir)
-    cfg = _build_cfg(tok.vocab_size, args)
-    model = GPT(cfg).to(device)
+
+    if args.v3:
+        cfg = _build_cfg_v3(tok.vocab_size, args)
+        model = GPTV3(cfg).to(device)
+        ckpt_name = "latest_v3"
+    elif args.v2:
+        cfg = _build_cfg(tok.vocab_size, args)
+        model = GPT(cfg).to(device)
+        ckpt_name = "latest_v2"
+    else:
+        cfg = _build_cfg(tok.vocab_size, args)
+        model = GPT(cfg).to(device)
+        ckpt_name = "latest"
     print(f"params: {model.num_params():,}")
 
-    ckpt_name = "latest_v2.pt" if args.v2 else "latest.pt"
-    if args.resume and (CKPT_DIR / ckpt_name).exists():
-        ck = torch.load(CKPT_DIR / ckpt_name, map_location=device)
+    if args.resume and (CKPT_DIR / f"{ckpt_name}.pt").exists():
+        ck = torch.load(CKPT_DIR / f"{ckpt_name}.pt", map_location=device, weights_only=False)
         model.load_state_dict(ck["model"])
         start_step = ck.get("step", 0)
         print(f"resumed from step {start_step}")
@@ -105,21 +140,21 @@ def pretrain(args: argparse.Namespace) -> None:
         start_step = 0
 
     optim = model.configure_optimizer(args.lr, args.weight_decay)
-    train_data = load_split("train", v2=args.v2)
-    val_data = load_split("val", v2=args.v2)
+    train_data = load_split("train", v2=(args.v2 or args.v3))
+    val_data = load_split("val", v2=(args.v2 or args.v3))
 
     use_amp = device == "cuda" and args.amp
     scaler = torch.amp.GradScaler("cuda", enabled=use_amp)
 
+    stable_end = int(args.max_steps * 0.8)  # WSD: 80% stable, 20% decay
     t0 = time.time()
     for step in range(start_step, args.max_steps):
-        lr = _lr_at(
-            step,
-            warmup=args.warmup,
-            total=args.max_steps,
-            lr_max=args.lr,
-            lr_min=args.lr * 0.1,
-        )
+        if args.wsd:
+            lr = _lr_wsd(step, warmup=args.warmup, stable_end=stable_end,
+                         total=args.max_steps, lr_max=args.lr, lr_min=args.lr * 0.1)
+        else:
+            lr = _lr_at(step, warmup=args.warmup, total=args.max_steps,
+                        lr_max=args.lr, lr_min=args.lr * 0.1)
         for g in optim.param_groups:
             g["lr"] = lr
 
@@ -135,7 +170,7 @@ def pretrain(args: argparse.Namespace) -> None:
 
         if step % args.log_interval == 0:
             dt = time.time() - t0
-            print(f"step {step:>6} | loss {loss.item():.4f} | lr {lr:.2e} | {dt:.1f}s")
+            print(f"step {step:>6} | loss {loss.item():.4f} | lr {lr:.2e} | {dt:.1f}s", flush=True)
 
         if step > 0 and step % args.eval_interval == 0:
             model.eval()
@@ -145,11 +180,11 @@ def pretrain(args: argparse.Namespace) -> None:
                     vx, vy = _get_batch(val_data, args.batch_size, args.block_size, device)
                     _, vl = model(vx, targets=vy)
                     losses.append(vl.item())
-                print(f"  eval loss: {sum(losses) / len(losses):.4f}")
+                print(f"  eval loss: {sum(losses) / len(losses):.4f}", flush=True)
             model.train()
-            _save(model, cfg, step, name="latest_v2" if args.v2 else "latest")
+            _save(model, cfg, step, name=ckpt_name)
 
-    _save(model, cfg, args.max_steps, name="latest_v2" if args.v2 else "latest")
+    _save(model, cfg, args.max_steps, name=ckpt_name)
 
 
 def _load_chat(path: Path, tok: Tokenizer, block_size: int) -> list[tuple[list[int], list[int]]]:
@@ -172,17 +207,27 @@ def _load_chat(path: Path, tok: Tokenizer, block_size: int) -> list[tuple[list[i
 def chat(args: argparse.Namespace) -> None:
     device = args.device or _device()
     print(f"device: {device}")
-    tok_dir = TOK_DIR_V2 if args.v2 else TOK_DIR
+    tok_dir = TOK_DIR_V2 if (args.v2 or args.v3) else TOK_DIR
     tok = Tokenizer(tok_dir)
 
-    ckpt_name = "latest_v2.pt" if args.v2 else "latest.pt"
-    ck_path = CKPT_DIR / ckpt_name
+    if args.v3:
+        base_name = "latest_v3"
+    elif args.v2:
+        base_name = "latest_v2"
+    else:
+        base_name = "latest"
+    ck_path = CKPT_DIR / f"{base_name}.pt"
     if not ck_path.exists():
         raise SystemExit(f"no {ck_path} — run pretrain first")
-    ck = torch.load(ck_path, map_location=device)
-    cfg = GPTConfig(**ck["config"])
-    cfg.dropout = args.dropout  # apply CLI dropout override
-    model = GPT(cfg).to(device)
+    ck = torch.load(ck_path, map_location=device, weights_only=False)
+    if args.v3:
+        cfg = GPTConfigV3(**ck["config"])
+        cfg.dropout = args.dropout
+        model = GPTV3(cfg).to(device)
+    else:
+        cfg = GPTConfig(**ck["config"])
+        cfg.dropout = args.dropout
+        model = GPT(cfg).to(device)
     model.load_state_dict(ck["model"])
     print(f"loaded pretrain checkpoint from step {ck.get('step', '?')}")
 
@@ -218,11 +263,11 @@ def chat(args: argparse.Namespace) -> None:
 
     start_step = 0
     best_loss = float("inf")
-    sfx = "_v2" if args.v2 else ""
+    sfx = "_v3" if args.v3 else ("_v2" if args.v2 else "")
     chat_ckpt = CKPT_DIR / f"chat_latest{sfx}.pt"
     best_ckpt = CKPT_DIR / f"chat_best{sfx}.pt"
     if args.resume and chat_ckpt.exists():
-        ck2 = torch.load(chat_ckpt, map_location=device)
+        ck2 = torch.load(chat_ckpt, map_location=device, weights_only=False)
         model.load_state_dict(ck2["model"])
         optim_state = ck2.get("optim")
         if optim_state:
@@ -258,7 +303,7 @@ def chat(args: argparse.Namespace) -> None:
             print(f"  checkpoint saved at step {step}", flush=True)
 
     # Use the best checkpoint as final model
-    best = torch.load(best_ckpt, map_location=device)
+    best = torch.load(best_ckpt, map_location=device, weights_only=False)
     model.load_state_dict(best["model"])
     print(f"  best checkpoint was at step {best['step']} (loss {best['best_loss']:.4f})")
     _save(model, cfg, best["step"], name=f"latest{sfx}")
@@ -284,7 +329,10 @@ def _cli() -> None:
     p.add_argument("--amp", action="store_true")
     p.add_argument("--resume", action="store_true")
     p.add_argument("--chat-data", default="data/silicat_chat.jsonl")
-    p.add_argument("--v2", action="store_true", help="use v2 tokenizer (32k vocab) and data paths")
+    p.add_argument("--v2", action="store_true", help="use v2 tokenizer and data paths")
+    p.add_argument("--v3", action="store_true", help="use v3 model (RMSNorm/RoPE/GQA/SwiGLU)")
+    p.add_argument("--n-kv-head", type=int, default=4, help="GQA KV heads (v3 only)")
+    p.add_argument("--wsd", action="store_true", help="use Warmup-Stable-Decay scheduler")
     args = p.parse_args()
     if args.stage == "pretrain":
         pretrain(args)

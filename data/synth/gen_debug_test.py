@@ -1,0 +1,1387 @@
+"""Generate instruction/response training pairs for the Silicat debugging/testing domain."""
+import json
+
+examples = []
+
+def add(user, silicat):
+    examples.append({"messages": [
+        {"role": "user", "content": user},
+        {"role": "silicat", "content": silicat},
+    ]})
+
+def add_multi(turns):
+    msgs = []
+    for i, t in enumerate(turns):
+        msgs.append({"role": "user" if i % 2 == 0 else "silicat", "content": t})
+    examples.append({"messages": msgs})
+
+
+# ============================================================
+# TypeError: unsupported operand type(s)
+# ============================================================
+add(
+    "TypeError: unsupported operand type(s) for +: 'int' and 'str'",
+    "This happens when you try to add a number and a string directly. Python won't implicitly convert between them. Convert one to match the other:\n\n```python\nage = 30\nmsg = \"Age: \" + str(age)   # convert int to str\n# or\ntotal = 5 + int(\"10\")       # convert str to int\n```\n\nUse `str(...)` if you want concatenation, or `int(...)`/`float(...)` if you want arithmetic."
+)
+add(
+    "Why do I get \"unsupported operand type(s) for +: 'int' and 'str'\" when reading input()?",
+    "`input()` always returns a string, so `input() + 1` tries to add a str to an int. Cast it to a number first:\n\n```python\nn = int(input(\"Enter a number: \"))\nprint(n + 1)\n```\n\nIf the user might type a decimal, use `float(input(...))` instead."
+)
+add(
+    "TypeError: unsupported operand type(s) for -: 'str' and 'int'",
+    "You're subtracting an int from a string. Strings don't support subtraction. The string is probably a number you read from input or a file. Convert it first:\n\n```python\nqty = int(\"100\")\nremaining = qty - 5\n```"
+)
+add(
+    "I'm getting unsupported operand type(s) for *: 'NoneType' and 'int'",
+    "One of your operands is `None`. That usually means a function returned nothing (no `return`) or a variable was never assigned a value. Check what produced the `None`:\n\n```python\ndef get_price():\n    return 10   # make sure you actually return a value\n\ntotal = get_price() * 3\n```\n\nAdd a `print()` right before the failing line to see which value is `None`."
+)
+add(
+    "unsupported operand type(s) for /: 'list' and 'int'",
+    "You're trying to divide a whole list by a number, which isn't defined. You probably meant to divide each element, or you meant to use a single element:\n\n```python\nnums = [10, 20, 30]\nhalved = [x / 2 for x in nums]   # divide each element\n# or\nfirst = nums[0] / 2              # divide one element\n```"
+)
+add(
+    "TypeError: can only concatenate str (not \"int\") to str",
+    "This is the string version of the same problem: you tried `\"text\" + number`. You can only concatenate strings with strings. Convert the number, or use an f-string:\n\n```python\ncount = 3\nprint(\"You have \" + str(count) + \" items\")\n# cleaner:\nprint(f\"You have {count} items\")\n```"
+)
+add(
+    "can only concatenate list (not \"int\") to list",
+    "You tried `mylist + 5`. To add a single element use `append`; to add several use another list:\n\n```python\nitems = [1, 2, 3]\nitems.append(5)        # add one element\nitems = items + [5]    # concatenate with a list\n```"
+)
+add(
+    "can only concatenate str (not \"list\") to str error",
+    "You're adding a list to a string. If you want to join the list into the string, use `''.join()` (its elements must be strings):\n\n```python\nparts = [\"a\", \"b\", \"c\"]\nresult = \"start \" + \"\".join(parts)\n```"
+)
+
+# ============================================================
+# TypeError: not callable / not subscriptable / not iterable
+# ============================================================
+add(
+    "TypeError: 'int' object is not callable",
+    "You used parentheses on something that isn't a function, or you shadowed a built-in. A very common cause is naming a variable the same as a function:\n\n```python\n# BUG\nsum = 10\ntotal = sum([1, 2, 3])  # 'sum' is now an int, not the built-in\n\n# FIX: rename the variable\ntotal_so_far = 10\ntotal = sum([1, 2, 3])\n```\n\nAlso check you didn't write `x(2)` when you meant `x * 2`."
+)
+add(
+    "'list' object is not callable",
+    "You wrote `something()` where `something` is a list. Often it's because you named a variable `list` and overwrote the built-in, or you used `()` instead of `[]` for indexing:\n\n```python\nrows = [10, 20, 30]\nprint(rows[0])   # use square brackets to index, not rows(0)\n```\n\nIf you shadowed the `list` built-in, rename your variable."
+)
+add(
+    "TypeError: 'str' object is not callable",
+    "You called a string like a function: `name()`. Usually you shadowed a function name with a string, or wrote `len` as `len = \"...\"` earlier. Check for an accidental assignment like `str = \"hi\"` and rename it. Also make sure `len(x)` isn't written as `len(x)()`."
+)
+add(
+    "'dict' object is not callable",
+    "You used `()` on a dict instead of `[]`. Dictionary lookups use square brackets:\n\n```python\nuser = {\"name\": \"Sam\"}\nprint(user[\"name\"])   # not user(\"name\")\n```"
+)
+add(
+    "TypeError: 'int' object is not subscriptable",
+    "You used `[]` indexing on an integer, e.g. `n[0]`. Only sequences (lists, strings, tuples) and mappings support indexing. Check the variable's real type:\n\n```python\nn = 42\n# n[0]            # error\ndigits = str(n)\nprint(digits[0])   # '4'  -- index the string instead\n```"
+)
+add(
+    "'NoneType' object is not subscriptable",
+    "Your variable is `None`, then you tried `x[0]` or `x[\"key\"]`. Common cause: a method like `list.sort()` or `dict.get()` that returned `None`, or a function with no `return`. For example:\n\n```python\n# BUG: sort() returns None\nnums = [3, 1, 2].sort()\nprint(nums[0])    # nums is None\n\n# FIX: sort in place, then index\nnums = [3, 1, 2]\nnums.sort()\nprint(nums[0])\n```"
+)
+add(
+    "TypeError: 'float' object is not subscriptable",
+    "You're indexing a float with `[]`. Floats aren't sequences. If you need a digit or character, convert to a string first:\n\n```python\nx = 3.14\ns = str(x)\nprint(s[0])   # '3'\n```"
+)
+add(
+    "TypeError: 'int' object is not iterable",
+    "You used an integer where Python expected something to loop over, e.g. `for i in 5:`. Use `range()` to iterate a number of times:\n\n```python\nfor i in range(5):\n    print(i)\n```"
+)
+add(
+    "'NoneType' object is not iterable",
+    "You tried to loop over, unpack, or `list()` something that is `None`. Often a function returned `None` (forgot a `return`). For example:\n\n```python\ndef get_items():\n    return []      # return a list, not nothing\n\nfor item in get_items():\n    print(item)\n```\n\nAlso check that you're not unpacking like `a, b = func()` when `func()` returns `None`."
+)
+add(
+    "TypeError: cannot unpack non-iterable int object",
+    "You tried `a, b = something` where `something` is a single int, not a pair. Make sure the right side is a sequence with the right number of elements:\n\n```python\npoint = (3, 4)\nx, y = point   # works\n```\n\nIf a function returns one value, you can't unpack it into two names."
+)
+
+# ============================================================
+# KeyError
+# ============================================================
+add(
+    "I get a KeyError when accessing a dictionary",
+    "A `KeyError` means the key you asked for doesn't exist in the dict. Either the key name is wrong/misspelled, or it was never added. Use `.get()` to avoid the crash and supply a default:\n\n```python\nuser = {\"name\": \"Ada\"}\nemail = user.get(\"email\", \"unknown\")   # no KeyError\n```\n\nOr check first with `if \"email\" in user:`."
+)
+add(
+    "KeyError: 'age'",
+    "The dictionary has no key `'age'`, so `d['age']` fails. Verify the key exists and is spelled exactly right (keys are case-sensitive). Safe access:\n\n```python\nage = d.get(\"age\")        # returns None if missing\nage = d.get(\"age\", 0)     # or a default\n```\n\nPrint `d.keys()` to see what's actually there."
+)
+add(
+    "Why does my code raise KeyError when the key looks like it's there?",
+    "Common reasons: the key has trailing whitespace, different case, or is a string `\"1\"` vs int `1`. They are distinct keys. Inspect the real keys and their types:\n\n```python\nfor k in d:\n    print(repr(k), type(k))\n```\n\n`repr()` reveals hidden whitespace; the type check catches `\"1\"` vs `1` mismatches."
+)
+add(
+    "KeyError in a loop building a counter dict",
+    "You're doing `counts[word] += 1` before the key exists. The first time a word appears, there's no entry to increment. Initialize it, or use `collections.Counter` / `defaultdict`:\n\n```python\nfrom collections import defaultdict\ncounts = defaultdict(int)\nfor word in words:\n    counts[word] += 1\n```\n\nOr `counts[word] = counts.get(word, 0) + 1`."
+)
+add(
+    "How do I handle a KeyError gracefully?",
+    "Either avoid it with `.get()`/`in`, or catch it with try/except when the key truly might be missing:\n\n```python\ntry:\n    value = config[\"timeout\"]\nexcept KeyError:\n    value = 30   # fallback\n```\n\nPrefer `.get(\"timeout\", 30)` for simple defaults; use try/except when you need to do more on the missing-key path."
+)
+
+# ============================================================
+# IndexError / list index out of range
+# ============================================================
+add(
+    "why does my code say list index out of range",
+    "You asked for an index that doesn't exist in the list. Indices go from `0` to `len(list) - 1`, so the last item is `list[len(list)-1]`, i.e. `list[-1]`. If the list is shorter than you think (or empty), the index is out of range:\n\n```python\nitems = [10, 20, 30]\nprint(items[2])    # 30, the last valid index\nprint(items[-1])   # 30, safer way to get the last item\n```\n\nCheck `len(items)` before indexing, and remember loops should use `range(len(items))`."
+)
+add(
+    "IndexError: list index out of range",
+    "An `IndexError` means you indexed past the end of the sequence. Frequent causes: off-by-one in a loop (`range(len(x)+1)`), assuming a list has items when it's empty, or hardcoding an index that isn't always present. Guard it:\n\n```python\nif items:\n    print(items[0])\nelse:\n    print(\"empty\")\n```"
+)
+add(
+    "I get IndexError: string index out of range",
+    "Same idea as lists but for strings: you accessed a character position that doesn't exist. An empty string has no index `0`. Check the length first:\n\n```python\ns = input(\"text: \")\nif s:\n    print(s[0])\n```"
+)
+add(
+    "list index out of range in a for loop using range(len())",
+    "If you modify the list while iterating over `range(len(list))`, the length changes and an old index goes out of range. Don't mutate a list while indexing it by its original length. Build a new list instead:\n\n```python\nkept = [x for x in items if x > 0]\n```\n\nIf you must remove items, iterate over a copy: `for x in items[:]:`."
+)
+add(
+    "IndexError when splitting a line and accessing parts[1]",
+    "The line didn't contain the separator, so `split()` returned a single-element list and `parts[1]` doesn't exist (e.g. a blank line at the end of a file). Check before indexing:\n\n```python\nparts = line.split(\",\")\nif len(parts) >= 2:\n    name, value = parts[0], parts[1]\n```"
+)
+add(
+    "tuple index out of range error",
+    "You indexed a tuple beyond its size, or a regex/format operation produced fewer groups than expected. Check the tuple length:\n\n```python\nt = (1, 2)\nprint(len(t))   # 2 -> valid indices are 0 and 1\n```\n\nWith string formatting, this also appears as `IndexError: Replacement index N out of range` when there are fewer args than `{}` placeholders."
+)
+
+# ============================================================
+# AttributeError
+# ============================================================
+add(
+    "AttributeError: 'NoneType' object has no attribute 'append'",
+    "Your variable is `None`, then you called `.append()` on it. A classic cause is assigning the result of an in-place method:\n\n```python\n# BUG: append returns None\nitems = [].append(5)   # items is None\n\n# FIX\nitems = []\nitems.append(5)\n```\n\nMethods like `append`, `sort`, `extend`, `update` modify in place and return `None`."
+)
+add(
+    "AttributeError: 'str' object has no attribute 'append'",
+    "Strings are immutable and have no `append`. You probably wanted a list, or you meant to concatenate. To grow a string use `+=`; to collect items use a list:\n\n```python\ns = \"ab\"\ns += \"c\"          # 'abc'\n\nbucket = []\nbucket.append(\"c\")\n```"
+)
+add(
+    "AttributeError: 'list' object has no attribute 'split'",
+    "`split` is a string method, but your variable is already a list. You may have split once already, or read lines as a list. If you have a list of strings and want to split each, loop:\n\n```python\nlines = [\"a,b\", \"c,d\"]\nrows = [line.split(\",\") for line in lines]\n```"
+)
+add(
+    "'dict' object has no attribute 'append'",
+    "Dicts don't have `append`; that's for lists. To add to a dict, assign a key. To add to a list value inside a dict, append to that value:\n\n```python\nd = {\"items\": []}\nd[\"items\"].append(5)   # append to the list value\nd[\"new\"] = 1            # add a new key\n```"
+)
+add(
+    "AttributeError: 'int' object has no attribute 'something'",
+    "You're calling a method on an int that doesn't exist (ints have very few methods). Usually the variable isn't the type you expect. Print `type(x)` right before the failing line to confirm what it really is, then handle accordingly."
+)
+add(
+    "module 'X' has no attribute 'Y'",
+    "Either you misspelled the name, the attribute lives in a submodule you didn't import, or your own file is named the same as the library (shadowing it). Check for a local `X.py` file and rename it. Also confirm the name exists with `dir(X)`."
+)
+add(
+    "AttributeError: 'NoneType' object has no attribute 'group' with regex",
+    "`re.search`/`re.match` return `None` when there's no match, so `.group()` on the result fails. Check the match before using it:\n\n```python\nimport re\nm = re.search(r\"\\d+\", text)\nif m:\n    print(m.group())\nelse:\n    print(\"no match\")\n```"
+)
+
+# ============================================================
+# NameError
+# ============================================================
+add(
+    "NameError: name 'x' is not defined",
+    "Python doesn't recognize the name `x`. Causes: you misspelled it, used it before assigning it, defined it in another scope (e.g. inside a different function), or forgot to import it. Make sure it's assigned before use and spelled consistently:\n\n```python\nx = 10\nprint(x)\n```"
+)
+add(
+    "Why do I get NameError for a variable I clearly defined?",
+    "Common reasons: it was defined inside a function and you're using it outside (or vice versa), it was defined in an `if` branch that didn't run, or there's a typo/case difference (`Total` vs `total`). Define it at the outer scope or return it from the function so the caller can see it."
+)
+add(
+    "NameError: name 'true' is not defined",
+    "Python's boolean is capitalized: `True`, `False`, `None`. Lowercase `true`/`false`/`null` come from other languages (or JSON) and aren't valid Python literals:\n\n```python\nflag = True\nmissing = None\n```"
+)
+add(
+    "NameError when calling a function defined later in the file",
+    "If you call a function at module top level before its `def` runs, the name doesn't exist yet. Define functions before you call them, or put the call inside `if __name__ == '__main__':` at the bottom so all defs are loaded first:\n\n```python\ndef main():\n    helper()\n\ndef helper():\n    print(\"ok\")\n\nif __name__ == \"__main__\":\n    main()\n```"
+)
+add(
+    "NameError: name 'self' is not defined",
+    "`self` only exists inside instance methods, and it must be the first parameter. You either used `self` in a plain function or forgot to include it in the method signature:\n\n```python\nclass Dog:\n    def bark(self):       # self must be a parameter\n        print(self.name)\n```"
+)
+
+# ============================================================
+# ValueError
+# ============================================================
+add(
+    "ValueError: invalid literal for int() with base 10: 'abc'",
+    "You passed a string that isn't a valid integer to `int()`. The text `'abc'` (or something with spaces, a decimal point, or symbols) can't be parsed. Validate or handle it:\n\n```python\ntext = \"abc\"\ntry:\n    n = int(text)\nexcept ValueError:\n    print(f\"{text!r} is not a whole number\")\n```\n\nNote `int(\"3.5\")` also fails — use `int(float(\"3.5\"))` for decimals."
+)
+add(
+    "ValueError: invalid literal for int() with base 10: '3.14'",
+    "`int()` won't parse a string that contains a decimal point. Parse it as a float first, then convert:\n\n```python\nn = int(float(\"3.14\"))   # 3 (truncates toward zero)\n```"
+)
+add(
+    "ValueError: not enough values to unpack (expected 2, got 1)",
+    "You unpacked into more names than the right side provides. For example splitting a line with no separator yields one piece:\n\n```python\nline = \"key=value\"\nkey, value = line.split(\"=\")   # works: two parts\n\n# 'key' alone -> split gives ['key'] -> error\n```\n\nCheck the number of parts, or use `split(\"=\", 1)` and a length guard."
+)
+add(
+    "ValueError: too many values to unpack (expected 2)",
+    "The right side has more elements than the names on the left. If you only want the first two, slice or use star-unpacking:\n\n```python\na, b, *rest = [1, 2, 3, 4]   # a=1, b=2, rest=[3,4]\n```"
+)
+add(
+    "ValueError: list.remove(x): x not in list",
+    "You called `.remove()` for a value the list doesn't contain. `remove` raises if the item is absent. Check membership first:\n\n```python\nif item in items:\n    items.remove(item)\n```"
+)
+add(
+    "ValueError: math domain error",
+    "You passed a value outside a math function's valid domain, e.g. `math.sqrt(-1)` or `math.log(0)`. Validate the input, or use `cmath` for complex results:\n\n```python\nimport math\nx = -4\nif x >= 0:\n    print(math.sqrt(x))\nelse:\n    print(\"need a non-negative number\")\n```"
+)
+add(
+    "ValueError: substring not found",
+    "`str.index()` raises when the substring isn't present. Use `find()` (returns -1) or check with `in` first:\n\n```python\ntext = \"hello\"\nif \"z\" in text:\n    pos = text.index(\"z\")\nelse:\n    pos = -1\n```"
+)
+
+# ============================================================
+# ZeroDivisionError
+# ============================================================
+add(
+    "ZeroDivisionError: division by zero",
+    "You divided by zero (or used `%` / `//` with a zero divisor). Guard the divisor before dividing:\n\n```python\ndef safe_divide(a, b):\n    if b == 0:\n        return None      # or raise a clearer error\n    return a / b\n```"
+)
+add(
+    "ZeroDivisionError when computing an average",
+    "Your list is empty, so `len(list)` is 0 and `total / len(list)` divides by zero. Handle the empty case:\n\n```python\ndef average(nums):\n    if not nums:\n        return 0\n    return sum(nums) / len(nums)\n```"
+)
+add(
+    "I get ZeroDivisionError: float division by zero",
+    "Same root cause as integer division by zero — a divisor that is `0` or `0.0`. Check it before dividing, or wrap in try/except:\n\n```python\ntry:\n    rate = changed / total\nexcept ZeroDivisionError:\n    rate = 0.0\n```"
+)
+
+# ============================================================
+# FileNotFoundError
+# ============================================================
+add(
+    "FileNotFoundError: [Errno 2] No such file or directory: 'data.txt'",
+    "Python can't find the file at the path you gave. It's resolved relative to the current working directory, not the script's folder. Check the path and existence:\n\n```python\nimport os\nprint(os.getcwd())                 # where Python is looking\nprint(os.path.exists(\"data.txt\"))  # True/False\n```\n\nUse an absolute path, or build one from the script location with `pathlib`:\n\n```python\nfrom pathlib import Path\npath = Path(__file__).parent / \"data.txt\"\n```"
+)
+add(
+    "How do I handle a file that might not exist?",
+    "Catch `FileNotFoundError` around the open, or check first. The try/except is preferred (avoids a race condition):\n\n```python\ntry:\n    with open(\"config.json\") as f:\n        data = f.read()\nexcept FileNotFoundError:\n    data = \"\"   # default when missing\n```"
+)
+add(
+    "FileNotFoundError even though the file is right there",
+    "Most likely a working-directory mismatch: you run the script from a different folder than where the file lives. Build the path relative to the script:\n\n```python\nfrom pathlib import Path\nbase = Path(__file__).resolve().parent\nwith open(base / \"data.txt\") as f:\n    ...\n```\n\nAlso watch for a wrong extension (`data.txt` vs `data.txt.txt` on Windows)."
+)
+add(
+    "PermissionError when opening a file",
+    "You don't have rights to read/write that path, or the file is open elsewhere, or it's actually a directory. Check the mode and permissions, and make sure you're not opening a folder. On a locked file, close other programs using it; otherwise fix the path or run with appropriate permissions."
+)
+
+# ============================================================
+# ImportError / ModuleNotFoundError
+# ============================================================
+add(
+    "ModuleNotFoundError: No module named 'requests'",
+    "The package isn't installed in the interpreter you're running. Install it into that environment:\n\n```bash\npython -m pip install requests\n```\n\nUsing `python -m pip` guarantees it installs for the same Python you run your script with. If you use a virtualenv, activate it first."
+)
+add(
+    "ImportError: cannot import name 'X' from 'Y'",
+    "The module `Y` exists but doesn't define `X` (it was renamed/removed, you misspelled it, or there's a circular import). Check the correct name with `dir(Y)`, and check that two modules don't import each other at the top level. For circular imports, move the import inside the function that needs it."
+)
+add(
+    "ModuleNotFoundError: No module named 'mymodule' when it's in the same folder",
+    "Python searches `sys.path`, not necessarily your current directory, especially when run as a package or from another cwd. Run from the project root, or make it a package with an `__init__.py`, or adjust the import to be relative/absolute correctly. Quick check:\n\n```python\nimport sys; print(sys.path)\n```"
+)
+add(
+    "Why does importing my own file named random.py break things?",
+    "Naming your file `random.py` (or `email.py`, `json.py`, etc.) shadows the standard library module of the same name. Any `import random` then finds your file instead. Rename your file to something unique and delete the leftover `random.pyc`/`__pycache__`."
+)
+
+# ============================================================
+# IndentationError / SyntaxError / TabError
+# ============================================================
+add(
+    "IndentationError: expected an indented block",
+    "After a colon (`if`, `for`, `def`, etc.) Python requires an indented body. You left it empty or didn't indent. Indent the next line, or use `pass` as a placeholder:\n\n```python\nif x > 0:\n    print(\"positive\")   # indented body\n\ndef todo():\n    pass                 # placeholder\n```"
+)
+add(
+    "IndentationError: unexpected indent",
+    "A line is indented more than its context allows — there's no block reason for it to be indented. Remove the extra leading spaces so it lines up with its siblings. This often happens after pasting code with inconsistent spacing."
+)
+add(
+    "TabError: inconsistent use of tabs and spaces in indentation",
+    "You mixed tabs and spaces for indentation. Python 3 forbids this. Pick spaces (PEP 8 recommends 4) and convert tabs. In most editors, enable \"insert spaces for tabs\" and run a convert/retab command. The whole file should use one or the other consistently."
+)
+add(
+    "SyntaxError: invalid syntax",
+    "Python hit something it can't parse. The caret points at or just after the problem. Most common: a missing `:` after `if`/`for`/`def`, an unclosed bracket on the previous line, a stray `=` vs `==`, or using a reserved word as a name. Re-check the line above the caret too — unclosed `(` `[` `{` reports the error on the next line."
+)
+add(
+    "SyntaxError: invalid syntax on a print statement",
+    "If you wrote `print \"hello\"`, that's Python 2 syntax. In Python 3 `print` is a function and needs parentheses:\n\n```python\nprint(\"hello\")\n```"
+)
+add(
+    "SyntaxError: '(' was never closed",
+    "You opened a parenthesis (or `[`/`{`) and never closed it. Python keeps reading until end of input. Find the line shown and add the matching closing bracket. Mismatched brackets across lines are the usual cause; count your opens and closes."
+)
+add(
+    "SyntaxError: invalid syntax when using = in an if statement",
+    "Inside a condition you must use `==` for comparison; a single `=` is assignment and is a syntax error there:\n\n```python\nif x == 5:    # comparison\n    ...\n```"
+)
+add(
+    "SyntaxError: f-string expression part cannot include a backslash (Python 3.11)",
+    "Before Python 3.12, you can't put a backslash inside the `{...}` of an f-string. Compute the value outside the f-string:\n\n```python\nnl = \"\\n\"\ntext = f\"line1{nl}line2\"\n```"
+)
+add(
+    "SyntaxError: positional argument follows keyword argument",
+    "Once you pass a keyword argument in a call, every argument after it must also be keyword. Reorder so positional args come first:\n\n```python\nfunc(1, 2, verbose=True)     # ok\n# func(verbose=True, 1, 2)   # error\n```"
+)
+add(
+    "SyntaxError: cannot assign to literal",
+    "You put a literal on the left of `=`, like `5 = x` or `\"name\" = value`. The left side must be a variable name. You probably reversed the assignment; write `x = 5`."
+)
+
+# ============================================================
+# UnboundLocalError
+# ============================================================
+add(
+    "UnboundLocalError: local variable 'count' referenced before assignment",
+    "Because you assign to `count` somewhere in the function, Python treats it as local everywhere in that function — so reading it before the assignment fails, even if there's a global with the same name. Either initialize it locally, or declare `global`:\n\n```python\ncount = 0\ndef increment():\n    global count\n    count += 1\n```\n\nUsually it's cleaner to pass it in and return the new value instead of using `global`."
+)
+add(
+    "Why do I get UnboundLocalError when I have a global with that name?",
+    "Assigning to a name anywhere inside a function makes it local for the whole function body, shadowing the global. Reading it before that local assignment raises `UnboundLocalError`. Add `global name` (or `nonlocal` for enclosing scopes) if you really mean to rebind the outer variable, or avoid reassigning and just read it."
+)
+add(
+    "UnboundLocalError in a function that only sometimes sets a variable",
+    "If the variable is set inside an `if` that doesn't run, it never gets assigned, but Python still considers it local. Give it a default before the conditional:\n\n```python\ndef pick(x):\n    result = None        # default\n    if x > 0:\n        result = \"pos\"\n    return result\n```"
+)
+
+# ============================================================
+# RecursionError
+# ============================================================
+add(
+    "RecursionError: maximum recursion depth exceeded",
+    "Your function calls itself without ever reaching a base case (or the base case is wrong), so it recurses forever until the stack limit. Make sure there's a terminating condition that returns without recursing:\n\n```python\ndef factorial(n):\n    if n <= 1:        # base case\n        return 1\n    return n * factorial(n - 1)\n```\n\nFor deep-but-finite recursion, convert to a loop instead of raising the limit."
+)
+add(
+    "RecursionError in __getattr__ / __init__",
+    "Inside `__getattr__` or `__setattr__`, accessing an attribute the normal way re-triggers the same method, causing infinite recursion. Go through the base implementation:\n\n```python\nclass C:\n    def __setattr__(self, name, value):\n        super().__setattr__(name, value)   # avoid recursion\n```\n\nIn `__init__`, recursion usually means a property getter that reads its own attribute name instead of a private backing field."
+)
+add(
+    "My recursive function hits maximum recursion depth even though it should stop",
+    "Check the base case actually returns and the recursive call moves toward it. A common bug is forgetting `return` on the recursive call, or decrementing the wrong variable so the base case is never reached. Add a print of the argument at the top of the function to see whether it's converging."
+)
+
+# ============================================================
+# OverflowError, StopIteration, etc.
+# ============================================================
+add(
+    "OverflowError: math range error",
+    "A C-backed math function produced a value too large for a float (e.g. `math.exp(1000)`). Python ints are unbounded, but floats aren't. Use a different approach (log-space math) or check magnitudes before calling:\n\n```python\nimport math\nx = 1000\nresult = math.exp(x) if x < 700 else float(\"inf\")\n```"
+)
+add(
+    "StopIteration raised in my generator",
+    "Since PEP 479, raising `StopIteration` inside a generator turns into a `RuntimeError`. To end a generator, just `return` (don't `raise StopIteration`):\n\n```python\ndef gen():\n    yield 1\n    return        # ends the generator cleanly\n```"
+)
+add(
+    "TypeError: 'generator' object is not subscriptable",
+    "Generators are lazy and don't support indexing. Materialize to a list first if you need `[i]`, or use `itertools.islice`:\n\n```python\nfrom itertools import islice\ngen = (x*x for x in range(10))\nfirst = next(islice(gen, 0, 1))   # or list(gen)[0]\n```"
+)
+
+# ============================================================
+# Mutable default argument bug
+# ============================================================
+add(
+    "My function's default list keeps remembering values between calls",
+    "This is the classic mutable default argument bug. The default `[]` is created once at definition time and shared across all calls. Use `None` as the sentinel and create a fresh list inside:\n\n```python\ndef add_item(item, items=None):\n    if items is None:\n        items = []\n    items.append(item)\n    return items\n```"
+)
+add(
+    "def f(x, cache={}): is this a bug?",
+    "Yes — the dict is created once and shared by every call, so it accumulates state across calls (often surprising). If that's intentional caching, fine; otherwise use the `None` sentinel pattern:\n\n```python\ndef f(x, cache=None):\n    if cache is None:\n        cache = {}\n    ...\n```"
+)
+add(
+    "Why does my function accumulate results across calls when I pass a default list?",
+    "Default argument values are evaluated once, when the `def` executes, not on each call. A mutable default like `[]` or `{}` is therefore reused and keeps mutations. Switch to `None` and allocate inside the function body so each call gets a new object."
+)
+
+# ============================================================
+# Exception handling: try/except/else/finally
+# ============================================================
+add(
+    "How do I use try/except in Python?",
+    "Wrap code that might fail in `try`, and handle the failure in `except`. Catch the specific exception you expect:\n\n```python\ntry:\n    n = int(user_input)\nexcept ValueError:\n    print(\"Please enter a number\")\n```\n\nAvoid a bare `except:` — it hides bugs and even catches Ctrl+C."
+)
+add(
+    "What's the difference between except, else, and finally?",
+    "`except` runs only if a matching exception occurred. `else` runs only if the `try` block succeeded with no exception. `finally` always runs (success, exception, or early return) — use it for cleanup:\n\n```python\ntry:\n    f = open(\"x\")\nexcept FileNotFoundError:\n    print(\"missing\")\nelse:\n    data = f.read()   # only if open succeeded\nfinally:\n    print(\"done\")     # always runs\n```"
+)
+add(
+    "How do I catch multiple exception types?",
+    "List them in a tuple in a single `except`, or use separate `except` clauses if you handle them differently:\n\n```python\ntry:\n    risky()\nexcept (ValueError, TypeError) as e:\n    print(f\"bad input: {e}\")\nexcept KeyError:\n    print(\"missing key\")\n```"
+)
+add(
+    "Should I use a bare except?",
+    "Avoid `except:` and prefer catching specific exceptions. A bare except also catches `SystemExit` and `KeyboardInterrupt`, making your program impossible to stop and hiding real bugs. If you must catch broadly, use `except Exception:` and at least log it:\n\n```python\ntry:\n    work()\nexcept Exception as e:\n    logging.exception(\"work failed: %s\", e)\n    raise\n```"
+)
+add(
+    "How do I get the exception message in except?",
+    "Bind it with `as` and convert to str:\n\n```python\ntry:\n    int(\"x\")\nexcept ValueError as e:\n    print(f\"failed: {e}\")        # the message\n    print(type(e).__name__)      # 'ValueError'\n```"
+)
+add(
+    "How do I re-raise an exception after logging it?",
+    "Use a bare `raise` inside the except block — it preserves the original traceback:\n\n```python\ntry:\n    work()\nexcept Exception:\n    logging.exception(\"work failed\")\n    raise   # re-raise the same exception\n```"
+)
+add(
+    "What does 'finally' do if there's a return in try?",
+    "`finally` still runs before the function actually returns. Note that a `return` in `finally` will override the one in `try`, which is usually a bug to avoid:\n\n```python\ndef f():\n    try:\n        return 1\n    finally:\n        print(\"cleanup\")   # runs, then 1 is returned\n```"
+)
+add(
+    "Can I use try/except without specifying an exception type?",
+    "You can (`except:`), but you shouldn't in normal code. Catch what you expect, e.g. `except (OSError, ValueError):`. Use `except Exception:` if you need a broad catch that still lets `KeyboardInterrupt`/`SystemExit` through."
+)
+add(
+    "How do I retry an operation a few times on failure?",
+    "Loop with a try/except and break on success:\n\n```python\nimport time\nfor attempt in range(3):\n    try:\n        result = fetch()\n        break\n    except ConnectionError:\n        if attempt == 2:\n            raise\n        time.sleep(1)\n```"
+)
+
+# ============================================================
+# Raising / custom exceptions / chaining
+# ============================================================
+add(
+    "How do I raise an exception in Python?",
+    "Use `raise` with an exception instance and a helpful message:\n\n```python\ndef set_age(age):\n    if age < 0:\n        raise ValueError(f\"age must be non-negative, got {age}\")\n```\n\nPick the most specific built-in that fits (`ValueError`, `TypeError`, `KeyError`, ...) or define a custom one."
+)
+add(
+    "How do I create a custom exception class?",
+    "Subclass `Exception` (not `BaseException`). A simple subclass is usually enough:\n\n```python\nclass ConfigError(Exception):\n    \"\"\"Raised when configuration is invalid.\"\"\"\n\nraise ConfigError(\"missing 'host' key\")\n```\n\nGroup related ones under a common base so callers can catch the whole family with one `except`."
+)
+add(
+    "How do I add custom attributes to my exception?",
+    "Override `__init__`, call `super().__init__`, and store the extra data:\n\n```python\nclass HTTPError(Exception):\n    def __init__(self, status, message):\n        super().__init__(message)\n        self.status = status\n\ntry:\n    raise HTTPError(404, \"not found\")\nexcept HTTPError as e:\n    print(e.status, e)\n```"
+)
+add(
+    "What is exception chaining with 'raise from'?",
+    "`raise NewError(...) from original` links the two so the traceback shows the underlying cause explicitly. Use it when you wrap a low-level error in a domain-specific one:\n\n```python\ntry:\n    config = json.loads(text)\nexcept json.JSONDecodeError as e:\n    raise ConfigError(\"invalid config\") from e\n```"
+)
+add(
+    "What does 'During handling of the above exception, another exception occurred' mean?",
+    "An exception was raised while you were already inside an `except` (or `finally`) block handling a previous one. Python shows both. Often the second error is the real bug in your handler. If the new error is unrelated and you want to suppress the chaining, use `raise NewError(...) from None`."
+)
+add(
+    "How do I suppress the original exception in a chain?",
+    "Use `from None` to hide the context:\n\n```python\ntry:\n    risky()\nexcept KeyError:\n    raise ValueError(\"bad input\") from None\n```\n\nThis prevents the 'During handling...' message and shows only your new exception."
+)
+add(
+    "Should I raise ValueError or TypeError?",
+    "Raise `TypeError` when the argument is the wrong type (e.g. a str where an int is required). Raise `ValueError` when the type is right but the value is unacceptable (e.g. a negative count). This matches what callers expect from the standard library."
+)
+add(
+    "How do I make a custom exception hierarchy?",
+    "Define a base exception for your library/module, then subclass it for specific cases. Callers can catch the base to handle all of them:\n\n```python\nclass AppError(Exception):\n    pass\n\nclass NotFound(AppError):\n    pass\n\nclass Forbidden(AppError):\n    pass\n\ntry:\n    ...\nexcept AppError as e:   # catches NotFound and Forbidden too\n    handle(e)\n```"
+)
+add(
+    "Can I raise an exception with no message?",
+    "Yes, but a message helps debugging. You can also re-raise the current exception bare:\n\n```python\nraise ValueError              # no message (allowed)\nraise ValueError(\"explain\")   # better\nraise                         # re-raise current, inside except\n```"
+)
+
+# ============================================================
+# Debugging techniques
+# ============================================================
+add(
+    "How do I use the Python debugger?",
+    "Insert `breakpoint()` where you want to stop (Python 3.7+); it drops into pdb. Useful commands: `n` next line, `s` step into, `c` continue, `p expr` print, `l` list source, `q` quit:\n\n```python\ndef compute(x):\n    breakpoint()      # execution pauses here\n    return x * 2\n```"
+)
+add(
+    "What are the basic pdb commands?",
+    "At the `(Pdb)` prompt:\n- `n` execute next line (step over)\n- `s` step into a call\n- `c` continue until next breakpoint\n- `l` list nearby source\n- `p x` / `pp x` print/pretty-print a value\n- `w` show the stack (where)\n- `b 42` set a breakpoint at line 42\n- `q` quit\nType a variable name to evaluate it."
+)
+add(
+    "How do I add print debugging effectively?",
+    "Print the variable name and value with `repr` so you can see types and hidden whitespace, and label each print:\n\n```python\nprint(f\"{x=}\")           # Python 3.8+: shows 'x=...'\nprint(f\"items={items!r}\")\n```\n\nThe `=` specifier and `!r` (repr) are the two most useful tricks. Remove them or switch to `logging` once you're done."
+)
+add(
+    "How do I use logging instead of print for debugging?",
+    "Configure logging once and use level-appropriate calls. Unlike print, you can silence or redirect it without editing every line:\n\n```python\nimport logging\nlogging.basicConfig(level=logging.DEBUG)\nlog = logging.getLogger(__name__)\n\nlog.debug(\"x=%s\", x)\nlog.info(\"started\")\nlog.error(\"failed: %s\", err)\n```\n\nUse `log.exception(...)` inside an except block to include the traceback."
+)
+add(
+    "How do I read a Python traceback?",
+    "Read it bottom-up: the last line is the exception type and message — that's what went wrong. The frames above show the call stack, with the most recent (where it failed) at the bottom. Each frame names the file, line number, and the code on that line. Start at the bottom, find the first line that's *your* code, and inspect that line."
+)
+add(
+    "What's the best way to debug 'why is this value wrong'?",
+    "Bisect the computation: print or log the value at a few points between input and the wrong output to find where it diverges from what you expect. Confirm types with `type(x)` and exact contents with `repr(x)`. Once you've localized the bad step, set a `breakpoint()` there and inspect interactively."
+)
+add(
+    "How do I use assertions for debugging?",
+    "`assert` checks an invariant and raises `AssertionError` with an optional message if it's false:\n\n```python\ndef withdraw(balance, amount):\n    assert amount > 0, f\"amount must be positive, got {amount}\"\n    return balance - amount\n```\n\nUse asserts for internal sanity checks, not for validating user input — they're stripped when Python runs with `-O`."
+)
+add(
+    "How can I see all local variables when an error happens?",
+    "Run the script under pdb post-mortem: `python -m pdb script.py` then `c`, and when it crashes you land at the failing frame where you can inspect locals. Or in code, catch the exception and dump `locals()`:\n\n```python\nimport traceback\ntry:\n    run()\nexcept Exception:\n    traceback.print_exc()\n    # inspect locals here\n```"
+)
+add(
+    "How do I print a full traceback to a string?",
+    "Use `traceback.format_exc()` inside the except block:\n\n```python\nimport traceback\ntry:\n    work()\nexcept Exception:\n    tb = traceback.format_exc()\n    log.error(tb)\n```"
+)
+add(
+    "My breakpoint() does nothing, why?",
+    "`breakpoint()` honors the `PYTHONBREAKPOINT` environment variable. If it's set to `0`, breakpoints are disabled. Unset it or set it to the default:\n\n```bash\nunset PYTHONBREAKPOINT\n# or\nPYTHONBREAKPOINT=pdb.set_trace python script.py\n```"
+)
+add(
+    "How do I conditionally break in pdb?",
+    "Set a breakpoint with a condition so it only triggers when it matters:\n\n```python\n# at the (Pdb) prompt:\n# b 42, x > 100\n```\n\nIn code you can do `if cond: breakpoint()`."
+)
+
+# ============================================================
+# unittest
+# ============================================================
+add(
+    "How do I write a unit test with unittest?",
+    "Subclass `unittest.TestCase` and write methods starting with `test_`, using the assert helpers:\n\n```python\nimport unittest\n\ndef add(a, b):\n    return a + b\n\nclass TestAdd(unittest.TestCase):\n    def test_positive(self):\n        self.assertEqual(add(2, 3), 5)\n\nif __name__ == \"__main__\":\n    unittest.main()\n```"
+)
+add(
+    "How do I check that a function raises an exception in unittest?",
+    "Use `assertRaises` as a context manager:\n\n```python\nwith self.assertRaises(ValueError):\n    int(\"not a number\")\n```\n\nTo also check the message, use `assertRaisesRegex(ValueError, \"invalid literal\")`."
+)
+add(
+    "What does setUp do in unittest?",
+    "`setUp` runs before *each* test method, so you can create fresh fixtures without repetition. `tearDown` runs after each test for cleanup:\n\n```python\nclass TestThing(unittest.TestCase):\n    def setUp(self):\n        self.obj = Thing()\n    def test_a(self):\n        self.assertTrue(self.obj.ready)\n```\n\nUse `setUpClass`/`tearDownClass` (classmethods) for expensive one-time setup."
+)
+add(
+    "Difference between assertEqual and assertIs in unittest?",
+    "`assertEqual(a, b)` checks `a == b` (equal values). `assertIs(a, b)` checks `a is b` (same object identity). Use `assertIs(x, None)` / `assertIsNone(x)` for None, and `assertEqual` for value comparisons."
+)
+add(
+    "How do I run a single unittest test from the command line?",
+    "Use dotted path to the test:\n\n```bash\npython -m unittest tests.test_mymod.TestAdd.test_positive\n```\n\nDrop the trailing parts to run the whole class or module. Add `-v` for verbose output."
+)
+add(
+    "What unittest assertions are there besides assertEqual?",
+    "Common ones: `assertTrue`/`assertFalse`, `assertIn`/`assertNotIn`, `assertIsNone`/`assertIsNotNone`, `assertIsInstance`, `assertGreater`/`assertLess`, `assertAlmostEqual` (for floats), `assertRaises`, and `assertListEqual`/`assertDictEqual`. Prefer the specific one — it gives a clearer failure message than `assertTrue(a == b)`."
+)
+add(
+    "How do I compare floats in a test?",
+    "Don't use exact equality — floating point is imprecise. In unittest use `assertAlmostEqual`; in pytest use `pytest.approx`:\n\n```python\nself.assertAlmostEqual(0.1 + 0.2, 0.3, places=7)\n# pytest:\nassert 0.1 + 0.2 == pytest.approx(0.3)\n```"
+)
+add(
+    "How do I skip a test in unittest?",
+    "Use the skip decorators:\n\n```python\nimport unittest\n\nclass T(unittest.TestCase):\n    @unittest.skip(\"not implemented yet\")\n    def test_todo(self):\n        ...\n\n    @unittest.skipIf(sys.platform == \"win32\", \"posix only\")\n    def test_posix(self):\n        ...\n```"
+)
+
+# ============================================================
+# pytest
+# ============================================================
+add(
+    "How do I write a test with pytest?",
+    "Write a plain function named `test_*` and use the bare `assert`. pytest rewrites asserts to show useful diagnostics:\n\n```python\ndef add(a, b):\n    return a + b\n\ndef test_add():\n    assert add(2, 3) == 5\n```\n\nRun with `pytest` in the project directory."
+)
+add(
+    "How do I test that code raises an exception in pytest?",
+    "Use `pytest.raises` as a context manager:\n\n```python\nimport pytest\n\ndef test_raises():\n    with pytest.raises(ValueError):\n        int(\"abc\")\n```\n\nTo check the message: `with pytest.raises(ValueError, match=\"invalid literal\"):`. You can also inspect `exc_info.value` after the block."
+)
+add(
+    "What is a pytest fixture?",
+    "A fixture is a function decorated with `@pytest.fixture` that provides setup (and optional teardown) to tests by being named as a parameter:\n\n```python\nimport pytest\n\n@pytest.fixture\ndef sample():\n    return {\"id\": 1, \"name\": \"x\"}\n\ndef test_name(sample):\n    assert sample[\"name\"] == \"x\"\n```\n\nUse `yield` inside the fixture to run cleanup code after the test."
+)
+add(
+    "How do I do setup and teardown in a pytest fixture?",
+    "Use `yield`: everything before it is setup, everything after runs as teardown:\n\n```python\n@pytest.fixture\ndef db():\n    conn = connect()\n    yield conn        # test runs here\n    conn.close()      # teardown\n```"
+)
+add(
+    "How do I parametrize a pytest test?",
+    "Use `@pytest.mark.parametrize` to run the same test with multiple inputs:\n\n```python\nimport pytest\n\n@pytest.mark.parametrize(\"a,b,expected\", [\n    (2, 3, 5),\n    (0, 0, 0),\n    (-1, 1, 0),\n])\ndef test_add(a, b, expected):\n    assert a + b == expected\n```\n\nEach tuple becomes a separate test case with its own pass/fail."
+)
+add(
+    "How do I share a fixture across multiple test files in pytest?",
+    "Put the fixture in a `conftest.py` at the appropriate directory level. pytest discovers it automatically — no import needed:\n\n```python\n# conftest.py\nimport pytest\n\n@pytest.fixture\ndef client():\n    return make_client()\n```"
+)
+add(
+    "What's the scope parameter on a pytest fixture?",
+    "It controls how often the fixture is created: `function` (default, per test), `class`, `module`, `package`, or `session` (once per run). Use a wider scope for expensive setup:\n\n```python\n@pytest.fixture(scope=\"session\")\ndef engine():\n    return create_engine(...)\n```"
+)
+add(
+    "How do I run only one pytest test?",
+    "Use `::` to select:\n\n```bash\npytest tests/test_math.py::test_add\npytest -k \"add and not slow\"     # by keyword expression\n```\n\n`-k` matches test names; `-m` selects by marker."
+)
+add(
+    "How do I mark a pytest test as expected to fail?",
+    "Use `@pytest.mark.xfail` (test runs but failure is allowed) or `@pytest.mark.skip` (not run at all):\n\n```python\n@pytest.mark.xfail(reason=\"known bug #123\")\ndef test_known_bug():\n    assert broken() == 1\n```"
+)
+add(
+    "How do I check the exception message in pytest.raises?",
+    "Either use `match=` (regex) or inspect the captured value:\n\n```python\nwith pytest.raises(ValueError, match=r\"must be positive\"):\n    set_count(-1)\n\nwith pytest.raises(ValueError) as exc:\n    set_count(-1)\nassert \"positive\" in str(exc.value)\n```"
+)
+add(
+    "My pytest assert fails but I can't see why",
+    "pytest shows the operands of a failing assert automatically. Make sure you're using a bare `assert a == b` (not `assert a == b, 'msg'` which hides the introspection less, but still works). For more detail run `pytest -vv` to see full diffs of long values."
+)
+
+# ============================================================
+# mypy / type checking
+# ============================================================
+add(
+    "How do I run mypy on my code?",
+    "Install it and point it at your file or package:\n\n```bash\npython -m pip install mypy\nmypy myscript.py\n```\n\nmypy reads your type hints and reports inconsistencies without running the code. Add `--strict` for the most thorough checks."
+)
+add(
+    "mypy error: Incompatible return value type (got \"None\", expected \"int\")",
+    "A code path returns `None` (or falls off the end) while the annotation promises an `int`. Either return an int on every path, or widen the type to `Optional[int]` if `None` is legitimate:\n\n```python\nfrom typing import Optional\n\ndef find(x) -> Optional[int]:\n    if x:\n        return 1\n    return None\n```"
+)
+add(
+    "mypy says Argument 1 has incompatible type \"str\"; expected \"int\"",
+    "You're passing a string where the function's annotation requires an int. Convert at the call site, or fix the value's type. mypy is pointing at a real type mismatch that would likely cause a runtime `TypeError`:\n\n```python\nprocess(int(value))   # convert before passing\n```"
+)
+add(
+    "How do I type-hint a function that can return None?",
+    "Use `Optional[T]` (i.e. `T | None`):\n\n```python\ndef find_user(uid: int) -> User | None:\n    ...\n```\n\nIn Python 3.10+ the `X | None` syntax works at runtime; `Optional[X]` from `typing` is equivalent."
+)
+add(
+    "mypy: error: Need type annotation for 'x'",
+    "mypy can't infer the type, usually for an empty container. Annotate it explicitly:\n\n```python\nresults: list[int] = []\nmapping: dict[str, int] = {}\n```"
+)
+add(
+    "How do I tell mypy to ignore one line?",
+    "Add a `# type: ignore` comment, ideally with the specific error code so it stays narrow:\n\n```python\nvalue = legacy_call()  # type: ignore[no-untyped-call]\n```\n\nUse it sparingly; a precise annotation is usually better than silencing."
+)
+add(
+    "mypy complains about Optional but I already checked for None",
+    "If you check in one place but use it in another, mypy may not narrow it. Keep the use inside the `if x is not None:` block, or assign to a local. An early return also narrows the rest of the function:\n\n```python\ndef f(x: int | None) -> int:\n    if x is None:\n        return 0\n    return x + 1   # mypy knows x is int here\n```"
+)
+
+# ============================================================
+# Buggy code + fix scenarios
+# ============================================================
+add(
+    "My code: `for i in range(len(a)): a.append(a[i])` runs forever. Why?",
+    "You're appending to the list while iterating by its growing length, so `len(a)` keeps increasing and the loop never ends. Iterate over a snapshot of the original items instead:\n\n```python\nfor item in list(a):     # copy first\n    a.append(item)\n```"
+)
+add(
+    "This returns None: `def double(x): result = x * 2`",
+    "The function computes `result` but never returns it, so it implicitly returns `None`. Add a `return`:\n\n```python\ndef double(x):\n    return x * 2\n```"
+)
+add(
+    "Bug: my `if x = 5:` won't run",
+    "`=` is assignment and isn't allowed in a condition (it's a SyntaxError). For comparison use `==`:\n\n```python\nif x == 5:\n    ...\n```"
+)
+add(
+    "My list comprehension `[x for x in nums if x % 2 = 0]` gives a syntax error",
+    "Same issue — use `==` for the equality test, not `=`:\n\n```python\nevens = [x for x in nums if x % 2 == 0]\n```"
+)
+add(
+    "Why does `print(0.1 + 0.2)` show 0.30000000000000004?",
+    "Floating-point numbers are stored in binary and can't represent 0.1 or 0.2 exactly, so their sum is slightly off. This is normal IEEE-754 behavior, not a Python bug. For display, round it; for money, use `decimal.Decimal`:\n\n```python\nprint(round(0.1 + 0.2, 2))   # 0.3\nfrom decimal import Decimal\nprint(Decimal(\"0.1\") + Decimal(\"0.2\"))   # 0.3\n```"
+)
+add(
+    "Comparing floats with == fails sometimes",
+    "Because of binary rounding, two floats that 'should' be equal may differ by a tiny amount. Compare with a tolerance instead of `==`:\n\n```python\nimport math\nif math.isclose(a, b, rel_tol=1e-9):\n    ...\n```"
+)
+add(
+    "My `while` loop never stops",
+    "The loop condition never becomes false — usually you forgot to update the variable it depends on. Make sure the body moves toward termination:\n\n```python\ni = 0\nwhile i < 5:\n    print(i)\n    i += 1     # this is what eventually stops the loop\n```"
+)
+add(
+    "Bug: I append to a list inside a loop but get the same object repeated",
+    "You're appending references to the *same* mutable object each iteration, so they all reflect later mutations. Create a new object each time:\n\n```python\nrows = []\nfor i in range(3):\n    row = []          # fresh list each iteration\n    row.append(i)\n    rows.append(row)\n```"
+)
+add(
+    "Why does modifying one row of my 2D list change every row?",
+    "You built the grid with `[[0]*3]*3`, which makes three references to the *same* inner list. Use a comprehension so each row is distinct:\n\n```python\ngrid = [[0] * 3 for _ in range(3)]\ngrid[0][0] = 1   # only affects row 0 now\n```"
+)
+add(
+    "My function modifies the caller's list unexpectedly",
+    "Lists are passed by reference, so mutating the parameter mutates the caller's list. If you want a separate copy, copy it inside (or at the call site):\n\n```python\ndef process(items):\n    items = items[:]   # work on a copy\n    items.sort()\n    return items\n```"
+)
+add(
+    "Bug: `x = y = []` then x.append(1) also changes y",
+    "Chained assignment binds both names to the *same* list. Mutating through one is visible through the other. Create separate lists:\n\n```python\nx = []\ny = []\n```"
+)
+add(
+    "Why is my integer division giving a float? `5 / 2` is 2.5",
+    "In Python 3, `/` is true division and always returns a float. For integer (floor) division use `//`:\n\n```python\nprint(5 / 2)    # 2.5\nprint(5 // 2)   # 2\n```"
+)
+add(
+    "My code says 'IndentationError' after an if with a comment only",
+    "A block can't contain only a comment — Python needs an actual statement. Add `pass` (or real code):\n\n```python\nif condition:\n    pass   # placeholder; a lone comment isn't enough\n```"
+)
+add(
+    "Bug: my dict comprehension overwrites entries",
+    "If two items produce the same key, the later one wins and earlier ones are lost — dict keys are unique. If you need to keep all values per key, group into lists instead:\n\n```python\nfrom collections import defaultdict\ngroups = defaultdict(list)\nfor item in items:\n    groups[key(item)].append(item)\n```"
+)
+add(
+    "Why does `is` sometimes work and sometimes not for comparing numbers?",
+    "`is` checks object identity, not equality. Small ints (-5..256) and some strings are cached, so `is` may *appear* to work, but it's unreliable. Use `==` for value comparison; reserve `is` for `None`, `True`, `False`:\n\n```python\nif x == 1000:    # value comparison\n    ...\nif y is None:    # identity, correct for None\n    ...\n```"
+)
+add(
+    "My boolean check `if x == True:` behaves oddly",
+    "Comparing to `True`/`False` explicitly is fragile (e.g. `1 == True` is True but `2 == True` is False). Just test truthiness:\n\n```python\nif x:        # instead of x == True\n    ...\nif not x:    # instead of x == False\n    ...\n```"
+)
+add(
+    "Bug: `def f(a, b=[]):` accumulates across calls",
+    "Classic mutable-default trap: the list is created once and shared. Use `None`:\n\n```python\ndef f(a, b=None):\n    if b is None:\n        b = []\n    b.append(a)\n    return b\n```"
+)
+add(
+    "Why does my recursive Fibonacci take forever for n=40?",
+    "Naive recursion recomputes the same subproblems exponentially. Memoize it (or iterate):\n\n```python\nfrom functools import lru_cache\n\n@lru_cache(maxsize=None)\ndef fib(n):\n    return n if n < 2 else fib(n-1) + fib(n-2)\n```"
+)
+add(
+    "My code: `total = 0` `for x in nums: total + x` but total stays 0",
+    "`total + x` computes a value and throws it away — you didn't assign it back. Use `+=`:\n\n```python\ntotal = 0\nfor x in nums:\n    total += x\n```"
+)
+add(
+    "Why does `nums.sort()` return None?",
+    "`list.sort()` sorts in place and returns `None` by design. To get a sorted copy, use the `sorted()` built-in:\n\n```python\nnums.sort()              # mutates nums, returns None\nordered = sorted(nums)   # returns a new sorted list\n```"
+)
+add(
+    "Bug: `result = mylist.append(x)` gives None",
+    "`append` mutates the list and returns `None`. Don't assign its result. Just call it:\n\n```python\nmylist.append(x)   # mylist now contains x\n```"
+)
+add(
+    "I removed items in a for loop and some got skipped",
+    "Removing items while iterating shifts indices, so the loop skips the element after each removal. Iterate over a copy or build a new filtered list:\n\n```python\nitems = [x for x in items if keep(x)]\n# or\nfor x in items[:]:\n    if not keep(x):\n        items.remove(x)\n```"
+)
+add(
+    "Why does `str.replace` not change my string?",
+    "Strings are immutable; `replace` returns a *new* string and leaves the original unchanged. Reassign the result:\n\n```python\ns = s.replace(\"a\", \"b\")\n```"
+)
+add(
+    "Bug: my class attribute is shared between instances",
+    "You defined a mutable attribute at class level instead of in `__init__`, so all instances share it. Assign per-instance state in `__init__`:\n\n```python\nclass Bag:\n    def __init__(self):\n        self.items = []   # per-instance, not class-level\n```"
+)
+add(
+    "TypeError: __init__() takes 1 positional argument but 2 were given",
+    "Your `__init__` doesn't accept the argument you passed (it only has `self`). Add the parameter:\n\n```python\nclass Point:\n    def __init__(self, x):   # accept x\n        self.x = x\n\np = Point(5)\n```"
+)
+add(
+    "TypeError: method() missing 1 required positional argument: 'self'",
+    "You called the method on the class instead of an instance, e.g. `MyClass.method()`. Call it on an instance so `self` is supplied:\n\n```python\nobj = MyClass()\nobj.method()\n```"
+)
+add(
+    "TypeError: f() got an unexpected keyword argument 'color'",
+    "You passed `color=...` but the function has no parameter named `color`. Check for a typo in the keyword, or add the parameter to the function signature. Inspect the signature to confirm the accepted names."
+)
+add(
+    "TypeError: f() takes 2 positional arguments but 3 were given",
+    "You called the function with more arguments than it accepts. Either remove the extra argument or add a parameter (or `*args`) to accept it. If this is a method, remember `self` counts as the first argument."
+)
+add(
+    "Why is my variable `None` after `x = print(...)`?",
+    "`print()` returns `None` — it outputs to the screen but produces no usable value. Don't assign its result. Keep the value separate:\n\n```python\nvalue = compute()\nprint(value)   # print for display, use 'value' for logic\n```"
+)
+add(
+    "Bug: comparing strings with numbers gives weird results",
+    "`\"10\" < \"9\"` is True because strings compare lexicographically (character by character). Convert to numbers to compare numerically:\n\n```python\nif int(\"10\") < int(\"9\"):\n    ...\n```"
+)
+add(
+    "My `sorted()` on mixed types raises TypeError",
+    "You can't order incomparable types like int and str together (`'<' not supported between instances of 'str' and 'int'`). Make them comparable, e.g. sort by a key that converts to one type:\n\n```python\nitems = [\"10\", 2, \"3\"]\nordered = sorted(items, key=lambda x: int(x))\n```"
+)
+add(
+    "TypeError: '<' not supported between instances of 'NoneType' and 'int'",
+    "Some element being compared is `None`, often from a function that didn't return a value or a missing dict field. Filter out or default the Nones before sorting/comparing:\n\n```python\nclean = [x for x in items if x is not None]\nclean.sort()\n```"
+)
+add(
+    "Why does my JSON parse fail with json.decoder.JSONDecodeError?",
+    "The text isn't valid JSON — common causes are single quotes instead of double, trailing commas, Python `None`/`True` instead of `null`/`true`, or an empty/partial response. Inspect the raw text and validate it. Catch the error to handle bad input:\n\n```python\nimport json\ntry:\n    data = json.loads(text)\nexcept json.JSONDecodeError as e:\n    print(f\"bad JSON at pos {e.pos}: {e.msg}\")\n```"
+)
+add(
+    "Bug: `if x in [1, 2, 3]:` always seems true",
+    "Make sure `x` is the value you think and the right type. `\"1\" in [1, 2, 3]` is False (str vs int). Print `repr(x)` and `type(x)` to confirm. If always true regardless, you may have written `if x or 1 in [...]:` by mistake — check operator precedence."
+)
+add(
+    "UnicodeDecodeError when reading a file",
+    "The file isn't in the encoding Python assumed (default often UTF-8). Open it with the correct encoding, or handle errors:\n\n```python\nwith open(\"data.csv\", encoding=\"latin-1\") as f:\n    text = f.read()\n```\n\nIf you don't know the encoding, `encoding=\"utf-8\", errors=\"replace\"` avoids the crash but may corrupt some characters."
+)
+add(
+    "My code raises 'dictionary changed size during iteration'",
+    "You added or removed keys while looping over the dict. Iterate over a copy of the keys (or items):\n\n```python\nfor key in list(d):     # copy of keys\n    if should_remove(key):\n        del d[key]\n```"
+)
+add(
+    "RuntimeError: Set changed size during iteration",
+    "Same issue as with dicts — you mutated the set while looping. Iterate over a copy:\n\n```python\nfor x in set(my_set):\n    if cond(x):\n        my_set.discard(x)\n```"
+)
+add(
+    "Why is my global variable not updating inside a function?",
+    "Assigning inside the function creates a *local* variable that shadows the global. To rebind the module-level variable, declare `global`:\n\n```python\ncounter = 0\ndef bump():\n    global counter\n    counter += 1\n```\n\nBetter design: return the new value and assign it at the call site."
+)
+add(
+    "Bug: closure in a loop all print the last value",
+    "The lambdas capture the *variable*, not its value at creation time, so they all see the final value of the loop variable. Bind it with a default argument:\n\n```python\nfuncs = [lambda i=i: i for i in range(3)]\nprint([f() for f in funcs])   # [0, 1, 2]\n```"
+)
+add(
+    "My except block catches the wrong exception",
+    "Order matters: a broad `except Exception` placed before a specific one will catch everything first, so the specific handler never runs. Put specific exceptions before general ones:\n\n```python\ntry:\n    ...\nexcept ValueError:\n    ...\nexcept Exception:\n    ...\n```"
+)
+add(
+    "TypeError: argument of type 'int' is not iterable",
+    "You used `in` against an int, like `5 in 12345`. `in` needs an iterable on the right. Convert to a string to check digits, or to a list/range:\n\n```python\nif \"3\" in str(12345):\n    ...\n```"
+)
+add(
+    "Why does `len()` give TypeError: object of type 'int' has no len()",
+    "`len()` only works on sized objects (str, list, dict, etc.), not numbers. To count digits, convert to a string first:\n\n```python\nnum_digits = len(str(12345))\n```"
+)
+add(
+    "AssertionError with no message — how do I debug it?",
+    "An `assert` failed but had no message, so you only get the line. Re-run with the line shown and add a message to that assert so it reports the offending value:\n\n```python\nassert total == expected, f\"total={total} expected={expected}\"\n```"
+)
+add(
+    "Why are my asserts being ignored?",
+    "Running Python with `-O` (optimize) strips all `assert` statements. Never rely on asserts for required runtime checks (like input validation); use explicit `if ... raise` for those, and reserve `assert` for debugging invariants."
+)
+
+# ============================================================
+# Multi-turn conversations (~25)
+# ============================================================
+add_multi([
+    "My function returns None and I don't know why.",
+    "The usual cause is a missing `return` statement — if a function falls off the end, it returns `None` implicitly. Can you paste the function so I can pinpoint it?",
+    "def square(n):\n    answer = n * n",
+    "Right, `square` computes `answer` but never returns it, so the call evaluates to `None`. Add a return:\n\n```python\ndef square(n):\n    return n * n\n```\n\nNow `square(4)` gives `16`.",
+    "Got it, that fixed it. Is `answer = n*n; return answer` worse?",
+    "Functionally identical — the extra variable just costs a line and a name. Either is fine; `return n * n` is more concise, while a named intermediate can help readability for complex expressions."
+])
+add_multi([
+    "I'm getting a KeyError in my word counter.",
+    "That happens when you increment `counts[word]` before the key exists. Can you show the loop?",
+    "for word in text.split():\n    counts[word] += 1",
+    "Exactly — on a word's first appearance there's no entry to add `1` to. Use a `defaultdict` so missing keys default to 0:\n\n```python\nfrom collections import defaultdict\ncounts = defaultdict(int)\nfor word in text.split():\n    counts[word] += 1\n```",
+    "Can I do it without importing anything?",
+    "Yes, use `dict.get` with a default:\n\n```python\ncounts = {}\nfor word in text.split():\n    counts[word] = counts.get(word, 0) + 1\n```\n\nOr `collections.Counter(text.split())` if you're open to one import — it's the most concise."
+])
+add_multi([
+    "TypeError: unsupported operand type(s) for +: 'int' and 'str'",
+    "You're adding an int and a str. Where does the string come from — `input()`, a file, or a literal? That determines whether to cast to int or to str.",
+    "It's from input(). I do `age = input()` then `age + 1`.",
+    "`input()` returns a string, so `age + 1` mixes str and int. Convert to int when you read it:\n\n```python\nage = int(input(\"Age: \"))\nprint(age + 1)\n```",
+    "Now I get ValueError if they type letters.",
+    "Right — `int()` raises `ValueError` on non-numeric text. Validate with try/except:\n\n```python\nraw = input(\"Age: \")\ntry:\n    age = int(raw)\nexcept ValueError:\n    print(\"Please enter a whole number\")\nelse:\n    print(age + 1)\n```"
+])
+add_multi([
+    "My recursive function gives RecursionError.",
+    "That means it never hits a base case (or the base case is wrong), so it recurses until the stack runs out. Can you paste it?",
+    "def countdown(n):\n    print(n)\n    countdown(n - 1)",
+    "There's no stopping condition, so it counts past 0 forever. Add a base case:\n\n```python\ndef countdown(n):\n    if n < 0:\n        return\n    print(n)\n    countdown(n - 1)\n```",
+    "Works now. For big n is recursion a bad idea?",
+    "Yes — Python's default recursion limit is around 1000, and each call uses stack space. For large `n` use a loop:\n\n```python\ndef countdown(n):\n    while n >= 0:\n        print(n)\n        n -= 1\n```"
+])
+add_multi([
+    "list index out of range, but only sometimes.",
+    "Intermittent IndexError usually means the list is occasionally shorter than expected — often an empty or malformed input. Where do you index it?",
+    "I read a CSV and do `name, age = row[0], row[1]` for each row.",
+    "Blank or trailing lines split into fewer fields, so `row[1]` doesn't exist. Guard the length:\n\n```python\nfor row in rows:\n    if len(row) < 2:\n        continue\n    name, age = row[0], row[1]\n```",
+    "There was indeed an empty last line. Should I strip the file first?",
+    "Filtering empty lines is cleaner:\n\n```python\nrows = [line for line in text.splitlines() if line.strip()]\n```\n\nThen each `row` is guaranteed non-empty before you split it."
+])
+add_multi([
+    "Why does my code say 'NoneType' object is not subscriptable?",
+    "A variable you indexed with `[]` is `None`. Often it's the result of an in-place method like `sort()` or a function that forgot to return. What's the line and how was that variable created?",
+    "data = mylist.sort() then I use data[0].",
+    "`list.sort()` sorts in place and returns `None`, so `data` is `None`. Sort the list, then index it:\n\n```python\nmylist.sort()\nfirst = mylist[0]\n```\n\nOr use `sorted()` which returns a new list: `data = sorted(mylist)`.",
+    "Great. Does sorted() change the original?",
+    "No — `sorted()` returns a new sorted list and leaves the original untouched, while `.sort()` mutates in place and returns `None`."
+])
+add_multi([
+    "My pytest test passes locally but I want to test that it raises an error.",
+    "Use `pytest.raises` as a context manager around the call that should fail. What function and exception are you expecting?",
+    "withdraw() should raise ValueError when amount is negative.",
+    "```python\nimport pytest\n\ndef test_negative_amount():\n    with pytest.raises(ValueError):\n        withdraw(100, -5)\n```\n\nThe test passes only if the call raises `ValueError`.",
+    "Can I also assert on the message?",
+    "Yes, use `match` (a regex searched in the message):\n\n```python\nwith pytest.raises(ValueError, match=r\"must be positive\"):\n    withdraw(100, -5)\n```"
+])
+add_multi([
+    "UnboundLocalError: local variable 'total' referenced before assignment.",
+    "Inside that function you assign to `total` somewhere, which makes Python treat it as local throughout — so reading it before that assignment fails. Can you show the function?",
+    "total is a global. In the function I do total += amount.",
+    "`total += amount` both reads and assigns `total`, so Python sees it as local and there's no local value yet. Declare it global if you really want to mutate the module-level one:\n\n```python\ndef add(amount):\n    global total\n    total += amount\n```",
+    "That works but feels hacky.",
+    "It is a bit — globals make code harder to follow. Cleaner is to pass it in and return the new value:\n\n```python\ndef add(total, amount):\n    return total + amount\n\ntotal = add(total, 10)\n```"
+])
+add_multi([
+    "I keep getting IndentationError after pasting code.",
+    "Pasting often mixes tabs and spaces. Is the error 'unexpected indent', 'expected an indented block', or 'inconsistent use of tabs and spaces'?",
+    "It says inconsistent use of tabs and spaces.",
+    "Your file mixes both for indentation, which Python 3 rejects. Convert everything to spaces (4 per level). In most editors there's a 'Convert indentation to spaces' / retab command; enable 'insert spaces for tab' too.",
+    "Done, now it's 'unexpected indent' on one line.",
+    "That line is indented more than its block requires. Remove the extra leading spaces so it aligns with the other statements at the same level. If it should start a new block, make sure the line above ends with a colon."
+])
+add_multi([
+    "My function modifies a list I passed in and I didn't expect that.",
+    "Python passes objects by reference, so mutating the parameter mutates the caller's object. Are you doing `.append`, `.sort`, or item assignment inside?",
+    "Yes I sort it: items.sort() inside the function.",
+    "`sort()` mutates in place, which the caller sees. Work on a copy if you want to leave the original alone:\n\n```python\ndef process(items):\n    items = sorted(items)   # new list\n    return items\n```",
+    "What if I want both behaviors?",
+    "Make copying explicit at the call site: pass `process(data[:])` for a copy, or `process(data)` to mutate. Document which functions mutate their arguments so callers aren't surprised."
+])
+add_multi([
+    "Why does mypy complain my function might return None?",
+    "Because one code path doesn't return a value while your annotation promises a concrete type. Can you paste the signature and body?",
+    "def find(xs, target) -> int:\n    for i, x in enumerate(xs):\n        if x == target:\n            return i",
+    "If `target` isn't found, the loop ends and the function returns `None`, contradicting `-> int`. Either return a sentinel like `-1`, or annotate it as optional:\n\n```python\ndef find(xs, target) -> int:\n    for i, x in enumerate(xs):\n        if x == target:\n            return i\n    return -1\n```",
+    "I'd rather return None when missing.",
+    "Then widen the return type so mypy is happy:\n\n```python\ndef find(xs, target) -> int | None:\n    for i, x in enumerate(xs):\n        if x == target:\n            return i\n    return None\n```"
+])
+add_multi([
+    "My code throws ValueError: invalid literal for int().",
+    "`int()` got a string it can't parse — letters, whitespace, a decimal point, or empty. What value is being converted?",
+    "It's reading numbers from a file, one per line.",
+    "A blank line or a value like '3.5' would break it. Strip and guard each line:\n\n```python\nnums = []\nfor line in lines:\n    line = line.strip()\n    if not line:\n        continue\n    try:\n        nums.append(int(line))\n    except ValueError:\n        print(f\"skipping non-integer: {line!r}\")\n```",
+    "Some lines really are decimals though.",
+    "Then parse as float (which accepts integers and decimals):\n\n```python\nnums.append(float(line))\n```\n\nUse `int(float(line))` if you specifically need whole numbers truncated."
+])
+add_multi([
+    "Help, my unittest won't run any tests.",
+    "Most often the methods aren't named `test_*`, the class doesn't subclass `unittest.TestCase`, or you didn't call `unittest.main()`. Can you paste the skeleton?",
+    "class MyTests(unittest.TestCase):\n    def check_add(self):\n        self.assertEqual(add(1,2), 3)",
+    "There's the issue: `unittest` only collects methods that start with `test_`. Rename `check_add` to `test_add`:\n\n```python\nclass MyTests(unittest.TestCase):\n    def test_add(self):\n        self.assertEqual(add(1, 2), 3)\n```",
+    "Now how do I run it?",
+    "Add the main guard and run the file, or use the module runner:\n\n```python\nif __name__ == \"__main__\":\n    unittest.main()\n```\n\nor from the shell: `python -m unittest -v your_file.py`."
+])
+add_multi([
+    "I get 'ModuleNotFoundError: No module named pandas'.",
+    "pandas isn't installed in the Python you're running. Install it into that interpreter:\n\n```bash\npython -m pip install pandas\n```\n\nUsing `python -m pip` ensures it goes to the same Python that runs your script.",
+    "I installed it but still get the error.",
+    "You likely installed it into a different interpreter/venv than the one running your code. Check which Python you're using:\n\n```bash\npython -c \"import sys; print(sys.executable)\"\n```\n\nThen run pip with that same executable, or activate the right virtualenv first.",
+    "Yeah, I had two Pythons. Activating the venv fixed it.",
+    "That's the usual culprit. Tip: always run `python -m pip install ...` from inside the activated venv so the package lands where your code looks for it."
+])
+add_multi([
+    "Why does my class share state between instances?",
+    "You probably defined a mutable attribute at the class level instead of inside `__init__`. Can you show the class?",
+    "class Cart:\n    items = []\n    def add(self, x):\n        self.items.append(x)",
+    "`items = []` is a class attribute shared by every instance, so all carts append to the same list. Create it per-instance in `__init__`:\n\n```python\nclass Cart:\n    def __init__(self):\n        self.items = []\n    def add(self, x):\n        self.items.append(x)\n```",
+    "Are class-level attributes ever okay?",
+    "Yes — for constants or defaults that you don't mutate (e.g. `MAX_SIZE = 100`). The trap is only with mutable objects you modify in place, since the mutation is shared across instances."
+])
+add_multi([
+    "My code crashes with AttributeError: 'NoneType' object has no attribute 'strip'.",
+    "Something that should be a string is `None`. Where does that value come from — `dict.get`, a regex, a function return?",
+    "From os.environ.get('NAME') then .strip().",
+    "`os.environ.get('NAME')` returns `None` when the variable isn't set, and you can't call `.strip()` on `None`. Provide a default or check:\n\n```python\nname = os.environ.get(\"NAME\", \"\").strip()\n```",
+    "I'd rather fail loudly if it's missing.",
+    "Then assert/raise with a clear message:\n\n```python\nname = os.environ.get(\"NAME\")\nif name is None:\n    raise RuntimeError(\"NAME environment variable is required\")\nname = name.strip()\n```"
+])
+add_multi([
+    "My test for an exception isn't catching it.",
+    "Are you using `assertRaises`/`pytest.raises` as a context manager, or calling the function outside the `with`? The call must be inside the block.",
+    "I wrote: self.assertRaises(ValueError, do_thing())",
+    "There's the bug — `do_thing()` runs immediately (and raises) before `assertRaises` sees it. Pass the callable without calling it, or use the context-manager form:\n\n```python\nself.assertRaises(ValueError, do_thing, arg1, arg2)\n# or\nwith self.assertRaises(ValueError):\n    do_thing(arg1, arg2)\n```",
+    "The context manager is clearer, thanks.",
+    "Agreed — and it lets you inspect the exception afterward via the `with self.assertRaises(ValueError) as cm:` then `cm.exception`."
+])
+add_multi([
+    "Why is 0.1 + 0.2 != 0.3 in my assertion?",
+    "Floating point can't store 0.1/0.2 exactly, so the sum is 0.30000000000000004. Exact `==` fails. Use a tolerance.",
+    "How do I write the assertion correctly?",
+    "In pytest use `approx`; in unittest use `assertAlmostEqual`:\n\n```python\nassert 0.1 + 0.2 == pytest.approx(0.3)\n# unittest\nself.assertAlmostEqual(0.1 + 0.2, 0.3)\n```",
+    "And if I need exact decimal math for money?",
+    "Use `decimal.Decimal` with string inputs so there's no binary rounding:\n\n```python\nfrom decimal import Decimal\nassert Decimal(\"0.1\") + Decimal(\"0.2\") == Decimal(\"0.3\")\n```"
+])
+add_multi([
+    "My program hangs and I can't tell where.",
+    "Likely an infinite loop or a blocking call. First, run it and press Ctrl+C — the traceback will point to the line it was stuck on. What does it show?",
+    "It points to my while loop condition.",
+    "Then the loop variable never changes to make the condition false. Add a print inside to watch it, and ensure the body moves toward termination:\n\n```python\nwhile not done:\n    print(f\"{done=}\")   # is this ever set True?\n    done = check()\n```",
+    "Ah, check() always returned False because of a typo.",
+    "Classic — the loop was correct but the exit condition never flipped. The Ctrl+C traceback plus a print of the condition variable is the fastest way to find these."
+])
+add_multi([
+    "I'm seeing 'During handling of the above exception, another exception occurred'.",
+    "That means a second error was raised inside your `except` (or `finally`) block while handling the first. The real bug is usually in the handler. Can you paste the try/except?",
+    "try:\n    val = d['x']\nexcept KeyError:\n    print('missing: ' + d['x'])",
+    "Your handler references `d['x']` again, which raises another `KeyError` — that's the chained exception. Don't re-access the missing key:\n\n```python\ntry:\n    val = d['x']\nexcept KeyError:\n    print(\"missing key: x\")\n```",
+    "Makes sense. How do I hide the first exception from the output?",
+    "If you raise a new one and want to drop the context, use `from None`:\n\n```python\nexcept KeyError:\n    raise ValueError(\"x is required\") from None\n```"
+])
+add_multi([
+    "My pytest fixture isn't being found.",
+    "If the test is in a different file from the fixture, the fixture must live in a `conftest.py` (auto-discovered) or be imported. Where is it defined?",
+    "It's in test_a.py and I use it in test_b.py.",
+    "Fixtures don't cross test files via import automatically. Move it to a `conftest.py` in the same directory:\n\n```python\n# conftest.py\nimport pytest\n\n@pytest.fixture\ndef client():\n    return make_client()\n```\n\nThen both `test_a.py` and `test_b.py` can request `client` by name.",
+    "Do I need to import conftest anywhere?",
+    "No — pytest finds `conftest.py` automatically based on directory location. Just name the fixture as a test parameter and it's injected."
+])
+add_multi([
+    "My code: I get 'TypeError: object of type int has no len()'.",
+    "`len()` only works on sized things like strings and lists, not numbers. What are you calling `len()` on?",
+    "len(number) where number is an int, I want digit count.",
+    "Convert to a string first; its length is the digit count:\n\n```python\ndigits = len(str(abs(number)))\n```\n\nThe `abs()` avoids counting a minus sign for negatives.",
+    "What about counting digits without converting to string?",
+    "Use base-10 logarithm (with a guard for 0):\n\n```python\nimport math\ndigits = 1 if number == 0 else math.floor(math.log10(abs(number))) + 1\n```\n\nThe string approach is simpler and less error-prone, though."
+])
+add_multi([
+    "My function works but it's really slow on big inputs.",
+    "Let's find the hotspot. What is it doing, and roughly how big are the inputs? A common cause is repeated membership checks against a list.",
+    "I check `if x in seen:` where seen is a list, in a loop over a million items.",
+    "That's O(n) per check, so the loop is O(n^2). Use a `set` for O(1) membership:\n\n```python\nseen = set()\nfor x in items:\n    if x in seen:\n        continue\n    seen.add(x)\n```",
+    "Huge speedup. Why is set faster?",
+    "Sets are hash tables, so `in` is average O(1), independent of size. Lists must scan element by element, which is O(n). For membership tests or dedup, sets (or dict keys) are the right tool."
+])
+add_multi([
+    "Why does my decorator break the function's name and docstring?",
+    "A decorator that returns a plain wrapper replaces `__name__`/`__doc__` with the wrapper's. Wrap the wrapper with `functools.wraps`. Can you show the decorator?",
+    "def timed(fn):\n    def inner(*a, **k):\n        return fn(*a, **k)\n    return inner",
+    "Right — `timed`-decorated functions all report as `inner`. Preserve metadata with `functools.wraps`:\n\n```python\nimport functools\n\ndef timed(fn):\n    @functools.wraps(fn)\n    def inner(*a, **k):\n        return fn(*a, **k)\n    return inner\n```",
+    "Now help.__doc__ shows correctly. Does this affect anything else?",
+    "`wraps` also copies `__name__`, `__qualname__`, `__module__`, and `__wrapped__`, which keeps introspection, debuggers, and tools like `inspect.signature` working correctly on the decorated function."
+])
+add_multi([
+    "I get 'TypeError: can't multiply sequence by non-int of type float'.",
+    "You multiplied a string or list by a float. Sequence repetition only works with an int (`'ab' * 3`). What are the operands?",
+    "I did '=' * 2.5 to draw a line.",
+    "`'=' * 2.5` is invalid because you can't repeat a string a fractional number of times. Use an int:\n\n```python\nline = \"=\" * int(2.5)   # repeats 2 times\n```",
+    "Actually I had a width that was a float by accident.",
+    "Then fix the source: make `width` an int where it's computed (e.g. `width = round(value)` or `int(value)`), so the repetition count is always an integer."
+])
+
+# Additional single-turn coverage to push count up
+add(
+    "TypeError: '>' not supported between instances of 'str' and 'int'",
+    "You're comparing a string and an int with `>`. They aren't orderable together. Convert so both sides are the same type:\n\n```python\nif int(score_str) > threshold:\n    ...\n```"
+)
+add(
+    "What does 'IndexError' mean exactly?",
+    "It means you accessed a sequence (list, tuple, string) at a position that doesn't exist — the index is negative-too-large or >= the length. Valid indices run from `0` to `len(x) - 1` (or `-len(x)` to `-1` for negative indexing). Check the length before indexing."
+)
+add(
+    "How do I find which line caused an exception?",
+    "Read the traceback bottom-up: the last `File \"...\", line N, in ...` frame before the exception message is where it was raised in your code. The lines above are the callers. Focus on the deepest frame that belongs to your own files."
+)
+add(
+    "TypeError: sequence item 0: expected str instance, int found",
+    "`str.join` requires all elements to be strings, but your iterable has an int. Convert each item first:\n\n```python\nnums = [1, 2, 3]\nresult = \", \".join(str(n) for n in nums)\n```"
+)
+add(
+    "Why does my except ValueError also need to catch TypeError?",
+    "If the same block can fail in two distinct ways (bad value vs wrong type), catch both. Group them in a tuple:\n\n```python\ntry:\n    n = int(x)\nexcept (ValueError, TypeError):\n    n = 0\n```"
+)
+add(
+    "How do I assert two lists are equal in pytest?",
+    "Just use `==`; pytest shows a diff on failure:\n\n```python\ndef test_lists():\n    assert sort_it([3, 1, 2]) == [1, 2, 3]\n```\n\nRun with `-vv` to see the full element-by-element diff for long lists."
+)
+add(
+    "How do I test a function that prints output?",
+    "Capture stdout with pytest's `capsys` fixture:\n\n```python\ndef test_greet(capsys):\n    greet(\"Sam\")\n    out = capsys.readouterr().out\n    assert out == \"Hello, Sam\\n\"\n```\n\nIn unittest, redirect with `unittest.mock.patch('sys.stdout')` or `contextlib.redirect_stdout`."
+)
+add(
+    "How do I mock a function in a test?",
+    "Use `unittest.mock.patch` to replace it during the test:\n\n```python\nfrom unittest.mock import patch\n\n@patch(\"mymodule.fetch\")\ndef test_uses_fetch(mock_fetch):\n    mock_fetch.return_value = {\"ok\": True}\n    assert run() is True\n    mock_fetch.assert_called_once()\n```\n\nPatch where the name is *used*, not where it's defined."
+)
+add(
+    "My mock isn't being used, the real function still runs.",
+    "You probably patched the wrong path. Patch the name in the module where it's looked up (imported into), not where it's originally defined. If `mymod` does `from utils import fetch`, patch `mymod.fetch`, not `utils.fetch`."
+)
+add(
+    "How do I test code that raises and check the exception attributes?",
+    "Capture the exception and inspect it:\n\n```python\nimport pytest\nwith pytest.raises(HTTPError) as exc_info:\n    request()\nassert exc_info.value.status == 404\n```"
+)
+add(
+    "ZeroDivisionError: integer division or modulo by zero",
+    "You used `//` or `%` with a zero right-hand side. Guard the divisor:\n\n```python\nif n != 0:\n    r = total % n\nelse:\n    r = 0\n```"
+)
+add(
+    "Why does catching Exception not catch KeyboardInterrupt?",
+    "`KeyboardInterrupt` and `SystemExit` inherit from `BaseException`, not `Exception`, by design — so normal `except Exception` lets them propagate and your program can still be interrupted/exited. That's intended; don't catch `BaseException` unless you really mean to."
+)
+add(
+    "How do I log an exception with its traceback?",
+    "Inside the except block, use `logging.exception` (it auto-includes the traceback at ERROR level):\n\n```python\nimport logging\ntry:\n    work()\nexcept Exception:\n    logging.exception(\"work failed\")\n```"
+)
+add(
+    "TypeError: 'NoneType' object is not callable",
+    "You're calling something that is `None`. Common causes: a decorator that forgot to return the wrapper, an attribute that was set to `None`, or assigning `func = None` somewhere. Check the value right before the call with `print(type(thing))`."
+)
+add(
+    "Why does my generator only work once?",
+    "Generators are single-use iterators — once exhausted they yield nothing more. If you need to iterate twice, recreate the generator or materialize it into a list:\n\n```python\nitems = list(gen())   # reuse 'items' as many times as you like\n```"
+)
+add(
+    "AttributeError: 'function' object has no attribute 'x'",
+    "You referenced a function object without calling it (forgot the `()`), then tried to access an attribute as if it were the return value. Call it first:\n\n```python\nresult = get_config()   # note the ()\nprint(result.x)\n```"
+)
+add(
+    "How do I debug a flaky test that fails randomly?",
+    "Flakiness usually comes from shared state, ordering dependence, timing/sleep, or randomness without a seed. Isolate it: run it alone (`pytest path::test -q`), seed any RNG, replace real time/network with mocks, and ensure fixtures reset state. Run it many times with `pytest --count` (via pytest-repeat) to reproduce."
+)
+add(
+    "OSError: [Errno 24] Too many open files",
+    "You're opening files (or sockets) without closing them, leaking descriptors. Always use `with` so they close automatically:\n\n```python\nwith open(path) as f:\n    data = f.read()\n```\n\nIf you open many in a loop, make sure each is in its own `with` block and not held in a list of open handles."
+)
+add(
+    "My assertEqual fails but the values look identical",
+    "They probably differ in type or hidden whitespace. Print `repr()` of both — `'5'` vs `5`, or trailing `'\\n'`, won't be equal. For example `assertEqual(\"5\\n\", \"5\")` fails. Strip/convert as needed before comparing."
+)
+add(
+    "How do I check the type of a variable while debugging?",
+    "Use `type(x)` for the exact class or `isinstance(x, T)` for a type-or-subclass check:\n\n```python\nprint(type(x), repr(x))\nif isinstance(x, (int, float)):\n    ...\n```\n\nPrefer `isinstance` in real logic; `type()` for quick inspection."
+)
+add(
+    "Why does my list have references not copies after multiplication?",
+    "`[obj] * n` makes n references to the *same* object. Mutating one shows in all. Build independent copies with a comprehension:\n\n```python\nrows = [list() for _ in range(n)]\n```"
+)
+add(
+    "ValueError: I/O operation on closed file",
+    "You're reading/writing a file after its `with` block ended (the file auto-closes at the end of the block). Do all I/O inside the `with`, or read everything into memory first:\n\n```python\nwith open(path) as f:\n    lines = f.readlines()   # read inside the block\nfor line in lines:          # use after, safely\n    ...\n```"
+)
+add(
+    "How do I make mypy check a function's argument types are used right?",
+    "Annotate the parameters and return, then run mypy; it flags mismatched calls:\n\n```python\ndef area(w: float, h: float) -> float:\n    return w * h\n\narea(\"3\", 4)   # mypy: Argument 1 has incompatible type \"str\"\n```"
+)
+add(
+    "TypeError: descriptor 'append' for 'list' objects doesn't apply to a 'int' object",
+    "You called `list.append(x, y)` (unbound, via the class) with the wrong first argument. Call it on an instance instead:\n\n```python\nmylist.append(value)   # not list.append(value)\n```"
+)
+add(
+    "How do I assert something is approximately equal in unittest?",
+    "Use `assertAlmostEqual`, which rounds the difference to a number of decimal places (default 7):\n\n```python\nself.assertAlmostEqual(result, 3.14159, places=4)\n```\n\nThere's also a `delta=` parameter for an absolute tolerance."
+)
+add(
+    "Why does my code print the loop variable instead of looping?",
+    "You likely iterated over a string thinking it's a list — `for c in \"abc\"` yields characters. If you have one item, wrap it in a list:\n\n```python\nfor name in [\"alice\"]:\n    print(name)   # 'alice', not 'a','l','i','c','e'\n```"
+)
+add(
+    "My except clause: `except Exception, e:` is a syntax error",
+    "That's Python 2 syntax. In Python 3 use `as`:\n\n```python\nexcept Exception as e:\n    print(e)\n```"
+)
+add(
+    "How do I raise the same exception type with more context?",
+    "Catch it, then raise a new instance chained with `from`:\n\n```python\ntry:\n    parse(data)\nexcept ValueError as e:\n    raise ValueError(f\"while parsing record {i}: {e}\") from e\n```"
+)
+add(
+    "Why is my pytest collecting 0 items?",
+    "pytest only collects files matching `test_*.py`/`*_test.py` and functions named `test_*` (and classes `Test*` with `test_*` methods, no `__init__`). Rename accordingly, and make sure you run pytest from a directory it can discover them in."
+)
+add(
+    "How do I see print output in pytest?",
+    "pytest captures stdout by default and shows it only on failure. To see it always, add `-s` (or `--capture=no`):\n\n```bash\npytest -s\n```"
+)
+add(
+    "TypeError: unhashable type: 'list'",
+    "You used a list as a dict key or a set element, but lists are mutable and can't be hashed. Use a tuple (immutable) instead:\n\n```python\nseen = set()\nseen.add((1, 2))     # tuple is hashable\nlookup = {(\"a\", \"b\"): 1}\n```"
+)
+add(
+    "unhashable type: 'dict' when adding to a set",
+    "Dicts aren't hashable, so they can't go in a set or be dict keys. If you need a hashable representation, convert to a tuple of items (with hashable values) or use `frozenset` for unordered key sets:\n\n```python\nkey = tuple(sorted(d.items()))\n```"
+)
+add(
+    "How do I debug a segfault-like silent crash in pure Python?",
+    "Pure Python rarely segfaults; a silent exit usually means `sys.exit()`, `os._exit()`, an unhandled exception in a thread, or an infinite loop you killed. Run with `python -X faulthandler script.py` to dump a traceback on hard crashes, and add logging at entry/exit of suspect functions."
+)
+add(
+    "Why does `assert (x, y)` always pass?",
+    "You asserted a non-empty tuple, which is always truthy — the comma makes it `assert (x, y)` not `assert x == y`. Drop the parentheses-with-comma:\n\n```python\nassert x == y, \"mismatch\"   # message after a comma, condition first\n```"
+)
+add(
+    "How do I catch an exception but keep the program running?",
+    "Wrap the risky part in try/except and handle/log the error instead of letting it propagate:\n\n```python\nfor item in items:\n    try:\n        process(item)\n    except Exception as e:\n        log.error(\"skipping %s: %s\", item, e)\n        continue   # move on to the next item\n```"
+)
+add(
+    "TypeError: 'tuple' object does not support item assignment",
+    "Tuples are immutable — you can't do `t[0] = x`. Use a list if you need to mutate, or build a new tuple:\n\n```python\nt = (1, 2, 3)\nt = (99,) + t[1:]   # new tuple with first element changed\n# or convert\nlst = list(t); lst[0] = 99; t = tuple(lst)\n```"
+)
+add(
+    "TypeError: 'str' object does not support item assignment",
+    "Strings are immutable; you can't do `s[0] = 'x'`. Build a new string instead:\n\n```python\ns = \"x\" + s[1:]\n```\n\nFor many edits, convert to a list of chars, modify, then `''.join(...)`."
+)
+add(
+    "Why does my mutable default fix with None not break thread safety?",
+    "Using `None` and allocating inside means each call gets its own fresh object, so calls don't share state — that's correct regardless of threads. The original bug shared one object across all calls; the fix removes that sharing entirely."
+)
+add(
+    "How do I time a slow code block to find the bottleneck?",
+    "Use `time.perf_counter` around suspects, or `cProfile` for a full breakdown:\n\n```python\nimport cProfile\ncProfile.run(\"main()\", sort=\"cumulative\")\n```\n\nThe profiler shows which functions dominate runtime so you optimize the right thing."
+)
+add(
+    "Why do I get 'NameError: name 'X' is not defined' only inside a comprehension?",
+    "In a comprehension, the variable from the iteration is local to it; names from an enclosing class body aren't visible inside (a known scoping quirk). Pass needed values in via a default-bound variable or refactor to a loop. For ordinary functions, just ensure the name is assigned before the comprehension uses it."
+)
+add(
+    "My test passes when run alone but fails in the suite.",
+    "That's test pollution — a previous test left shared/global state modified. Reset state in `setUp`/fixtures, avoid module-level mutable globals, and don't rely on test execution order. Run with `pytest -p no:randomly` off/on to detect order dependence."
+)
+add(
+    "How do I assert a warning is raised in pytest?",
+    "Use `pytest.warns`:\n\n```python\nimport warnings, pytest\n\ndef test_warns():\n    with pytest.warns(DeprecationWarning):\n        old_api()\n```"
+)
+add(
+    "Why is my `except` block never reached?",
+    "Either no exception is actually raised in the `try`, or a different exception type is raised than the one you catch, so it propagates past your handler. Temporarily catch `Exception as e` and print `type(e).__name__` to see what's really thrown, then narrow it."
+)
+add(
+    "TypeError: missing 1 required positional argument when calling a function",
+    "You didn't pass a required parameter. Check the function's signature and provide all non-default arguments. If it's a method, you call it on an instance so `self` is auto-supplied — calling via the class requires passing the instance explicitly."
+)
+add(
+    "How do I convert a print-debugging session into proper logging?",
+    "Replace `print(...)` with `logging` calls at appropriate levels and configure once:\n\n```python\nimport logging\nlogging.basicConfig(level=logging.INFO, format=\"%(levelname)s %(name)s: %(message)s\")\nlog = logging.getLogger(__name__)\nlog.debug(\"detailed value: %s\", x)\nlog.info(\"step done\")\n```\n\nThen you can change verbosity with one `level=` instead of deleting prints."
+)
+add(
+    "Why does `int('10', 2)` give 2 not 10?",
+    "The second argument is the base. `int('10', 2)` parses '10' as binary, which equals 2. For decimal, omit the base or pass 10:\n\n```python\nint(\"10\")       # 10\nint(\"10\", 2)    # 2 (binary)\nint(\"ff\", 16)   # 255 (hex)\n```"
+)
+add(
+    "My assertEqual on dicts fails but they look the same",
+    "Dict equality ignores order, so ordering isn't the issue — look for a value type mismatch (`1` vs `1.0`, `\"1\"` vs `1`) or an extra/missing key. unittest's `assertEqual` prints a diff; read it carefully, or compare `set(a.items())` vs `set(b.items())` to spot the differing pair."
+)
+add(
+    "How do I make a function that validates input and raises good errors?",
+    "Check preconditions early and raise the most specific exception with a clear message:\n\n```python\ndef set_age(age):\n    if not isinstance(age, int):\n        raise TypeError(f\"age must be int, got {type(age).__name__}\")\n    if age < 0:\n        raise ValueError(f\"age must be >= 0, got {age}\")\n    return age\n```"
+)
+add(
+    "Why does my code raise TypeError only on the second call?",
+    "You're probably mutating shared state (like a mutable default argument or a class attribute) on the first call, leaving it in a bad type for the next. Inspect anything that persists between calls — default args, globals, class-level mutables — and reset or avoid sharing them."
+)
+add(
+    "How do I print a variable's value and name at once?",
+    "Use the f-string `=` specifier (Python 3.8+):\n\n```python\ncount = 5\nprint(f\"{count=}\")   # prints 'count=5'\nprint(f\"{count*2=}\") # prints 'count*2=10'\n```"
+)
+add(
+    "RecursionError when comparing or copying objects with __eq__",
+    "Your `__eq__` (or `__hash__`) probably compares an attribute that triggers the same comparison, looping forever. Compare concrete fields, not the whole object:\n\n```python\ndef __eq__(self, other):\n    return isinstance(other, Node) and self.value == other.value\n```"
+)
+add(
+    "How do I catch an exception from a 'with' statement?",
+    "Put the `with` inside a `try`; the context manager still runs `__exit__` (cleanup) even when an exception propagates:\n\n```python\ntry:\n    with open(\"x\") as f:\n        data = f.read()\nexcept FileNotFoundError:\n    data = \"\"\n```"
+)
+add(
+    "My code prints the wrong thing because of operator precedence",
+    "Add parentheses to make intent explicit; `not a == b` is `not (a == b)`, and `a or b and c` binds `and` tighter than `or`. When in doubt, parenthesize:\n\n```python\nif (a or b) and c:\n    ...\n```"
+)
+add(
+    "Why does `bool('False')` return True?",
+    "Any non-empty string is truthy, including `'False'`. Only `''` is falsy. To interpret text, compare explicitly:\n\n```python\nflag = value.strip().lower() == \"true\"\n```"
+)
+add(
+    "How do I assert that no exception is raised?",
+    "Just call it in the test body — if it raises, the test fails with that traceback, which is exactly what you want:\n\n```python\ndef test_no_error():\n    parse(\"valid input\")   # no assertRaises needed\n```\n\nThere's deliberately no `assertDoesNotRaise`; an uncaught exception already fails the test."
+)
+add(
+    "My function returns the wrong value because of early return placement",
+    "A `return` inside a loop exits on the first iteration. If you meant to process all items first, move the `return` after the loop:\n\n```python\ndef find_all(xs, target):\n    found = [x for x in xs if x == target]\n    return found   # after collecting, not inside the loop\n```"
+)
+add(
+    "TypeError: cannot pickle ... object",
+    "You're trying to serialize something unpicklable (a file handle, lock, lambda, or local function). Remove or replace it before pickling, or implement `__getstate__`/`__setstate__` to skip the offending attribute. For functions, use a module-level def instead of a lambda."
+)
+add(
+    "Why does my code work in the REPL but fail as a script?",
+    "The REPL keeps state between lines, so a name defined in an earlier prompt persists; a script runs top to bottom fresh. Make sure every name is actually defined within the script (no reliance on leftover REPL variables), and that imports and defs come before use."
+)
+add(
+    "How do I find where a value gets set to None?",
+    "Set a conditional breakpoint or add a guarded print at each assignment of that variable, then watch which one produces `None`. With pdb: `b file.py:LINE, var is None`. Often it's a function call that lacks a `return` on some path — check those."
+)
+add(
+    "I get 'maximum recursion depth exceeded while calling a Python object'.",
+    "Same root cause: unbounded recursion. If your algorithm is genuinely deep but finite, rewrite it iteratively with an explicit stack, or (last resort) raise the limit:\n\n```python\nimport sys\nsys.setrecursionlimit(10000)\n```\n\nRaising the limit risks a real crash; prefer iteration when depth is large."
+)
+add(
+    "How do I assert two floats in a list are close in pytest?",
+    "`pytest.approx` works on sequences too:\n\n```python\nassert result == pytest.approx([0.1, 0.2, 0.3])\n```"
+)
+add(
+    "Why does my except catch nothing when I expect a ZeroDivisionError?",
+    "Check that the division actually executes and that you're not dividing floats in a way that yields `inf` instead of raising (NumPy does this — it warns rather than raising). For plain Python, `1/0` raises; for arrays, check NumPy's error settings. Also verify the `try` actually wraps the dividing line."
+)
+add(
+    "AttributeError: 'Series' object has no attribute 'X' (pandas)",
+    "You accessed a column/attribute that doesn't exist, or used `.X` where the name has spaces/typos. Use bracket access for column names and check `df.columns`:\n\n```python\nprint(df.columns)\nval = df[\"My Column\"]   # bracket form handles any name\n```"
+)
+add(
+    "How do I write a regression test for a bug I just fixed?",
+    "Capture the exact failing input and assert the now-correct output, so the bug can't silently return:\n\n```python\ndef test_handles_empty_input_regression():\n    # previously raised IndexError on empty list\n    assert summarize([]) == \"no data\"\n```\n\nName it after the bug and keep it in the suite."
+)
+add(
+    "Why does `x += [1]` work on a tuple's list but rebind on a tuple?",
+    "`+=` mutates in place for lists but, for immutable tuples, builds a new object and rebinds the name. If the tuple is inside another structure you can't rebind, you'll get a TypeError mid-operation. Use a list if you need in-place growth."
+)
+add(
+    "My logging.debug messages don't show up",
+    "The default logging level is WARNING, so DEBUG/INFO are suppressed until you lower it. Configure the level:\n\n```python\nimport logging\nlogging.basicConfig(level=logging.DEBUG)\n```\n\nIf you set the level on a logger but messages still hide, check the root/handler levels too."
+)
+add(
+    "TypeError: 'NoneType' object is not iterable when unpacking a function result",
+    "The function returned `None` (a path with no `return`), and you tried `a, b = func()`. Ensure every path returns a tuple of the right size:\n\n```python\ndef split_name(full):\n    parts = full.split()\n    if len(parts) == 2:\n        return parts[0], parts[1]\n    return full, \"\"   # always return a 2-tuple\n```"
+)
+add(
+    "How do I check code coverage of my tests?",
+    "Use coverage.py, typically via pytest-cov:\n\n```bash\npython -m pip install pytest-cov\npytest --cov=mypackage --cov-report=term-missing\n```\n\nThe 'missing' report lists line numbers not exercised by any test."
+)
+add(
+    "Why does my for-else run the else even when I expected the loop to find something?",
+    "The `else` on a loop runs only if the loop completes *without* `break`. If you didn't `break` on a match, `else` always runs. Break when you find it:\n\n```python\nfor x in items:\n    if x == target:\n        print(\"found\")\n        break\nelse:\n    print(\"not found\")   # runs only if no break\n```"
+)
+add(
+    "How do I debug an exception that happens deep in a library?",
+    "Read the traceback top-down to your last frame, then set a breakpoint just before you call into the library and inspect the arguments you pass — the bug is usually the input you supplied. You can also run `python -m pdb` and `c` to land at the failure for post-mortem inspection of locals."
+)
+add(
+    "TypeError: list indices must be integers or slices, not str",
+    "You indexed a list with a string key like `data[\"name\"]`, but lists use integer positions. You probably wanted a dict, or a specific element:\n\n```python\nrow = data[0]          # list -> integer index\nvalue = row[\"name\"]    # if row is a dict\n```"
+)
+add(
+    "TypeError: list indices must be integers or slices, not float",
+    "Indices must be ints, but you used a float (often from `/` division). Use floor division or cast:\n\n```python\nmid = len(a) // 2     # // gives an int\nx = a[mid]\n```"
+)
+add(
+    "How do I assert an iterable is empty in a test?",
+    "Assert its truthiness or length:\n\n```python\nassert not result          # empty list/dict/str is falsy\nassert len(result) == 0\n```"
+)
+add(
+    "Why does my code raise 'too many values to unpack' from dict.items()?",
+    "`dict.items()` yields `(key, value)` pairs, so unpack into exactly two names. If you wrote `for k in d.items()` and treated `k` as the key, switch to two variables:\n\n```python\nfor key, value in d.items():\n    ...\n```"
+)
+add(
+    "How do I test private/internal functions?",
+    "Test them through the public interface when possible — that's what users rely on. If a helper is complex enough to warrant direct tests, import and call it by its name (Python has no true privacy; the leading underscore is a convention). Keep such tests minimal so refactors don't break them needlessly."
+)
+add(
+    "My assert in production code does nothing under -O",
+    "`python -O` strips assert statements, so any check or side effect in an assert is skipped. For real validation that must run, use explicit raising:\n\n```python\nif not valid(data):\n    raise ValueError(\"invalid data\")\n```"
+)
+add(
+    "Why does `except (ValueError):` behave like a single type but `except ValueError, TypeError:` errors?",
+    "`except ValueError, TypeError:` is invalid Python 3. To catch multiple types, wrap them in a tuple:\n\n```python\nexcept (ValueError, TypeError) as e:\n    ...\n```\n\n`(ValueError)` is just `ValueError` in parentheses — a single type."
+)
+add(
+    "How do I debug 'works on my machine' issues?",
+    "Pin and compare environments: Python version (`python --version`), installed packages (`pip freeze`), OS path/case sensitivity, and locale/encoding. Differences in dependency versions or file paths are the usual cause. A requirements lockfile and the same Python version eliminate most of these."
+)
+add(
+    "TypeError: %d format: a number is required, not str",
+    "You passed a string to a `%d` placeholder. Convert it, or use `%s` for strings:\n\n```python\nprint(\"count=%d\" % int(n))\nprint(\"name=%s\" % name)\n```\n\nf-strings avoid the whole issue: `f\"count={n}\"`."
+)
+add(
+    "My pytest parametrize ids are unreadable",
+    "Provide custom ids so failures are easy to read:\n\n```python\n@pytest.mark.parametrize(\"value,expected\", [\n    (2, 4), (3, 9),\n], ids=[\"two\", \"three\"])\ndef test_square(value, expected):\n    assert value*value == expected\n```"
+)
+add(
+    "Why is my exception message empty when I print(e)?",
+    "You raised the exception without a message, or caught a type that carries none. Add a message when raising, and print the type for context:\n\n```python\nexcept Exception as e:\n    print(f\"{type(e).__name__}: {e}\")\n```"
+)
+add(
+    "How do I assert a function is called with specific arguments?",
+    "With `unittest.mock`, use `assert_called_with`:\n\n```python\nmock_fn.assert_called_with(1, key=\"v\")\nmock_fn.assert_called_once_with(1, key=\"v\")\n```\n\nInspect all calls via `mock_fn.call_args_list`."
+)
+add(
+    "TypeError: object of type 'NoneType' has no len()",
+    "You called `len()` on `None`, usually a function result that didn't return a sequence. Default it or check:\n\n```python\nitems = get_items() or []\nprint(len(items))\n```"
+)
+add(
+    "Why does my code raise IndexError on the last iteration only?",
+    "Classic off-by-one: you index `i+1` while looping `i` up to the last element, so the final step reads past the end. Stop one early or guard:\n\n```python\nfor i in range(len(a) - 1):\n    print(a[i], a[i+1])\n```"
+)
+add(
+    "How do I make sure cleanup runs even if an exception happens?",
+    "Use `finally`, or a context manager. `finally` always executes:\n\n```python\nconn = connect()\ntry:\n    use(conn)\nfinally:\n    conn.close()   # runs on success or error\n```\n\nBetter, write/use a context manager so `with` handles it automatically."
+)
+add(
+    "Why does `assert x is 5` sometimes warn or fail?",
+    "Python 3.8+ warns about `is` with literals (`SyntaxWarning: \"is\" with a literal`). `is` checks identity, not value, and integer caching makes it unreliable. Use `==`:\n\n```python\nassert x == 5\n```"
+)
+add(
+    "How do I reproduce a bug that only happens with specific data?",
+    "Capture the exact input that triggers it (log or pickle it), then write a minimal script/test that feeds that input to the failing function. Shrinking the input to the smallest case that still fails usually reveals the cause and becomes a permanent regression test."
+)
+
+# Write out
+out_path = "/home/user/Silicat/data/synth/debug_test.jsonl"
+with open(out_path, "w") as f:
+    for ex in examples:
+        f.write(json.dumps(ex, ensure_ascii=False) + "\n")
+
+print(f"Wrote {len(examples)} examples to {out_path}")
