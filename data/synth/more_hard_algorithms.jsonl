@@ -1,0 +1,503 @@
+{"messages": [{"role": "user", "content": "What is the Manacher algorithm for palindrome"}, {"role": "silicat", "content": "Find longest palindromic substring in O(n) linear time using mirror properties and center expansion."}]}
+{"messages": [{"role": "user", "content": "Explain the suffix array construction"}, {"role": "silicat", "content": "Build sorted array of all suffixes in O(n log^2 n) or O(n) with advanced techniques."}]}
+{"messages": [{"role": "user", "content": "What is the longest palindromic subsequence"}, {"role": "silicat", "content": "DP variant of LCS with reversed string; O(n^2) time and space."}]}
+{"messages": [{"role": "user", "content": "Explain the substring palindrome queries"}, {"role": "silicat", "content": "Precompute or use Manacher; enable O(1) queries after O(n) prep."}]}
+{"messages": [{"role": "user", "content": "What is the minimum palindrome partitions"}, {"role": "silicat", "content": "DP where dp[i] = min partitions for s[:i]. O(n^2) time."}]}
+{"messages": [{"role": "user", "content": "Explain graph coloring and chromatic number"}, {"role": "silicat", "content": "NP-hard; greedy: O(n+m) gives chi+1 colors. Exact via backtracking or DP."}]}
+{"messages": [{"role": "user", "content": "What is the four color theorem"}, {"role": "silicat", "content": "Every planar graph 4-colorable; proof by computer exhaustion."}]}
+{"messages": [{"role": "user", "content": "Explain interval scheduling maximization"}, {"role": "silicat", "content": "Greedy: sort by end time, pick earliest-ending intervals. O(n log n)."}]}
+{"messages": [{"role": "user", "content": "What is the weighted interval scheduling"}, {"role": "silicat", "content": "DP: sort by end time, find latest non-overlapping for each interval."}]}
+{"messages": [{"role": "user", "content": "Explain the activity selection problem"}, {"role": "silicat", "content": "Same as interval scheduling; greedy optimal due to greedy choice property."}]}
+{"messages": [{"role": "user", "content": "What is the independent set problem"}, {"role": "silicat", "content": "Max set of non-adjacent vertices; NP-hard; tree/bipartite: polynomial."}]}
+{"messages": [{"role": "user", "content": "Explain clique problem complexity"}, {"role": "silicat", "content": "Find largest complete subgraph; NP-hard; no known poly approximation."}]}
+{"messages": [{"role": "user", "content": "What is the vertex cover approximation"}, {"role": "silicat", "content": "2-approximation: take endpoints of maximal matching."}]}
+{"messages": [{"role": "user", "content": "Explain the 3-coloring problem"}, {"role": "silicat", "content": "NP-complete; backtracking with heuristics in practice."}]}
+{"messages": [{"role": "user", "content": "What is the dominating set problem"}, {"role": "silicat", "content": "Min set such all vertices in set or adjacent; NP-hard; ln n approximation."}]}
+{"messages": [{"role": "user", "content": "Explain the longest path in DAG"}, {"role": "silicat", "content": "Topological sort then DP; linear time; NP-hard in general graphs."}]}
+{"messages": [{"role": "user", "content": "What is the shortest path in DAG"}, {"role": "silicat", "content": "Topological sort then DP; linear time; more efficient than Dijkstra."}]}
+{"messages": [{"role": "user", "content": "Explain Hamiltonian path complexity"}, {"role": "silicat", "content": "NP-complete; no known polynomial algorithm; exponential solutions."}]}
+{"messages": [{"role": "user", "content": "What is the Eulerian path"}, {"role": "silicat", "content": "Path using each edge once; greedy if degree constraint met; O(V+E)."}]}
+{"messages": [{"role": "user", "content": "Explain directed acyclic graph topological sort"}, {"role": "silicat", "content": "Linear time via DFS; enables DP on DAGs."}]}
+{"messages": [{"role": "user", "content": "What is the maximum independent set tree"}, {"role": "silicat", "content": "Greedily take non-adjacent; DP on tree: dp[v][0/1] for include/exclude."}]}
+{"messages": [{"role": "user", "content": "Explain tree diameter"}, {"role": "silicat", "content": "Two-pass BFS/DFS; first to find far point, second from that point."}]}
+{"messages": [{"role": "user", "content": "What is the tree radius"}, {"role": "silicat", "content": "Minimum eccentricity; O(n) once diameter is known."}]}
+{"messages": [{"role": "user", "content": "Explain tree centroid"}, {"role": "silicat", "content": "Node with min max subtree size; useful for divide-and-conquer decomposition."}]}
+{"messages": [{"role": "user", "content": "What is the all pairs shortest path"}, {"role": "silicat", "content": "Floyd-Warshall: O(n^3). Or Dijkstra from each: O(n(m+n)log n)."}]}
+{"messages": [{"role": "user", "content": "Explain transitive closure"}, {"role": "silicat", "content": "Reachability between all pairs; Floyd-Warshall with OR instead of min."}]}
+{"messages": [{"role": "user", "content": "What is the strongly connected components"}, {"role": "silicat", "content": "Kosaraju or Tarjan; O(V+E); components form DAG structure."}]}
+{"messages": [{"role": "user", "content": "Explain bridge and articulation"}, {"role": "silicat", "content": "Tarjan-style DFS finds cut edges and vertices in O(V+E)."}]}
+{"messages": [{"role": "user", "content": "What is the 2-edge connected components"}, {"role": "silicat", "content": "Contract bridges; components remain connected after any single edge removal."}]}
+{"messages": [{"role": "user", "content": "Explain tree rerooting DP"}, {"role": "silicat", "content": "Recompute DP for each root; O(n) after initial O(n) root choice."}]}
+{"messages": [{"role": "user", "content": "What is the small to large merging"}, {"role": "silicat", "content": "DSU optimization: merge smaller into larger for O(n log^2 n)."}]}
+{"messages": [{"role": "user", "content": "Explain Knuth optimization in DP"}, {"role": "silicat", "content": "Monotonicity of optimal split point; reduces O(n^3) to O(n^2)."}]}
+{"messages": [{"role": "user", "content": "What is the convex hull trick"}, {"role": "silicat", "content": "Geometry optimization; maintain lower envelope of lines for DP queries."}]}
+{"messages": [{"role": "user", "content": "Explain slope optimization"}, {"role": "silicat", "content": "Slope trick in DP; abs function optimization via line parametrization."}]}
+{"messages": [{"role": "user", "content": "What is the matrix chain order"}, {"role": "silicat", "content": "Catalan number of ways; DP with optimal split point monge property."}]}
+{"messages": [{"role": "user", "content": "Explain the egg drop problem"}, {"role": "silicat", "content": "k eggs, n floors; DP with binary search reduces to O(n log n)."}]}
+{"messages": [{"role": "user", "content": "What is the coin change variations"}, {"role": "silicat", "content": "Count ways, min coins, max coins; different DP formulations."}]}
+{"messages": [{"role": "user", "content": "Explain the longest increasing subarray"}, {"role": "silicat", "content": "Greedy; reset on decrease; O(n) time."}]}
+{"messages": [{"role": "user", "content": "What is the maximum subarray sum variants"}, {"role": "silicat", "content": "Kadane for 1D; 2D via prefix sums; max k subarrays uses DP."}]}
+{"messages": [{"role": "user", "content": "Explain shortest superstring"}, {"role": "silicat", "content": "TSP on strings with overlaps; NP-hard; 2-approximation via MST."}]}
+{"messages": [{"role": "user", "content": "What is the subset sum problem variants"}, {"role": "silicat", "content": "0/1: NP-hard; unbounded: DP; bounded: pseudo-polynomial."}]}
+{"messages": [{"role": "user", "content": "Explain the 0/1 knapsack optimizations"}, {"role": "silicat", "content": "Space: O(W) using 1D DP. Time: no better than O(nW) known."}]}
+{"messages": [{"role": "user", "content": "What is the approximation algorithm PTAS"}, {"role": "silicat", "content": "Polynomial time approximation scheme; O(n^{1/eps}) runtime."}]}
+{"messages": [{"role": "user", "content": "Explain the greedy algorithm analysis"}, {"role": "silicat", "content": "Prove optimal via exchange argument or activity selection structure."}]}
+{"messages": [{"role": "user", "content": "What is the randomized quicksort"}, {"role": "silicat", "content": "O(n log n) expected; O(n^2) worst case; in-place."}]}
+{"messages": [{"role": "user", "content": "Explain the randomized selection"}, {"role": "silicat", "content": "Quickselect: O(n) expected, O(n^2) worst; linear via median-of-medians."}]}
+{"messages": [{"role": "user", "content": "What is the skip list vs balanced tree"}, {"role": "silicat", "content": "Skip list simpler, similar bounds; no rotation needed."}]}
+{"messages": [{"role": "user", "content": "Explain the randomized incremental construction"}, {"role": "silicat", "content": "Build incrementally adding random points; analyze in reverse."}]}
+{"messages": [{"role": "user", "content": "What is the derandomization technique"}, {"role": "silicat", "content": "Convert randomized to deterministic; expands algorithm complexity."}]}
+{"messages": [{"role": "user", "content": "Explain the Las Vegas vs Monte Carlo"}, {"role": "silicat", "content": "Las Vegas: always correct, random time. Monte Carlo: random correctness."}]}
+{"messages": [{"role": "user", "content": "What is the probabilistic method"}, {"role": "silicat", "content": "Prove existence via probability; often non-constructive."}]}
+{"messages": [{"role": "user", "content": "Explain the Lovasz local lemma"}, {"role": "silicat", "content": "Dependencies allow constructive proof despite bad events."}]}
+{"messages": [{"role": "user", "content": "What is the union bound and Chernoff"}, {"role": "silicat", "content": "Bound on probability of bad events; Chernoff tighter for binomial."}]}
+{"messages": [{"role": "user", "content": "Explain the Markov inequality bound"}, {"role": "silicat", "content": "E[X] >= k*P(X >= k); loose but distribution-free."}]}
+{"messages": [{"role": "user", "content": "What is the autocorrelation polynomial"}, {"role": "silicat", "content": "FFT convolution enables fast substring matching and longest palindrome."}]}
+{"messages": [{"role": "user", "content": "Explain the string periodicity"}, {"role": "silicat", "content": "Detect repetitions; related to failure function in KMP."}]}
+{"messages": [{"role": "user", "content": "What is the Lyndon word factorization"}, {"role": "silicat", "content": "Decompose string into decreasing Lyndon words; applications in sorting."}]}
+{"messages": [{"role": "user", "content": "Explain the weak periodicity"}, {"role": "silicat", "content": "Fractional periods; harder to detect than full periods."}]}
+{"messages": [{"role": "user", "content": "What is the palindrome factorization"}, {"role": "silicat", "content": "Decompose into palindromes; minimum partitions in polynomial time."}]}
+{"messages": [{"role": "user", "content": "Explain the reverse string processing"}, {"role": "silicat", "content": "Suffix arrays, suffix trees enable pattern matching, longest palindrome."}]}
+{"messages": [{"role": "user", "content": "What is the binary string matching"}, {"role": "silicat", "content": "Pattern matching on bits; rolling hash with modular arithmetic."}]}
+{"messages": [{"role": "user", "content": "Explain the dictionary compression"}, {"role": "silicat", "content": "Lempel-Ziv, Huffman; variable-length encoding for text."}]}
+{"messages": [{"role": "user", "content": "What is the Burrows-Wheeler transform"}, {"role": "silicat", "content": "Sortable rotation; used in bzip2; enables better compression."}]}
+{"messages": [{"role": "user", "content": "Explain the rank and select"}, {"role": "silicat", "content": "Succinct data structure support for bit operations in O(1) space."}]}
+{"messages": [{"role": "user", "content": "What is the wavelet tree structure"}, {"role": "silicat", "content": "Solves range queries in O(log sigma) where sigma is alphabet."}]}
+{"messages": [{"role": "user", "content": "Explain the cartesian tree"}, {"role": "silicat", "content": "Recursively for min/max; enables RMQ in O(1) after O(n) prep."}]}
+{"messages": [{"role": "user", "content": "What is the sparse table"}, {"role": "silicat", "content": "2^k preprocessing for RMQ; O(1) query after O(n log n) prep."}]}
+{"messages": [{"role": "user", "content": "Explain the monotonic deque optimization"}, {"role": "silicat", "content": "Maintain deque of useful elements for sliding window min/max."}]}
+{"messages": [{"role": "user", "content": "What is the monotonic stack usage"}, {"role": "silicat", "content": "Find next greater element; enables O(n) for span, histogram problems."}]}
+{"messages": [{"role": "user", "content": "Explain the segment tree lazy propagation"}, {"role": "silicat", "content": "Range updates O(log n); pushes down only when accessed."}]}
+{"messages": [{"role": "user", "content": "What is the persistent segment tree"}, {"role": "silicat", "content": "All versions accessible; enables point-in-time queries."}]}
+{"messages": [{"role": "user", "content": "Explain the implicit segment tree"}, {"role": "silicat", "content": "Compress coordinate space; solves problems on infinite range."}]}
+{"messages": [{"role": "user", "content": "What is the dynamic segment tree"}, {"role": "silicat", "content": "Node generation on demand; handles sparse updates efficiently."}]}
+{"messages": [{"role": "user", "content": "Explain the Fenwick tree range updates"}, {"role": "silicat", "content": "Difference array technique enables O(log n) range assignment."}]}
+{"messages": [{"role": "user", "content": "What is the 2D Fenwick tree"}, {"role": "silicat", "content": "2D prefix sums; O(log^2 n) per operation."}]}
+{"messages": [{"role": "user", "content": "Explain the merge sort tree"}, {"role": "silicat", "content": "Sorted sequence at each node; enables O(log^2 n) range queries."}]}
+{"messages": [{"role": "user", "content": "What is the palindrome tree"}, {"role": "silicat", "content": "Explicit representation of all palindromic substrings; O(n) construction."}]}
+{"messages": [{"role": "user", "content": "Explain the AC automaton complexities"}, {"role": "silicat", "content": "Build: O(sum of lengths); search: O(n); reports in O(n+z)."}]}
+{"messages": [{"role": "user", "content": "What is the XOR basis linear algebra"}, {"role": "silicat", "content": "Basis of vectors under XOR; solves max XOR pair."}]}
+{"messages": [{"role": "user", "content": "Explain the Gaussian elimination XOR"}, {"role": "silicat", "content": "Apply to solve XOR system of equations in O(n^3)."}]}
+{"messages": [{"role": "user", "content": "What is the matroid intersection"}, {"role": "silicat", "content": "Common base in two matroids via augmenting paths."}]}
+{"messages": [{"role": "user", "content": "Explain the bipartite matching hopcroft"}, {"role": "silicat", "content": "O(E sqrt(V)) via blocking flows; practical best algorithm."}]}
+{"messages": [{"role": "user", "content": "What is the push-relabel flow"}, {"role": "silicat", "content": "Preflow algorithm: O(V^3) or O(V^2 E) with heuristics."}]}
+{"messages": [{"role": "user", "content": "Explain the dinic flow algorithm"}, {"role": "silicat", "content": "O(V^2 E) via level graphs and blocking flows."}]}
+{"messages": [{"role": "user", "content": "What is the minimum cost maximum flow"}, {"role": "silicat", "content": "Successive shortest paths with potential; SPFA or Dijkstra."}]}
+{"messages": [{"role": "user", "content": "Explain the project selection problem"}, {"role": "silicat", "content": "Max flow reduction of selection with profits and dependencies."}]}
+{"messages": [{"role": "user", "content": "What is the image segmentation graph cut"}, {"role": "silicat", "content": "Min-cut gives optimal energy minimization in computer vision."}]}
+{"messages": [{"role": "user", "content": "Explain the transportation problem"}, {"role": "silicat", "content": "Bipartite with supplies/demands; min cost flow solution."}]}
+{"messages": [{"role": "user", "content": "What is the assignment problem Hungarian"}, {"role": "silicat", "content": "Optimal matching; reduces to min cost flow or uses auction algorithm."}]}
+{"messages": [{"role": "user", "content": "Explain the maximum closure"}, {"role": "silicat", "content": "Find largest closure with min cut; useful for project selection."}]}
+{"messages": [{"role": "user", "content": "What is the minimum st-cut max flow"}, {"role": "silicat", "content": "By max flow min cut theorem; solves many optimization problems."}]}
+{"messages": [{"role": "user", "content": "Explain the Gomory-Hu tree building"}, {"role": "silicat", "content": "n-1 max flows construct implicit min cut representation."}]}
+{"messages": [{"role": "user", "content": "What is the submodular function"}, {"role": "silicat", "content": "Diminishing returns property; enables efficient optimization."}]}
+{"messages": [{"role": "user", "content": "Explain the matroid definition"}, {"role": "silicat", "content": "Set of independent sets closed under exchange axioms."}]}
+{"messages": [{"role": "user", "content": "What is the graphic matroid"}, {"role": "silicat", "content": "Independent sets correspond to forests in graph."}]}
+{"messages": [{"role": "user", "content": "Explain the linear matroid"}, {"role": "silicat", "content": "Linearly independent vectors; basis matrix operations."}]}
+{"messages": [{"role": "user", "content": "What is the greedy algorithm matroid"}, {"role": "silicat", "content": "Greedily pick max weight; optimal for matroids."}]}
+{"messages": [{"role": "user", "content": "Explain the matroid union"}, {"role": "silicat", "content": "Union of matroids; allows more complex greedy problems."}]}
+{"messages": [{"role": "user", "content": "What is the parametric search"}, {"role": "silicat", "content": "Decide feasibility as function of parameter then binary search."}]}
+{"messages": [{"role": "user", "content": "Explain the simulation of simplicity"}, {"role": "silicat", "content": "Perturb coordinates infinitesimally to resolve degeneracies."}]}
+{"messages": [{"role": "user", "content": "What is the sweepline algorithm convex hull"}, {"role": "silicat", "content": "Sort by angle, maintain convex hull incrementally."}]}
+{"messages": [{"role": "user", "content": "Explain the rotating calipers"}, {"role": "silicat", "content": "Maintain antipodal pairs during hull rotation for all diameter pairs."}]}
+{"messages": [{"role": "user", "content": "What is the halfplane intersection"}, {"role": "silicat", "content": "Find feasible region of half-plane constraints via sweepline."}]}
+{"messages": [{"role": "user", "content": "Explain the point location"}, {"role": "silicat", "content": "Preprocess polygon for fast point membership queries."}]}
+{"messages": [{"role": "user", "content": "What is the orthogonal range search"}, {"role": "silicat", "content": "Query points in axis-aligned rectangle; 2D range trees O(log^2 n)."}]}
+{"messages": [{"role": "user", "content": "Explain the fractional cascading two"}, {"role": "silicat", "content": "Cascade on secondary structures for O(log n + k) results."}]}
+{"messages": [{"role": "user", "content": "What is the dynamic convex hull"}, {"role": "silicat", "content": "Insert/delete points, maintain hull; O(log^2 n) per operation."}]}
+{"messages": [{"role": "user", "content": "Explain the 3D convex hull"}, {"role": "silicat", "content": "Incremental construction with O(n log n) time via halfspaces."}]}
+{"messages": [{"role": "user", "content": "What is the Delaunay flip"}, {"role": "silicat", "content": "Swap diagonal if improves max angle; terminates to Delaunay."}]}
+{"messages": [{"role": "user", "content": "Explain the Voronoi dual"}, {"role": "silicat", "content": "Delaunay edges dual to Voronoi edges; mutual relationships."}]}
+{"messages": [{"role": "user", "content": "What is the medial axis"}, {"role": "silicat", "content": "Skeleton of shape; center of maximal balls inside."}]}
+{"messages": [{"role": "user", "content": "Explain the motion planning"}, {"role": "silicat", "content": "Plan robot path avoiding obstacles; roadmap or cell decomposition."}]}
+{"messages": [{"role": "user", "content": "What is the Minkowski sum"}, {"role": "silicat", "content": "All sum vectors; useful for collision detection."}]}
+{"messages": [{"role": "user", "content": "Explain the trapezoidal decomposition"}, {"role": "silicat", "content": "Decompose polygon; enables O(log n) point location."}]}
+{"messages": [{"role": "user", "content": "What is the plane sweep for visibility"}, {"role": "silicat", "content": "Find visible region from point in O(n log n)."}]}
+{"messages": [{"role": "user", "content": "Explain the Triangulation ear clipping"}, {"role": "silicat", "content": "Repeatedly remove ears of simple polygon in O(n^2)."}]}
+{"messages": [{"role": "user", "content": "What is the monotone polygon triangulation"}, {"role": "silicat", "content": "Linear time via sweep and stack of monotone polygon."}]}
+{"messages": [{"role": "user", "content": "Explain the 2D point processing"}, {"role": "silicat", "content": "Applications of convex hull, Voronoi, Delaunay combined."}]}
+{"messages": [{"role": "user", "content": "What is the planar graph duality"}, {"role": "silicat", "content": "Dual graph has edges crossing original edges."}]}
+{"messages": [{"role": "user", "content": "Explain the Euler characteristic"}, {"role": "silicat", "content": "V - E + F = 2 for planar; enables spanning tree facts."}]}
+{"messages": [{"role": "user", "content": "What is the planar separator theorem"}, {"role": "silicat", "content": "O(sqrt(n)) vertex separator exists; divide and conquer."}]}
+{"messages": [{"role": "user", "content": "Explain the planar tester Hopcroft-Tarjan"}, {"role": "silicat", "content": "O(n) planarity testing via DFS and PQ-trees."}]}
+{"messages": [{"role": "user", "content": "What is the outerplanar graph"}, {"role": "silicat", "content": "Planar with single face; tree-like structure."}]}
+{"messages": [{"role": "user", "content": "Explain the series parallel graph"}, {"role": "silicat", "content": "Recursive construction; enable efficient algorithms."}]}
+{"messages": [{"role": "user", "content": "What is the approximation hardness"}, {"role": "silicat", "content": "NP-hard to approximate within certain factors."}]}
+{"messages": [{"role": "user", "content": "Explain the inapproximability"}, {"role": "silicat", "content": "Gap problems show hardness of approximation bounds."}]}
+{"messages": [{"role": "user", "content": "What is the PCP theorem"}, {"role": "silicat", "content": "Probabilistically checkable proofs; implies inapproximability."}]}
+{"messages": [{"role": "user", "content": "Explain the approximation lower bounds"}, {"role": "silicat", "content": "Hardness results via gap instances or reductions."}]}
+{"messages": [{"role": "user", "content": "What is the randomized rounding"}, {"role": "silicat", "content": "Round LP solution probabilistically; get approximate solution."}]}
+{"messages": [{"role": "user", "content": "Explain the primal-dual method"}, {"role": "silicat", "content": "Iteratively improve primal and dual for approximation."}]}
+{"messages": [{"role": "user", "content": "What is the Lagrangian relaxation"}, {"role": "silicat", "content": "Relax constraints into objective; iteratively improve."}]}
+{"messages": [{"role": "user", "content": "Explain the subgradient method"}, {"role": "silicat", "content": "Optimize non-smooth Lagrangian; used in integer programming."}]}
+{"messages": [{"role": "user", "content": "What is the column generation"}, {"role": "silicat", "content": "Dynamically add variables; useful for large LP instances."}]}
+{"messages": [{"role": "user", "content": "Explain the cutting planes iterative"}, {"role": "silicat", "content": "Add cuts; tighten relaxation polytope toward integer hull."}]}
+{"messages": [{"role": "user", "content": "What is the Benders decomposition"}, {"role": "silicat", "content": "Decompose into master and subproblems via dual."}]}
+{"messages": [{"role": "user", "content": "Explain the Dantzig-Wolfe decomposition"}, {"role": "silicat", "content": "Reformulate via convex combination of extreme points."}]}
+{"messages": [{"role": "user", "content": "What is the local search metaheuristic"}, {"role": "silicat", "content": "Iteratively improve solution in neighborhood; escape local minima."}]}
+{"messages": [{"role": "user", "content": "Explain the tabu search"}, {"role": "silicat", "content": "Forbid recent moves to avoid cycles in local search."}]}
+{"messages": [{"role": "user", "content": "What is the simulated annealing"}, {"role": "silicat", "content": "Accept worse solutions with decreasing temperature."}]}
+{"messages": [{"role": "user", "content": "Explain the genetic algorithm"}, {"role": "silicat", "content": "Population-based evolution via selection, crossover, mutation."}]}
+{"messages": [{"role": "user", "content": "What is the particle swarm optimization"}, {"role": "silicat", "content": "Swarm intelligence mimicking bird flocking behavior."}]}
+{"messages": [{"role": "user", "content": "Explain the ant colony optimization"}, {"role": "silicat", "content": "Pheromone-based construction used for TSP and routing."}]}
+{"messages": [{"role": "user", "content": "What is the differential evolution"}, {"role": "silicat", "content": "Population-based for continuous optimization."}]}
+{"messages": [{"role": "user", "content": "Explain the cross-entropy method"}, {"role": "silicat", "content": "Iteratively update distribution to maximize probability."}]}
+{"messages": [{"role": "user", "content": "What is the noise injection"}, {"role": "silicat", "content": "Add randomness to escape local optima in optimization."}]}
+{"messages": [{"role": "user", "content": "Explain the neighborhood structure"}, {"role": "silicat", "content": "Define which solutions are neighbors in local search."}]}
+{"messages": [{"role": "user", "content": "What is the landscape analysis"}, {"role": "silicat", "content": "Study optimization objective function structure."}]}
+{"messages": [{"role": "user", "content": "Explain the fitness landscape"}, {"role": "silicat", "content": "Visualize function values as terrain in high-dimensional space."}]}
+{"messages": [{"role": "user", "content": "What is the no free lunch theorem"}, {"role": "silicat", "content": "No algorithm optimal for all functions; problem-dependent."}]}
+{"messages": [{"role": "user", "content": "Explain the oracle complexity"}, {"role": "silicat", "content": "Lower bounds on number of function evaluations needed."}]}
+{"messages": [{"role": "user", "content": "What is the query complexity lower bound"}, {"role": "silicat", "content": "Adversary argument shows optimization needs many queries."}]}
+{"messages": [{"role": "user", "content": "Explain the information theory lower bound"}, {"role": "silicat", "content": "Entropy argument bounds on problem difficulty."}]}
+{"messages": [{"role": "user", "content": "What is the communication complexity"}, {"role": "silicat", "content": "Bits needed to solve problem with distributed algorithm."}]}
+{"messages": [{"role": "user", "content": "Explain the VLSI layout"}, {"role": "silicat", "content": "Physical design of circuits on chip; NP-hard optimization."}]}
+{"messages": [{"role": "user", "content": "What is the register allocation"}, {"role": "silicat", "content": "Assign variables to CPU registers minimizing spills."}]}
+{"messages": [{"role": "user", "content": "Explain the instruction scheduling"}, {"role": "silicat", "content": "Order instructions maximizing parallelism respecting dependencies."}]}
+{"messages": [{"role": "user", "content": "What is the cache optimization"}, {"role": "silicat", "content": "Reorder computation to improve cache locality."}]}
+{"messages": [{"role": "user", "content": "Explain the branch prediction"}, {"role": "silicat", "content": "Speculate on branch outcomes to avoid pipeline stall."}]}
+{"messages": [{"role": "user", "content": "What is the software pipelining"}, {"role": "silicat", "content": "Overlap iterations of loop via rescheduling instructions."}]}
+{"messages": [{"role": "user", "content": "Explain the loop fusion optimization"}, {"role": "silicat", "content": "Merge loops to improve cache behavior."}]}
+{"messages": [{"role": "user", "content": "What is the loop tiling"}, {"role": "silicat", "content": "Partition iteration space into tiles for cache reuse."}]}
+{"messages": [{"role": "user", "content": "Explain the vectorization SIMD"}, {"role": "silicat", "content": "Exploit vector instructions for parallel computation."}]}
+{"messages": [{"role": "user", "content": "What is the GPU computation"}, {"role": "silicat", "content": "Massively parallel execution on graphics processors."}]}
+{"messages": [{"role": "user", "content": "Explain the MapReduce framework"}, {"role": "silicat", "content": "Distributed processing of big data via map and reduce."}]}
+{"messages": [{"role": "user", "content": "What is the Spark RDD"}, {"role": "silicat", "content": "Resilient distributed datasets enabling iterative algorithms."}]}
+{"messages": [{"role": "user", "content": "Explain the stream processing"}, {"role": "silicat", "content": "Process continuous data streams with bounded memory."}]}
+{"messages": [{"role": "user", "content": "What is the online algorithm"}, {"role": "silicat", "content": "Decides on input elements without future knowledge."}]}
+{"messages": [{"role": "user", "content": "Explain the competitive ratio"}, {"role": "silicat", "content": "Online solution vs offline optimum bound in worst case."}]}
+{"messages": [{"role": "user", "content": "What is the adversarial input model"}, {"role": "silicat", "content": "Adversary constructs worst-case input for online algorithm."}]}
+{"messages": [{"role": "user", "content": "Explain the list scheduling problem"}, {"role": "silicat", "content": "Online scheduling without knowing future jobs."}]}
+{"messages": [{"role": "user", "content": "What is the paging replacement"}, {"role": "silicat", "content": "Online cache replacement; LRU is optimal offline vs 2*OPT."}]}
+{"messages": [{"role": "user", "content": "Explain the load balancing online"}, {"role": "silicat", "content": "Assign jobs to machines without knowing future."}]}
+{"messages": [{"role": "user", "content": "What is the two-server problem"}, {"role": "silicat", "content": "Move two servers to cover requests; open problem."}]}
+{"messages": [{"role": "user", "content": "Explain the k-server conjecture"}, {"role": "silicat", "content": "k-server competitive ratio equals k; proven for k <= 2."}]}
+{"messages": [{"role": "user", "content": "Explain the secretary problem analysis"}, {"role": "silicat", "content": "Optimal threshold: reject first n/e candidates, pick first exceeding threshold."}]}
+{"messages": [{"role": "user", "content": "What is the online bipartite matching"}, {"role": "silicat", "content": "Greedy or randomized algorithm; 1/2-competitive for general graph."}]}
+{"messages": [{"role": "user", "content": "Explain the online shortest path"}, {"role": "silicat", "content": "Traverse graph discovering edges; expansion ratio is competitive measure."}]}
+{"messages": [{"role": "user", "content": "What is the TCP congestion control"}, {"role": "silicat", "content": "Online algorithm adjusting window size based on packet loss."}]}
+{"messages": [{"role": "user", "content": "Explain the online routing protocol"}, {"role": "silicat", "content": "Route packets without global network knowledge."}]}
+{"messages": [{"role": "user", "content": "What is the machine learning regret"}, {"role": "silicat", "content": "Bound difference from optimal; relates to online algorithm competitive ratio."}]}
+{"messages": [{"role": "user", "content": "Explain the bandit algorithm"}, {"role": "silicat", "content": "Explore-exploit tradeoff; Thompson sampling, UCB strategies."}]}
+{"messages": [{"role": "user", "content": "What is the multi-armed bandit"}, {"role": "silicat", "content": "Sequential decision maximizing cumulative reward."}]}
+{"messages": [{"role": "user", "content": "Explain the contextual bandit extension"}, {"role": "silicat", "content": "Use context information to inform arm selection."}]}
+{"messages": [{"role": "user", "content": "What is the reinforcement learning MDP"}, {"role": "silicat", "content": "Markov decision process; optimal policy via Bellman equations."}]}
+{"messages": [{"role": "user", "content": "Explain the value iteration algorithm"}, {"role": "silicat", "content": "Fixed point iteration computing optimal values from Bellman."}]}
+{"messages": [{"role": "user", "content": "What is the policy iteration algorithm"}, {"role": "silicat", "content": "Alternate policy evaluation and improvement until convergence."}]}
+{"messages": [{"role": "user", "content": "Explain the Q-learning algorithm"}, {"role": "silicat", "content": "Off-policy learning updating action values from experience."}]}
+{"messages": [{"role": "user", "content": "What is the temporal difference learning"}, {"role": "silicat", "content": "Update value using bootstrap from subsequent state."}]}
+{"messages": [{"role": "user", "content": "Explain the actor-critic algorithm"}, {"role": "silicat", "content": "Policy gradient method with value baseline."}]}
+{"messages": [{"role": "user", "content": "What is the trust region policy"}, {"role": "silicat", "content": "Constrain policy update within trust region for stability."}]}
+{"messages": [{"role": "user", "content": "Explain the gradient descent convergence"}, {"role": "silicat", "content": "Learning rate determines convergence speed and final accuracy."}]}
+{"messages": [{"role": "user", "content": "What is the stochastic gradient descent"}, {"role": "silicat", "content": "Mini-batch updates provide noisy gradient estimates."}]}
+{"messages": [{"role": "user", "content": "Explain the momentum acceleration"}, {"role": "silicat", "content": "Accumulate gradient direction for faster convergence."}]}
+{"messages": [{"role": "user", "content": "What is the Adam optimizer"}, {"role": "silicat", "content": "Adaptive moments; per-parameter learning rates via exponential moving average."}]}
+{"messages": [{"role": "user", "content": "Explain the RMSprop adaptation"}, {"role": "silicat", "content": "Root mean square of gradients; normalizes step size per dimension."}]}
+{"messages": [{"role": "user", "content": "What is the batch normalization"}, {"role": "silicat", "content": "Normalize layer inputs for stability and faster training."}]}
+{"messages": [{"role": "user", "content": "Explain the dropout regularization"}, {"role": "silicat", "content": "Randomly disable neurons; ensemble effect reduces overfitting."}]}
+{"messages": [{"role": "user", "content": "What is the L1/L2 regularization"}, {"role": "silicat", "content": "Penalty on weights; L1 induces sparsity, L2 smoothness."}]}
+{"messages": [{"role": "user", "content": "Explain the weight decay"}, {"role": "silicat", "content": "L2 regularization in optimization; dampens parameter growth."}]}
+{"messages": [{"role": "user", "content": "What is the cross-entropy loss"}, {"role": "silicat", "content": "KL divergence between predicted and true distribution."}]}
+{"messages": [{"role": "user", "content": "Explain the softmax function"}, {"role": "silicat", "content": "Normalize logits to probability distribution."}]}
+{"messages": [{"role": "user", "content": "What is the ReLU activation"}, {"role": "silicat", "content": "Max(0, x); simple but effective; avoids vanishing gradient."}]}
+{"messages": [{"role": "user", "content": "Explain the sigmoid activation"}, {"role": "silicat", "content": "S-shaped; squashes to [0,1]; used for binary classification."}]}
+{"messages": [{"role": "user", "content": "What is the tanh activation"}, {"role": "silicat", "content": "Squashes to [-1,1]; zero-centered; better than sigmoid."}]}
+{"messages": [{"role": "user", "content": "Explain the backpropagation algorithm"}, {"role": "silicat", "content": "Compute gradients via chain rule in reverse topological order."}]}
+{"messages": [{"role": "user", "content": "What is the vanishing gradient problem"}, {"role": "silicat", "content": "Gradients shrink with depth; ReLU and skip connections help."}]}
+{"messages": [{"role": "user", "content": "Explain the exploding gradient"}, {"role": "silicat", "content": "Gradients grow large; gradient clipping prevents divergence."}]}
+{"messages": [{"role": "user", "content": "What is the neural network approximation"}, {"role": "silicat", "content": "Universal approximator with hidden layer; depth enables efficiency."}]}
+{"messages": [{"role": "user", "content": "Explain the convolutional neural network"}, {"role": "silicat", "content": "Local connectivity and weight sharing; efficient for images."}]}
+{"messages": [{"role": "user", "content": "What is the recurrent neural network"}, {"role": "silicat", "content": "Temporal dependencies via feedback connections; stateful."}]}
+{"messages": [{"role": "user", "content": "Explain the LSTM cell"}, {"role": "silicat", "content": "Gating mechanism controls information flow; addresses vanishing gradient."}]}
+{"messages": [{"role": "user", "content": "What is the GRU simplified"}, {"role": "silicat", "content": "Fewer gates than LSTM; often performs similarly."}]}
+{"messages": [{"role": "user", "content": "Explain the bidirectional RNN"}, {"role": "silicat", "content": "Process sequence forward and backward; aggregate both representations."}]}
+{"messages": [{"role": "user", "content": "What is the attention mechanism"}, {"role": "silicat", "content": "Query key value; compute weights over values based on query."}]}
+{"messages": [{"role": "user", "content": "Explain the transformer architecture"}, {"role": "silicat", "content": "Multi-head self-attention and feedforward; parallel processing."}]}
+{"messages": [{"role": "user", "content": "What is the positional encoding"}, {"role": "silicat", "content": "Encode position information into embeddings; enables ordering."}]}
+{"messages": [{"role": "user", "content": "Explain the beam search decoding"}, {"role": "silicat", "content": "Keep top-k hypotheses expanding each; find best sequence."}]}
+{"messages": [{"role": "user", "content": "What is the greedy decoding"}, {"role": "silicat", "content": "Pick most likely token at each step; fast but suboptimal."}]}
+{"messages": [{"role": "user", "content": "Explain the sampling temperature"}, {"role": "silicat", "content": "Scale logits before sampling; control randomness."}]}
+{"messages": [{"role": "user", "content": "What is the top-k top-p sampling"}, {"role": "silicat", "content": "Restrict sampling to most likely tokens; nucleus sampling."}]}
+{"messages": [{"role": "user", "content": "Explain the maximum likelihood objective"}, {"role": "silicat", "content": "Maximize probability of correct sequence; standard training."}]}
+{"messages": [{"role": "user", "content": "What is the teacher forcing"}, {"role": "silicat", "content": "Feed true tokens during training; distribution mismatch at test."}]}
+{"messages": [{"role": "user", "content": "Explain the scheduled sampling"}, {"role": "silicat", "content": "Gradually increase exposure to model outputs during training."}]}
+{"messages": [{"role": "user", "content": "What is the copy mechanism"}, {"role": "silicat", "content": "Attention to source enables copying relevant information."}]}
+{"messages": [{"role": "user", "content": "Explain the pointer network"}, {"role": "silicat", "content": "Attention instead of softmax over vocabulary; points to inputs."}]}
+{"messages": [{"role": "user", "content": "What is the coverage mechanism"}, {"role": "silicat", "content": "Track which inputs have been attended; prevent repetition."}]}
+{"messages": [{"role": "user", "content": "Explain the multi-task learning"}, {"role": "silicat", "content": "Train single model on multiple related tasks; shared representation."}]}
+{"messages": [{"role": "user", "content": "What is the transfer learning"}, {"role": "silicat", "content": "Train on source task, finetune on target; reduce data needs."}]}
+{"messages": [{"role": "user", "content": "Explain the domain adaptation"}, {"role": "silicat", "content": "Reduce distribution shift between source and target domains."}]}
+{"messages": [{"role": "user", "content": "What is the meta-learning"}, {"role": "silicat", "content": "Learn to learn; quick adaptation to new tasks."}]}
+{"messages": [{"role": "user", "content": "Explain the few-shot learning"}, {"role": "silicat", "content": "Adapt to new task from few examples; meta-learning application."}]}
+{"messages": [{"role": "user", "content": "What is the zero-shot learning"}, {"role": "silicat", "content": "Generalize to unseen classes; use semantic attributes."}]}
+{"messages": [{"role": "user", "content": "Explain the continual learning"}, {"role": "silicat", "content": "Learn new tasks without forgetting old ones."}]}
+{"messages": [{"role": "user", "content": "What is the catastrophic forgetting"}, {"role": "silicat", "content": "New learning overwrites old knowledge; memory replay helps."}]}
+{"messages": [{"role": "user", "content": "Explain the knowledge distillation"}, {"role": "silicat", "content": "Train student to mimic teacher; compress model."}]}
+{"messages": [{"role": "user", "content": "What is the model compression pruning"}, {"role": "silicat", "content": "Remove unimportant connections; maintain performance."}]}
+{"messages": [{"role": "user", "content": "Explain the quantization low precision"}, {"role": "silicat", "content": "Reduce bit width of weights and activations."}]}
+{"messages": [{"role": "user", "content": "What is the neural architecture search"}, {"role": "silicat", "content": "Automatically design network architecture; computationally expensive."}]}
+{"messages": [{"role": "user", "content": "Explain the hyperparameter tuning"}, {"role": "silicat", "content": "Grid or random search or Bayesian optimization over parameters."}]}
+{"messages": [{"role": "user", "content": "What is the early stopping criteria"}, {"role": "silicat", "content": "Monitor validation; stop when performance plateaus."}]}
+{"messages": [{"role": "user", "content": "Explain the cross-validation strategy"}, {"role": "silicat", "content": "k-fold provides multiple train-test splits for robust evaluation."}]}
+{"messages": [{"role": "user", "content": "What is the class imbalance handling"}, {"role": "silicat", "content": "Weighted loss, resampling, or SMOTE for minority class."}]}
+{"messages": [{"role": "user", "content": "Explain the data augmentation"}, {"role": "silicat", "content": "Artificially expand training data; rotation, crop, noise for images."}]}
+{"messages": [{"role": "user", "content": "What is the active learning"}, {"role": "silicat", "content": "Select most informative examples to label; reduce annotation cost."}]}
+{"messages": [{"role": "user", "content": "Explain the semi-supervised learning"}, {"role": "silicat", "content": "Leverage unlabeled data alongside labeled data."}]}
+{"messages": [{"role": "user", "content": "What is the self-supervised learning"}, {"role": "silicat", "content": "Create labels from data itself; contrastive learning."}]}
+{"messages": [{"role": "user", "content": "Explain the unsupervised clustering"}, {"role": "silicat", "content": "Group data points without labels; k-means, GMM, hierarchical."}]}
+{"messages": [{"role": "user", "content": "What is the dimensionality reduction PCA"}, {"role": "silicat", "content": "Project to principal components; maximize variance."}]}
+{"messages": [{"role": "user", "content": "Explain the t-SNE visualization"}, {"role": "silicat", "content": "Non-linear embedding for 2D visualization; respects local structure."}]}
+{"messages": [{"role": "user", "content": "What is the manifold learning"}, {"role": "silicat", "content": "Assume data lies on low-dimensional manifold."}]}
+{"messages": [{"role": "user", "content": "Explain the kernel methods"}, {"role": "silicat", "content": "Implicit mapping to high-dimensional space; kernel trick O(n^2)."}]}
+{"messages": [{"role": "user", "content": "What is the support vector machine SVM"}, {"role": "silicat", "content": "Maximum margin classifier; convex optimization."}]}
+{"messages": [{"role": "user", "content": "Explain the soft margin SVM"}, {"role": "silicat", "content": "Allow misclassification; trade-off via slack variables."}]}
+{"messages": [{"role": "user", "content": "What is the multiclass SVM"}, {"role": "silicat", "content": "One-vs-rest or one-vs-one for multiple classes."}]}
+{"messages": [{"role": "user", "content": "Explain the kernel trick optimization"}, {"role": "silicat", "content": "Compute dot product in high-dim space implicitly."}]}
+{"messages": [{"role": "user", "content": "What is the Gaussian process regression"}, {"role": "silicat", "content": "Bayesian non-parametric; posterior over functions."}]}
+{"messages": [{"role": "user", "content": "Explain the kernel selection"}, {"role": "silicat", "content": "RBF, polynomial, linear kernels with different properties."}]}
+{"messages": [{"role": "user", "content": "What is the decision tree splitting"}, {"role": "silicat", "content": "Information gain or Gini impurity for node splitting."}]}
+{"messages": [{"role": "user", "content": "Explain the random forest ensemble"}, {"role": "silicat", "content": "Aggregate multiple trees on bootstrap samples."}]}
+{"messages": [{"role": "user", "content": "What is the gradient boosting"}, {"role": "silicat", "content": "Sequentially improve via residual fitting in function space."}]}
+{"messages": [{"role": "user", "content": "Explain the AdaBoost algorithm"}, {"role": "silicat", "content": "Weighted resampling focusing on hard examples."}]}
+{"messages": [{"role": "user", "content": "What is the bagging vs boosting"}, {"role": "silicat", "content": "Bagging parallel; boosting sequential; different error types."}]}
+{"messages": [{"role": "user", "content": "Explain the mixture of experts"}, {"role": "silicat", "content": "Gating network selects expert for input."}]}
+{"messages": [{"role": "user", "content": "What is the expectation maximization EM"}, {"role": "silicat", "content": "Alternately infer hidden variables and optimize likelihood."}]}
+{"messages": [{"role": "user", "content": "Explain the variational inference"}, {"role": "silicat", "content": "Approximate posterior with tractable distribution."}]}
+{"messages": [{"role": "user", "content": "What is the Gibbs sampling"}, {"role": "silicat", "content": "Iteratively sample from conditional distributions."}]}
+{"messages": [{"role": "user", "content": "Explain the Markov chain Monte Carlo"}, {"role": "silicat", "content": "Sample from target distribution via Markov chain."}]}
+{"messages": [{"role": "user", "content": "What is the Metropolis-Hastings"}, {"role": "silicat", "content": "Accept-reject sampling for MCMC."}]}
+{"messages": [{"role": "user", "content": "Explain the Hamiltonian Monte Carlo"}, {"role": "silicat", "content": "Use gradient information for efficient sampling."}]}
+{"messages": [{"role": "user", "content": "What is the variational autoencoder"}, {"role": "silicat", "content": "Autoencoder with latent variable KL divergence."}]}
+{"messages": [{"role": "user", "content": "Explain the generative adversarial network"}, {"role": "silicat", "content": "Generator and discriminator competition."}]}
+{"messages": [{"role": "user", "content": "What is the Wasserstein GAN"}, {"role": "silicat", "content": "Use Wasserstein distance for training stability."}]}
+{"messages": [{"role": "user", "content": "Explain the style transfer"}, {"role": "silicat", "content": "Combine content of one image with style of another."}]}
+{"messages": [{"role": "user", "content": "What is the image segmentation"}, {"role": "silicat", "content": "Pixel-level classification; semantic or instance segmentation."}]}
+{"messages": [{"role": "user", "content": "Explain the object detection YOLO"}, {"role": "silicat", "content": "Single-stage detector; predictions via grid cells."}]}
+{"messages": [{"role": "user", "content": "What is the faster RCNN"}, {"role": "silicat", "content": "Two-stage: region proposal then classification."}]}
+{"messages": [{"role": "user", "content": "Explain the mask RCNN"}, {"role": "silicat", "content": "Extend Faster RCNN with instance segmentation mask."}]}
+{"messages": [{"role": "user", "content": "What is the feature pyramid network"}, {"role": "silicat", "content": "Multi-scale features from hierarchical backbone."}]}
+{"messages": [{"role": "user", "content": "Explain the attention visualization"}, {"role": "silicat", "content": "Saliency maps or attention weights show what model uses."}]}
+{"messages": [{"role": "user", "content": "What is the interpretability explainability"}, {"role": "silicat", "content": "Understand model decisions; LIME, SHAP, attention."}]}
+{"messages": [{"role": "user", "content": "Explain the adversarial examples"}, {"role": "silicat", "content": "Imperceptible perturbations fool trained models."}]}
+{"messages": [{"role": "user", "content": "What is the adversarial training"}, {"role": "silicat", "content": "Train with adversarial examples for robustness."}]}
+{"messages": [{"role": "user", "content": "Explain the certified robustness"}, {"role": "silicat", "content": "Formal bounds on robustness via randomized smoothing."}]}
+{"messages": [{"role": "user", "content": "What is the neural verification"}, {"role": "silicat", "content": "Prove properties of networks via SMT solvers."}]}
+{"messages": [{"role": "user", "content": "Explain the out-of-distribution detection"}, {"role": "silicat", "content": "Identify inputs not from training distribution."}]}
+{"messages": [{"role": "user", "content": "What is the uncertainty estimation"}, {"role": "silicat", "content": "Model confidence in predictions via Bayesian or ensemble."}]}
+{"messages": [{"role": "user", "content": "Explain the calibration confidence"}, {"role": "silicat", "content": "Predicted probability matches actual frequency."}]}
+{"messages": [{"role": "user", "content": "What is the Brier score"}, {"role": "silicat", "content": "Mean squared error between prediction and outcome."}]}
+{"messages": [{"role": "user", "content": "Explain the expected calibration error"}, {"role": "silicat", "content": "Average difference between predicted and actual accuracy bins."}]}
+{"messages": [{"role": "user", "content": "What is the confusion matrix metrics"}, {"role": "silicat", "content": "Precision, recall, F1-score, ROC-AUC for classification."}]}
+{"messages": [{"role": "user", "content": "Explain the Precision vs Recall tradeoff"}, {"role": "silicat", "content": "Precision: true positive rate; recall: coverage of positives."}]}
+{"messages": [{"role": "user", "content": "What is the micro vs macro averaging"}, {"role": "silicat", "content": "Micro: aggregate confusion matrices; macro: average per-class."}]}
+{"messages": [{"role": "user", "content": "Explain the loss function choices"}, {"role": "silicat", "content": "MSE regression; cross-entropy classification; domain-specific losses."}]}
+{"messages": [{"role": "user", "content": "What is the Focal loss imbalance"}, {"role": "silicat", "content": "Down-weight easy examples; focus on hard negatives."}]}
+{"messages": [{"role": "user", "content": "Explain the Huber loss robustness"}, {"role": "silicat", "content": "Quadratic near zero; linear in tails; robust outliers."}]}
+{"messages": [{"role": "user", "content": "What is the triplet loss metric"}, {"role": "silicat", "content": "Minimize distance to positive; maximize to negative."}]}
+{"messages": [{"role": "user", "content": "Explain the contrastive learning"}, {"role": "silicat", "content": "Learn representation by bringing similar examples close."}]}
+{"messages": [{"role": "user", "content": "What is the supervised contrastive loss"}, {"role": "silicat", "content": "Extend contrastive to labeled classes."}]}
+{"messages": [{"role": "user", "content": "Explain the noise contrastive estimation"}, {"role": "silicat", "content": "Approximate softmax by contrasting data vs noise."}]}
+{"messages": [{"role": "user", "content": "What is the information bottleneck"}, {"role": "silicat", "content": "Balance compression and prediction performance."}]}
+{"messages": [{"role": "user", "content": "Explain the mutual information"}, {"role": "silicat", "content": "Shared information between variables; measured in nats/bits."}]}
+{"messages": [{"role": "user", "content": "What is the entropy lower bound"}, {"role": "silicat", "content": "Variability limit in maximum likelihood estimation."}]}
+{"messages": [{"role": "user", "content": "Explain the minimum description length"}, {"role": "silicat", "content": "Model quality as compression; shorter descriptions better."}]}
+{"messages": [{"role": "user", "content": "What is the Occam razor principle"}, {"role": "silicat", "content": "Prefer simpler models; bias-variance tradeoff."}]}
+{"messages": [{"role": "user", "content": "What is the bias-variance decomposition"}, {"role": "silicat", "content": "Error = bias^2 + variance + noise. Models with high bias underfit; high variance overfit."}]}
+{"messages": [{"role": "user", "content": "Explain the learning curve analysis"}, {"role": "silicat", "content": "Plot training vs validation error vs data size; identify underfitting/overfitting."}]}
+{"messages": [{"role": "user", "content": "What is the statistical significance testing"}, {"role": "silicat", "content": "Hypothesis test model improvement; t-test, permutation test for validity."}]}
+{"messages": [{"role": "user", "content": "Explain the effect size interpretation"}, {"role": "silicat", "content": "Magnitude of effect beyond statistical significance."}]}
+{"messages": [{"role": "user", "content": "What is the multiple hypothesis correction"}, {"role": "silicat", "content": "Bonferroni or FDR to control false positives in multiple tests."}]}
+{"messages": [{"role": "user", "content": "Explain the P-value misinterpretation"}, {"role": "silicat", "content": "P-value is probability of data given null; not probability null is false."}]}
+{"messages": [{"role": "user", "content": "What is the confidence interval"}, {"role": "silicat", "content": "Range likely containing true parameter with specified confidence."}]}
+{"messages": [{"role": "user", "content": "Explain the Bayesian posterior"}, {"role": "silicat", "content": "Update beliefs with data via Bayes rule; express uncertainty."}]}
+{"messages": [{"role": "user", "content": "What is the prior selection"}, {"role": "silicat", "content": "Choose prior based on domain knowledge or use uninformative."}]}
+{"messages": [{"role": "user", "content": "Explain the conjugate prior"}, {"role": "silicat", "content": "Prior and likelihood from same family; closed-form posterior."}]}
+{"messages": [{"role": "user", "content": "What is the Monte Carlo approximation"}, {"role": "silicat", "content": "Approximate integral via random sampling."}]}
+{"messages": [{"role": "user", "content": "Explain the importance sampling"}, {"role": "silicat", "content": "Sample from proposal; reweight by likelihood ratio for target."}]}
+{"messages": [{"role": "user", "content": "What is the rejection sampling"}, {"role": "silicat", "content": "Accept/reject based on comparison to reference; inefficient high-dim."}]}
+{"messages": [{"role": "user", "content": "Explain the Langevin dynamics"}, {"role": "silicat", "content": "Add noise to gradient descent; converges to target distribution."}]}
+{"messages": [{"role": "user", "content": "What is the score matching"}, {"role": "silicat", "content": "Match gradient of log density without computing partition function."}]}
+{"messages": [{"role": "user", "content": "Explain the denoising score matching"}, {"role": "silicat", "content": "Perturb data with noise; score matches derivative."}]}
+{"messages": [{"role": "user", "content": "What is the diffusion model"}, {"role": "silicat", "content": "Reverse process of adding noise; generative via denoising."}]}
+{"messages": [{"role": "user", "content": "Explain the flow-based model"}, {"role": "silicat", "content": "Invertible transformation to simple distribution."}]}
+{"messages": [{"role": "user", "content": "What is the normalizing flow"}, {"role": "silicat", "content": "Stack bijections with tractable Jacobians; compute likelihoods."}]}
+{"messages": [{"role": "user", "content": "Explain the autoregressive model"}, {"role": "silicat", "content": "Decompose joint as product of conditionals; sample sequentially."}]}
+{"messages": [{"role": "user", "content": "What is the causal inference"}, {"role": "silicat", "content": "Estimate treatment effect; confounding and selection bias challenges."}]}
+{"messages": [{"role": "user", "content": "Explain the propensity score"}, {"role": "silicat", "content": "Probability of treatment given covariates; match treated-control."}]}
+{"messages": [{"role": "user", "content": "What is the instrumental variable"}, {"role": "silicat", "content": "Variable affecting treatment but not outcome directly."}]}
+{"messages": [{"role": "user", "content": "Explain the difference-in-differences"}, {"role": "silicat", "content": "Control for time trends via unaffected group comparison."}]}
+{"messages": [{"role": "user", "content": "What is the regression discontinuity"}, {"role": "silicat", "content": "Exploit threshold in assignment for causal identification."}]}
+{"messages": [{"role": "user", "content": "Explain the randomized controlled trial"}, {"role": "silicat", "content": "Gold standard: random assignment eliminates confounding."}]}
+{"messages": [{"role": "user", "content": "What is the A/B testing framework"}, {"role": "silicat", "content": "Compare two variants; power analysis determines sample size."}]}
+{"messages": [{"role": "user", "content": "Explain the sequential analysis"}, {"role": "silicat", "content": "Monitor results during experiment; early stopping rules."}]}
+{"messages": [{"role": "user", "content": "What is the multiple testing correction"}, {"role": "silicat", "content": "Adjust significance threshold for multiple comparisons."}]}
+{"messages": [{"role": "user", "content": "Explain the clinical trial phases"}, {"role": "silicat", "content": "Phase 1: safety; Phase 2: efficacy; Phase 3: confirmation."}]}
+{"messages": [{"role": "user", "content": "What is the intention-to-treat"}, {"role": "silicat", "content": "Analyze per assignment; respect randomization."}]}
+{"messages": [{"role": "user", "content": "Explain the per-protocol analysis"}, {"role": "silicat", "content": "Analyze per actual treatment; can introduce bias."}]}
+{"messages": [{"role": "user", "content": "What is the treatment effect heterogeneity"}, {"role": "silicat", "content": "Effect varies by subgroup; estimate conditional effects."}]}
+{"messages": [{"role": "user", "content": "Explain the causal forest"}, {"role": "silicat", "content": "Random forest variant estimating heterogeneous treatment effects."}]}
+{"messages": [{"role": "user", "content": "What is the orthogonal machine learning"}, {"role": "silicat", "content": "Debiased ML for treatment effect estimation with high-dim."}]}
+{"messages": [{"role": "user", "content": "Explain the double machine learning"}, {"role": "silicat", "content": "Double robust: estimate via two ML models for robustness."}]}
+{"messages": [{"role": "user", "content": "What is the surrogacy"}, {"role": "silicat", "content": "Use intermediate outcome predicting final outcome."}]}
+{"messages": [{"role": "user", "content": "Explain the mediation analysis"}, {"role": "silicat", "content": "Decompose total effect into direct and indirect."}]}
+{"messages": [{"role": "user", "content": "What is the path analysis"}, {"role": "silicat", "content": "Model causal paths using regression coefficients."}]}
+{"messages": [{"role": "user", "content": "Explain the structural equation model"}, {"role": "silicat", "content": "Latent variables and causal paths; SEM estimation."}]}
+{"messages": [{"role": "user", "content": "What is the factor analysis"}, {"role": "silicat", "content": "Extract latent factors from observed variables."}]}
+{"messages": [{"role": "user", "content": "Explain the dimensionality reduction factor"}, {"role": "silicat", "content": "Reduce noise via latent factor representation."}]}
+{"messages": [{"role": "user", "content": "What is the exploratory factor analysis"}, {"role": "silicat", "content": "Data-driven latent structure discovery."}]}
+{"messages": [{"role": "user", "content": "Explain the confirmatory factor analysis"}, {"role": "silicat", "content": "Test predefined latent structure."}]}
+{"messages": [{"role": "user", "content": "What is the principal component analysis PCA"}, {"role": "silicat", "content": "Maximize variance in projection direction."}]}
+{"messages": [{"role": "user", "content": "Explain the whitening preprocessing"}, {"role": "silicat", "content": "Decorrelate variables and normalize variance."}]}
+{"messages": [{"role": "user", "content": "What is the independent component analysis"}, {"role": "silicat", "content": "Recover independent sources from mixed observations."}]}
+{"messages": [{"role": "user", "content": "Explain the non-negative matrix factorization"}, {"role": "silicat", "content": "Factorize into non-negative factors; interpretable."}]}
+{"messages": [{"role": "user", "content": "What is the tensor decomposition"}, {"role": "silicat", "content": "Extend matrix factorization to higher orders."}]}
+{"messages": [{"role": "user", "content": "Explain the Tucker decomposition"}, {"role": "silicat", "content": "Core tensor times factor matrices."}]}
+{"messages": [{"role": "user", "content": "What is the CP decomposition"}, {"role": "silicat", "content": "Sum of rank-1 tensors; interpretable factors."}]}
+{"messages": [{"role": "user", "content": "Explain the graph neural network"}, {"role": "silicat", "content": "Message passing on graphs; aggregate neighbor features."}]}
+{"messages": [{"role": "user", "content": "What is the graph embedding"}, {"role": "silicat", "content": "Learn low-dim representation of nodes; DeepWalk, Node2Vec."}]}
+{"messages": [{"role": "user", "content": "Explain the node classification"}, {"role": "silicat", "content": "Predict node label given neighborhood and features."}]}
+{"messages": [{"role": "user", "content": "What is the link prediction"}, {"role": "silicat", "content": "Predict missing or future edges; similarity or latent features."}]}
+{"messages": [{"role": "user", "content": "Explain the graph classification"}, {"role": "silicat", "content": "Assign class to entire graph; pooling and graph-level features."}]}
+{"messages": [{"role": "user", "content": "What is the knowledge graph embedding"}, {"role": "silicat", "content": "Learn embeddings for entities and relations."}]}
+{"messages": [{"role": "user", "content": "Explain the triple classification"}, {"role": "silicat", "content": "Predict if (subject, relation, object) is true."}]}
+{"messages": [{"role": "user", "content": "What is the relation extraction"}, {"role": "silicat", "content": "Identify relations between entities in text."}]}
+{"messages": [{"role": "user", "content": "Explain the entity linking"}, {"role": "silicat", "content": "Map named entities to knowledge base entries."}]}
+{"messages": [{"role": "user", "content": "What is the coreference resolution"}, {"role": "silicat", "content": "Identify which mentions refer to same entity."}]}
+{"messages": [{"role": "user", "content": "Explain the dependency parsing"}, {"role": "silicat", "content": "Extract grammatical dependencies between words."}]}
+{"messages": [{"role": "user", "content": "What is the semantic role labeling"}, {"role": "silicat", "content": "Identify predicate-argument structure in sentence."}]}
+{"messages": [{"role": "user", "content": "Explain the constituency parsing"}, {"role": "silicat", "content": "Extract phrase structure tree from sentence."}]}
+{"messages": [{"role": "user", "content": "What is the named entity recognition"}, {"role": "silicat", "content": "Identify and classify named entities in text."}]}
+{"messages": [{"role": "user", "content": "Explain the part-of-speech tagging"}, {"role": "silicat", "content": "Assign grammatical category to each word."}]}
+{"messages": [{"role": "user", "content": "What is the word sense disambiguation"}, {"role": "silicat", "content": "Determine correct meaning of polysemous word."}]}
+{"messages": [{"role": "user", "content": "Explain the semantic similarity"}, {"role": "silicat", "content": "Measure meaning relatedness between texts."}]}
+{"messages": [{"role": "user", "content": "What is the paraphrase detection"}, {"role": "silicat", "content": "Identify if two sentences have same meaning."}]}
+{"messages": [{"role": "user", "content": "Explain the text summarization"}, {"role": "silicat", "content": "Generate concise version preserving key information."}]}
+{"messages": [{"role": "user", "content": "What is the extractive summarization"}, {"role": "silicat", "content": "Select important sentences from original."}]}
+{"messages": [{"role": "user", "content": "Explain the abstractive summarization"}, {"role": "silicat", "content": "Generate new sentences with key information."}]}
+{"messages": [{"role": "user", "content": "What is the machine translation"}, {"role": "silicat", "content": "Translate text between languages."}]}
+{"messages": [{"role": "user", "content": "Explain the neural machine translation"}, {"role": "silicat", "content": "Seq2seq with attention for translation."}]}
+{"messages": [{"role": "user", "content": "What is the back-translation data augmentation"}, {"role": "silicat", "content": "Translate to target and back to source."}]}
+{"messages": [{"role": "user", "content": "Explain the multilingual model"}, {"role": "silicat", "content": "Train single model on multiple languages."}]}
+{"messages": [{"role": "user", "content": "What is the zero-shot translation"}, {"role": "silicat", "content": "Translate between language pairs not seen together."}]}
+{"messages": [{"role": "user", "content": "Explain the pivot-based translation"}, {"role": "silicat", "content": "Use bridge language for zero-shot."}]}
+{"messages": [{"role": "user", "content": "What is the language understanding benchmark"}, {"role": "silicat", "content": "Evaluate comprehension via tasks like GLUE, SuperGLUE."}]}
+{"messages": [{"role": "user", "content": "Explain the question answering"}, {"role": "silicat", "content": "Extract or generate answer to question from context."}]}
+{"messages": [{"role": "user", "content": "What is the reading comprehension"}, {"role": "silicat", "content": "Answer questions about given passage."}]}
+{"messages": [{"role": "user", "content": "Explain the open-domain QA"}, {"role": "silicat", "content": "Answer from large corpus without given passage."}]}
+{"messages": [{"role": "user", "content": "What is the retrieval augmented generation"}, {"role": "silicat", "content": "Retrieve relevant documents then generate answer."}]}
+{"messages": [{"role": "user", "content": "Explain the dialogue systems"}, {"role": "silicat", "content": "Multi-turn conversation with understanding and generation."}]}
+{"messages": [{"role": "user", "content": "What is the task-oriented dialogue"}, {"role": "silicat", "content": "Goal-driven conversation for user assistance."}]}
+{"messages": [{"role": "user", "content": "Explain the open-domain dialogue"}, {"role": "silicat", "content": "Conversational without specific task."}]}
+{"messages": [{"role": "user", "content": "What is the dialogue state tracking"}, {"role": "silicat", "content": "Maintain belief over user goals and constraints."}]}
+{"messages": [{"role": "user", "content": "Explain the natural language inference"}, {"role": "silicat", "content": "Determine if premise entails hypothesis."}]}
+{"messages": [{"role": "user", "content": "What is the textual entailment"}, {"role": "silicat", "content": "Predict if text T1 entails T2."}]}
+{"messages": [{"role": "user", "content": "Explain the sentiment analysis"}, {"role": "silicat", "content": "Classify emotional tone of text."}]}
+{"messages": [{"role": "user", "content": "What is the aspect-based sentiment"}, {"role": "silicat", "content": "Sentiment toward specific aspects of entity."}]}
+{"messages": [{"role": "user", "content": "Explain the emotion detection"}, {"role": "silicat", "content": "Classify fine-grained emotions beyond sentiment."}]}
+{"messages": [{"role": "user", "content": "What is the stance detection"}, {"role": "silicat", "content": "Determine position for/against target in text."}]}
+{"messages": [{"role": "user", "content": "Explain the toxicity detection"}, {"role": "silicat", "content": "Identify abusive or harmful content."}]}
+{"messages": [{"role": "user", "content": "What is the bias detection"}, {"role": "silicat", "content": "Identify biased language in text."}]}
+{"messages": [{"role": "user", "content": "Explain the hate speech detection"}, {"role": "silicat", "content": "Identify text targeting protected groups."}]}
+{"messages": [{"role": "user", "content": "What is the misinformation detection"}, {"role": "silicat", "content": "Identify false or misleading information."}]}
+{"messages": [{"role": "user", "content": "Explain the fact verification"}, {"role": "silicat", "content": "Check if claim is supported by evidence."}]}
+{"messages": [{"role": "user", "content": "What is the claim extraction"}, {"role": "silicat", "content": "Identify factual assertions in text."}]}
+{"messages": [{"role": "user", "content": "Explain the evidence retrieval"}, {"role": "silicat", "content": "Find documents supporting claims."}]}
+{"messages": [{"role": "user", "content": "What is the information extraction"}, {"role": "silicat", "content": "Extract structured information from unstructured text."}]}
+{"messages": [{"role": "user", "content": "Explain the entity extraction"}, {"role": "silicat", "content": "Identify entities of interest in text."}]}
+{"messages": [{"role": "user", "content": "What is the attribute extraction"}, {"role": "silicat", "content": "Extract properties of entities."}]}
+{"messages": [{"role": "user", "content": "Explain the event extraction"}, {"role": "silicat", "content": "Identify events and participants from text."}]}
+{"messages": [{"role": "user", "content": "What is the temporal analysis"}, {"role": "silicat", "content": "Extract and reason about time information."}]}
+{"messages": [{"role": "user", "content": "Explain the temporal relation extraction"}, {"role": "silicat", "content": "Determine temporal relationships between events."}]}
+{"messages": [{"role": "user", "content": "What is the coreference chain"}, {"role": "silicat", "content": "Link all mentions of same entity into chain."}]}
+{"messages": [{"role": "user", "content": "Explain the anaphora resolution"}, {"role": "silicat", "content": "Resolve pronouns to their referents."}]}
+{"messages": [{"role": "user", "content": "What is the word embedding word2vec"}, {"role": "silicat", "content": "Learn embeddings via context prediction."}]}
+{"messages": [{"role": "user", "content": "Explain the skip-gram model"}, {"role": "silicat", "content": "Predict context from word; embedding via sampling."}]}
+{"messages": [{"role": "user", "content": "What is the CBOW model"}, {"role": "silicat", "content": "Predict word from context."}]}
+{"messages": [{"role": "user", "content": "Explain the negative sampling"}, {"role": "silicat", "content": "Simplify softmax via noise contrastive estimation."}]}
+{"messages": [{"role": "user", "content": "What is the GloVe embedding"}, {"role": "silicat", "content": "Combine matrix factorization and word prediction."}]}
+{"messages": [{"role": "user", "content": "Explain the FastText subword"}, {"role": "silicat", "content": "Character n-grams for OOV and morphology."}]}
+{"messages": [{"role": "user", "content": "What is the contextual embedding BERT"}, {"role": "silicat", "content": "Transformer pretrain on masked language model."}]}
+{"messages": [{"role": "user", "content": "Explain the ELMo layer-wise"}, {"role": "silicat", "content": "BiLSTM with layer mixing for context."}]}
+{"messages": [{"role": "user", "content": "What is the GPT autoregressive"}, {"role": "silicat", "content": "Autoregressive transformer for language generation."}]}
+{"messages": [{"role": "user", "content": "Explain the RoBERTa training"}, {"role": "silicat", "content": "BERT improvement via longer training and data."}]}
+{"messages": [{"role": "user", "content": "What is the ALBERT parameter sharing"}, {"role": "silicat", "content": "Factorize embeddings and share parameters across layers."}]}
+{"messages": [{"role": "user", "content": "Explain the ELECTRA discriminative"}, {"role": "silicat", "content": "Small discriminator trained more efficiently than BERT."}]}
+{"messages": [{"role": "user", "content": "What is the T5 unified framework"}, {"role": "silicat", "content": "Treat all NLP as text-to-text generation."}]}
+{"messages": [{"role": "user", "content": "Explain the sequence-to-sequence architecture"}, {"role": "silicat", "content": "Encoder-decoder for variable-length IO."}]}
+{"messages": [{"role": "user", "content": "What is the attention mechanism query-key-value"}, {"role": "silicat", "content": "Weighted sum of values based on query-key compatibility."}]}
+{"messages": [{"role": "user", "content": "Explain the self-attention"}, {"role": "silicat", "content": "Attend within sequence; enables parallelization."}]}
+{"messages": [{"role": "user", "content": "What is the cross-attention"}, {"role": "silicat", "content": "Attend between encoder and decoder."}]}
+{"messages": [{"role": "user", "content": "Explain the multi-head attention"}, {"role": "silicat", "content": "Multiple attention heads in parallel."}]}
+{"messages": [{"role": "user", "content": "What is the linear attention"}, {"role": "silicat", "content": "Approximate softmax for linear complexity."}]}
+{"messages": [{"role": "user", "content": "Explain the sparse attention pattern"}, {"role": "silicat", "content": "Limit attention to local or structured neighborhood."}]}
+{"messages": [{"role": "user", "content": "What is the efficient transformer"}, {"role": "silicat", "content": "Reduce O(n^2) attention complexity."}]}
+{"messages": [{"role": "user", "content": "Explain the Linformer linear"}, {"role": "silicat", "content": "Project key-value to lower dimension."}]}
+{"messages": [{"role": "user", "content": "What is the Performer kernel trick"}, {"role": "silicat", "content": "Approximate attention via kernel method."}]}
+{"messages": [{"role": "user", "content": "Explain the Big Bird sparse"}, {"role": "silicat", "content": "Sparse attention patterns for long sequences."}]}
+{"messages": [{"role": "user", "content": "What is the Reformer locality sensitive"}, {"role": "silicat", "content": "Hash-based attention grouping."}]}
+{"messages": [{"role": "user", "content": "Explain the Vision Transformer ViT"}, {"role": "silicat", "content": "Apply transformer to image patches."}]}
+{"messages": [{"role": "user", "content": "What is the image classification CNN"}, {"role": "silicat", "content": "Convolutional layers for hierarchical feature extraction."}]}
+{"messages": [{"role": "user", "content": "Explain the ResNet residual"}, {"role": "silicat", "content": "Skip connections enabling very deep networks."}]}
+{"messages": [{"role": "user", "content": "What is the DenseNet densely connected"}, {"role": "silicat", "content": "Dense skip connections between layers."}]}
+{"messages": [{"role": "user", "content": "Explain the MobileNet lightweight"}, {"role": "silicat", "content": "Depthwise separable convolution for efficiency."}]}
+{"messages": [{"role": "user", "content": "What is the EfficientNet compound scaling"}, {"role": "silicat", "content": "Joint scaling depth, width, resolution."}]}
+{"messages": [{"role": "user", "content": "Explain the object detection faster RCNN"}, {"role": "silicat", "content": "Region proposals then classification and bounding box."}]}
+{"messages": [{"role": "user", "content": "What is the YOLO real-time"}, {"role": "silicat", "content": "Single-stage grid-based detection."}]}
+{"messages": [{"role": "user", "content": "Explain the RetinaNet focal loss"}, {"role": "silicat", "content": "Address class imbalance via focal loss."}]}
+{"messages": [{"role": "user", "content": "What is the semantic segmentation FCN"}, {"role": "silicat", "content": "Fully convolutional for pixel-level classification."}]}
+{"messages": [{"role": "user", "content": "Explain the U-Net encoder-decoder"}, {"role": "silicat", "content": "Skip connections between encoder and decoder."}]}
+{"messages": [{"role": "user", "content": "What is the DeepLab atrous convolution"}, {"role": "silicat", "content": "Multi-scale features via dilated convolution."}]}
+{"messages": [{"role": "user", "content": "Explain the instance segmentation Mask RCNN"}, {"role": "silicat", "content": "Per-instance masks via region-based approach."}]}
+{"messages": [{"role": "user", "content": "What is the panoptic segmentation"}, {"role": "silicat", "content": "Unified stuff and things segmentation."}]}
+{"messages": [{"role": "user", "content": "Explain the 3D object detection"}, {"role": "silicat", "content": "Bounding boxes in 3D space from images or point clouds."}]}
+{"messages": [{"role": "user", "content": "What is the point cloud processing PointNet"}, {"role": "silicat", "content": "Direct processing of point clouds; permutation invariant."}]}
+{"messages": [{"role": "user", "content": "Explain the voxel-based representation"}, {"role": "silicat", "content": "Discretize space into voxels for 3D data."}]}
+{"messages": [{"role": "user", "content": "What is the mesh generation"}, {"role": "silicat", "content": "Create 3D surface mesh from data."}]}
+{"messages": [{"role": "user", "content": "Explain the implicit neural representation"}, {"role": "silicat", "content": "Neural network as continuous function."}]}
+{"messages": [{"role": "user", "content": "What is the neural radiance field NeRF"}, {"role": "silicat", "content": "Implicit representation for novel view synthesis."}]}
+{"messages": [{"role": "user", "content": "Explain the volume rendering"}, {"role": "silicat", "content": "Integrate radiance along ray to image."}]}
+{"messages": [{"role": "user", "content": "What is the depth prediction"}, {"role": "silicat", "content": "Estimate scene depth from image(s)."}]}
+{"messages": [{"role": "user", "content": "Explain the optical flow"}, {"role": "silicat", "content": "Estimate pixel motion between frames."}]}
+{"messages": [{"role": "user", "content": "What is the video understanding temporal"}, {"role": "silicat", "content": "Analyze action and events in video."}]}
+{"messages": [{"role": "user", "content": "Explain the action recognition"}, {"role": "silicat", "content": "Classify human actions in video."}]}
+{"messages": [{"role": "user", "content": "What is the video classification"}, {"role": "silicat", "content": "Predict label for entire video."}]}
+{"messages": [{"role": "user", "content": "Explain the temporal segment network"}, {"role": "silicat", "content": "Sparse sampling for efficient video understanding."}]}
+{"messages": [{"role": "user", "content": "What is the 3D convolution video"}, {"role": "silicat", "content": "Apply convolution in spatial and temporal dimensions."}]}
+{"messages": [{"role": "user", "content": "Explain the slowfast network"}, {"role": "silicat", "content": "Dual-stream slow and fast pathway."}]}
+{"messages": [{"role": "user", "content": "What is the skeleton-based action"}, {"role": "silicat", "content": "Use pose information for action recognition."}]}
+{"messages": [{"role": "user", "content": "Explain the human pose estimation"}, {"role": "silicat", "content": "Detect joints or keypoints of human body."}]}
+{"messages": [{"role": "user", "content": "What is the face recognition"}, {"role": "silicat", "content": "Identify person from facial features."}]}
+{"messages": [{"role": "user", "content": "Explain the face detection"}, {"role": "silicat", "content": "Localize faces in image."}]}
+{"messages": [{"role": "user", "content": "What is the facial landmark detection"}, {"role": "silicat", "content": "Locate key points on face."}]}
+{"messages": [{"role": "user", "content": "Explain the face attribute classification"}, {"role": "silicat", "content": "Classify age, gender, expression from face."}]}
+{"messages": [{"role": "user", "content": "What is the anti-spoofing liveness"}, {"role": "silicat", "content": "Distinguish real from spoofed face."}]}
+{"messages": [{"role": "user", "content": "Explain the medical image analysis"}, {"role": "silicat", "content": "AI for diagnosis from medical imaging."}]}
+{"messages": [{"role": "user", "content": "What is the disease classification"}, {"role": "silicat", "content": "Predict disease from imaging."}]}
+{"messages": [{"role": "user", "content": "Explain the segmentation medical"}, {"role": "silicat", "content": "Segment anatomical structures or lesions."}]}
+{"messages": [{"role": "user", "content": "What is the registration alignment"}, {"role": "silicat", "content": "Align images to common coordinate."}]}
+{"messages": [{"role": "user", "content": "Explain the reconstruction 3D"}, {"role": "silicat", "content": "Build 3D model from medical data."}]}
+{"messages": [{"role": "user", "content": "What is the anomaly detection unsupervised"}, {"role": "silicat", "content": "Identify unusual patterns without labels."}]}
+{"messages": [{"role": "user", "content": "Explain the autoencoder anomaly"}, {"role": "silicat", "content": "High reconstruction error indicates anomaly."}]}
+{"messages": [{"role": "user", "content": "What is the isolation forest"}, {"role": "silicat", "content": "Tree-based isolation of anomalies."}]}
+{"messages": [{"role": "user", "content": "Explain the one-class SVM"}, {"role": "silicat", "content": "SVM with single class; detects outliers."}]}
+{"messages": [{"role": "user", "content": "What is the local outlier factor"}, {"role": "silicat", "content": "Density-based anomaly via local density comparison."}]}
+{"messages": [{"role": "user", "content": "Explain the time series forecasting"}, {"role": "silicat", "content": "Predict future values from past observations."}]}
+{"messages": [{"role": "user", "content": "What is the ARIMA model"}, {"role": "silicat", "content": "Autoregressive integrated moving average."}]}
+{"messages": [{"role": "user", "content": "Explain the exponential smoothing"}, {"role": "silicat", "content": "Weighted sum of past observations with decay."}]}
+{"messages": [{"role": "user", "content": "What is the LSTM for time series"}, {"role": "silicat", "content": "Recurrent network capturing temporal dependencies."}]}
+{"messages": [{"role": "user", "content": "Explain the temporal convolutional"}, {"role": "silicat", "content": "Dilated convolution for temporal patterns."}]}
+{"messages": [{"role": "user", "content": "What is the transformer for time series"}, {"role": "silicat", "content": "Attention for modeling temporal relationships."}]}
+{"messages": [{"role": "user", "content": "Explain the attention for time series"}, {"role": "silicat", "content": "Focus on relevant historical time steps."}]}
+{"messages": [{"role": "user", "content": "What is the multi-step forecasting"}, {"role": "silicat", "content": "Predict multiple future steps."}]}
+{"messages": [{"role": "user", "content": "Explain the horizon evaluation"}, {"role": "silicat", "content": "Train-test split respecting temporal order."}]}
+{"messages": [{"role": "user", "content": "What is the cold start problem"}, {"role": "silicat", "content": "Lack of history for new users or items."}]}
+{"messages": [{"role": "user", "content": "Explain the content-based filtering"}, {"role": "silicat", "content": "Recommend based on item features."}]}
+{"messages": [{"role": "user", "content": "What is the collaborative filtering"}, {"role": "silicat", "content": "Recommend based on user-item interactions."}]}
+{"messages": [{"role": "user", "content": "Explain the matrix factorization"}, {"role": "silicat", "content": "Factor user-item interaction matrix."}]}
+{"messages": [{"role": "user", "content": "What is the deep learning recommendation"}, {"role": "silicat", "content": "Neural networks for implicit preference."}]}
+{"messages": [{"role": "user", "content": "Explain the sequential recommendation"}, {"role": "silicat", "content": "Account for order of user interactions."}]}
+{"messages": [{"role": "user", "content": "What is the session-based recommendation"}, {"role": "silicat", "content": "Recommend within single session."}]}
+{"messages": [{"role": "user", "content": "Explain the cross-domain recommendation"}, {"role": "silicat", "content": "Transfer knowledge across domains."}]}
+{"messages": [{"role": "user", "content": "What is the context-aware recommendation"}, {"role": "silicat", "content": "Incorporate contextual information."}]}
+{"messages": [{"role": "user", "content": "Explain the fairness in recommendation"}, {"role": "silicat", "content": "Ensure diverse or fair recommendations."}]}
+{"messages": [{"role": "user", "content": "What is the explainability in recommendation"}, {"role": "silicat", "content": "Provide reasons for recommendations."}]}
