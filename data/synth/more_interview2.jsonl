@@ -1,0 +1,500 @@
+{"messages": [{"role": "user", "content": "Python list vs tuple vs set"}, {"role": "silicat", "content": "List: mutable ordered []. Tuple: immutable ordered (). Set: unique unordered {}. Dict: key-value mapping."}]}
+{"messages": [{"role": "user", "content": "What is mutable default argument?"}, {"role": "silicat", "content": "def func(x=[]): BAD - list reused. def func(x=None): GOOD - create fresh per call."}]}
+{"messages": [{"role": "user", "content": "Late binding closure"}, {"role": "silicat", "content": "for i in range(3): f=[lambda:i] all return 3. Fix: lambda x=i: x"}]}
+{"messages": [{"role": "user", "content": "Iterator protocol"}, {"role": "silicat", "content": "__iter__ returns iterator. __next__ returns item or StopIteration."}]}
+{"messages": [{"role": "user", "content": "Shallow vs deep copy"}, {"role": "silicat", "content": "Shallow: new container, nested objects shared. Deep: completely independent."}]}
+{"messages": [{"role": "user", "content": "== vs is"}, {"role": "silicat", "content": "== value equality. is object identity. Use == for values, is for None."}]}
+{"messages": [{"role": "user", "content": "Integer caching"}, {"role": "silicat", "content": "Python caches -5..256 for efficiency. 256 is 256 True, 257 is 257 False."}]}
+{"messages": [{"role": "user", "content": "List modification during iteration"}, {"role": "silicat", "content": "Iterate copy: for x in list[:]. Use comprehension. Iterate backwards."}]}
+{"messages": [{"role": "user", "content": "Generators vs lists"}, {"role": "silicat", "content": "Generators: lazy, memory efficient. Lists: eager, all in memory."}]}
+{"messages": [{"role": "user", "content": "@staticmethod vs @classmethod"}, {"role": "silicat", "content": "@staticmethod no implicit arg. @classmethod gets cls. Instance gets self."}]}
+{"messages": [{"role": "user", "content": "MRO and C3 linearization"}, {"role": "silicat", "content": "Method resolution order follows C3 algorithm. View with __mro__."}]}
+{"messages": [{"role": "user", "content": "Descriptors"}, {"role": "silicat", "content": "__get__, __set__, __delete__ protocol. @property uses them."}]}
+{"messages": [{"role": "user", "content": "Python garbage collection"}, {"role": "silicat", "content": "Reference counting frees when refcount=0. GC collector handles cycles."}]}
+{"messages": [{"role": "user", "content": "__slots__"}, {"role": "silicat", "content": "Restricts attributes, saves memory per instance."}]}
+{"messages": [{"role": "user", "content": "__str__ vs __repr__"}, {"role": "silicat", "content": "__str__: user-friendly. __repr__: developer-friendly."}]}
+{"messages": [{"role": "user", "content": "Dict insertion order"}, {"role": "silicat", "content": "Guaranteed since Python 3.7 as language feature."}]}
+{"messages": [{"role": "user", "content": "Metaclasses"}, {"role": "silicat", "content": "Classes whose instances are classes. Control class creation."}]}
+{"messages": [{"role": "user", "content": "Context managers"}, {"role": "silicat", "content": "__enter__ setup, __exit__ cleanup. With ensures cleanup."}]}
+{"messages": [{"role": "user", "content": "raise vs raise from"}, {"role": "silicat", "content": "raise re-raises current. raise X from Y chains exceptions."}]}
+{"messages": [{"role": "user", "content": "__all__ in module"}, {"role": "silicat", "content": "Public API for 'import *'. Other names importable explicitly."}]}
+{"messages": [{"role": "user", "content": "sys.modules import cache"}, {"role": "silicat", "content": "Modules cached after import. Prevents re-execution."}]}
+{"messages": [{"role": "user", "content": "Walrus operator :="}, {"role": "silicat", "content": "Assignment expression. if (x := f()): avoids repeat call."}]}
+{"messages": [{"role": "user", "content": "Python memory management"}, {"role": "silicat", "content": "Reference counting + garbage collector. Freed when unreachable."}]}
+{"messages": [{"role": "user", "content": "Performance optimization"}, {"role": "silicat", "content": "Profile first. String join not concat. Sets for membership."}]}
+{"messages": [{"role": "user", "content": "Fix mutable default"}, {"role": "silicat", "content": "Use None: def f(x=None): if x is None: x = []"}]}
+{"messages": [{"role": "user", "content": "Fix closure late binding"}, {"role": "silicat", "content": "Default param: lambda x=i: x"}]}
+{"messages": [{"role": "user", "content": "Fix list iteration"}, {"role": "silicat", "content": "Iterate copy, comprehension, or backwards."}]}
+{"messages": [{"role": "user", "content": "Fix reference copy"}, {"role": "silicat", "content": "Use copy.deepcopy() for independence."}]}
+{"messages": [{"role": "user", "content": "LEGB scope rule"}, {"role": "silicat", "content": "Local, Enclosing, Global, Built-in. Resolution order."}]}
+{"messages": [{"role": "user", "content": "global vs nonlocal"}, {"role": "silicat", "content": "global: module vars. nonlocal: enclosing function vars."}]}
+{"messages": [{"role": "user", "content": "Exception hierarchy"}, {"role": "silicat", "content": "BaseException root. Exception for catchable errors."}]}
+{"messages": [{"role": "user", "content": "super() usage"}, {"role": "silicat", "content": "Uses MRO. Enables cooperative multiple inheritance."}]}
+{"messages": [{"role": "user", "content": "f-strings"}, {"role": "silicat", "content": "f'{expr}' syntax. Faster than .format(). Expressions allowed."}]}
+{"messages": [{"role": "user", "content": "Slice objects"}, {"role": "silicat", "content": "slice(start, stop, step) reusable. my_list[FIRST_THREE]."}]}
+{"messages": [{"role": "user", "content": "abs() vs math.fabs()"}, {"role": "silicat", "content": "abs() flexible types. fabs() float only."}]}
+{"messages": [{"role": "user", "content": "assert statement"}, {"role": "silicat", "content": "For debugging. Disabled python -O. Use exceptions for validation."}]}
+{"messages": [{"role": "user", "content": "round() function"}, {"role": "silicat", "content": "Banker's rounding. 0.1+0.2!=0.3 binary issue."}]}
+{"messages": [{"role": "user", "content": "divmod() function"}, {"role": "silicat", "content": "divmod(a, b) returns (quotient, remainder)."}]}
+{"messages": [{"role": "user", "content": "pow() function"}, {"role": "silicat", "content": "pow(b, e) or pow(b, e, mod) modular exponentiation."}]}
+{"messages": [{"role": "user", "content": "reversed() function"}, {"role": "silicat", "content": "Lazy reverse iterator. vs list[::-1] creates new."}]}
+{"messages": [{"role": "user", "content": "min/max with key"}, {"role": "silicat", "content": "min(list, key=len) custom. Multiple types: min(..., key=lambda x: x[1])."}]}
+{"messages": [{"role": "user", "content": "sum() function"}, {"role": "silicat", "content": "sum(list) or sum(list, start=10). Works addable types."}]}
+{"messages": [{"role": "user", "content": "enumerate() function"}, {"role": "silicat", "content": "enumerate(list, start=1) yields (index, item)."}]}
+{"messages": [{"role": "user", "content": "zip() function"}, {"role": "silicat", "content": "zip(l1, l2) pairs. zip(*matrix) transpose."}]}
+{"messages": [{"role": "user", "content": "sorted() function"}, {"role": "silicat", "content": "sorted(list, key=f) returns new. list.sort() in-place."}]}
+{"messages": [{"role": "user", "content": "any() and all()"}, {"role": "silicat", "content": "any(): first True. all(): first False. Short-circuit."}]}
+{"messages": [{"role": "user", "content": "isinstance() type check"}, {"role": "silicat", "content": "Check class and inheritance. Better than type()."}]}
+{"messages": [{"role": "user", "content": "repr() function"}, {"role": "silicat", "content": "Developer-friendly via __repr__()."}]}
+{"messages": [{"role": "user", "content": "__lt__ for sorting"}, {"role": "silicat", "content": "Define for comparisons. @total_ordering generates others."}]}
+{"messages": [{"role": "user", "content": "help() documentation"}, {"role": "silicat", "content": "help(obj) shows docs. inspect.getsource() shows code."}]}
+{"messages": [{"role": "user", "content": "id() function"}, {"role": "silicat", "content": "Memory address. id(a)==id(b) same object?"}]}
+{"messages": [{"role": "user", "content": "bool type"}, {"role": "silicat", "content": "True/False singletons. __bool__() controls truthiness."}]}
+{"messages": [{"role": "user", "content": "in operator"}, {"role": "silicat", "content": "Membership test. Sets O(1), lists O(n)."}]}
+{"messages": [{"role": "user", "content": "del statement"}, {"role": "silicat", "content": "Remove binding. Triggers GC if refcount=0."}]}
+{"messages": [{"role": "user", "content": "pass statement"}, {"role": "silicat", "content": "Do nothing placeholder for empty blocks."}]}
+{"messages": [{"role": "user", "content": "continue/break"}, {"role": "silicat", "content": "continue: skip iteration. break: exit loop. Innermost only."}]}
+{"messages": [{"role": "user", "content": "open() file modes"}, {"role": "silicat", "content": "r: read. w: write. a: append. b: binary. +: read/write."}]}
+{"messages": [{"role": "user", "content": "File context manager"}, {"role": "silicat", "content": "with open() as f: ensures file closed."}]}
+{"messages": [{"role": "user", "content": "String split()"}, {"role": "silicat", "content": "split() break into list. split(sep, maxsplit) customize."}]}
+{"messages": [{"role": "user", "content": "String join()"}, {"role": "silicat", "content": "join() combine list. Efficient vs concatenation."}]}
+{"messages": [{"role": "user", "content": "String replace()"}, {"role": "silicat", "content": "replace(old, new, count) change text. Returns new string."}]}
+{"messages": [{"role": "user", "content": "String strip()"}, {"role": "silicat", "content": "strip() remove whitespace. lstrip(), rstrip() sides."}]}
+{"messages": [{"role": "user", "content": "Dict keys()"}, {"role": "silicat", "content": "keys() all keys. Iterate for membership test."}]}
+{"messages": [{"role": "user", "content": "Dict values()"}, {"role": "silicat", "content": "values() all values. Iterate over values."}]}
+{"messages": [{"role": "user", "content": "Dict items()"}, {"role": "silicat", "content": "items() key-value pairs. for k, v in d.items()."}]}
+{"messages": [{"role": "user", "content": "Dict get()"}, {"role": "silicat", "content": "get(key, default) safe. Returns default if missing."}]}
+{"messages": [{"role": "user", "content": "Dict pop()"}, {"role": "silicat", "content": "pop(key, default) remove and return."}]}
+{"messages": [{"role": "user", "content": "Dict update()"}, {"role": "silicat", "content": "update(other) merge in-place."}]}
+{"messages": [{"role": "user", "content": "List append()"}, {"role": "silicat", "content": "append(item) add to end. Returns None."}]}
+{"messages": [{"role": "user", "content": "List extend()"}, {"role": "silicat", "content": "extend(items) add multiple. vs append() adds as one."}]}
+{"messages": [{"role": "user", "content": "List insert()"}, {"role": "silicat", "content": "insert(index, item) add at position."}]}
+{"messages": [{"role": "user", "content": "List remove()"}, {"role": "silicat", "content": "remove(value) delete first. ValueError if missing."}]}
+{"messages": [{"role": "user", "content": "List pop()"}, {"role": "silicat", "content": "pop(index) remove and return. pop() last."}]}
+{"messages": [{"role": "user", "content": "List sort()"}, {"role": "silicat", "content": "sort(key=f, reverse=T) in-place modify."}]}
+{"messages": [{"role": "user", "content": "List copy()"}, {"role": "silicat", "content": "copy() shallow copy. Nested objects still referenced."}]}
+{"messages": [{"role": "user", "content": "hasattr() check"}, {"role": "silicat", "content": "hasattr(obj, 'attr') check existence."}]}
+{"messages": [{"role": "user", "content": "getattr() get"}, {"role": "silicat", "content": "getattr(obj, 'attr', default) safe access."}]}
+{"messages": [{"role": "user", "content": "setattr() set"}, {"role": "silicat", "content": "setattr(obj, 'attr', value) dynamic attribute."}]}
+{"messages": [{"role": "user", "content": "delattr() delete"}, {"role": "silicat", "content": "delattr(obj, 'attr') remove attribute."}]}
+{"messages": [{"role": "user", "content": "dir() introspection"}, {"role": "silicat", "content": "dir(obj) lists attributes/methods."}]}
+{"messages": [{"role": "user", "content": "type() function"}, {"role": "silicat", "content": "type(obj) exact type. Use isinstance() for inheritance."}]}
+{"messages": [{"role": "user", "content": "callable() check"}, {"role": "silicat", "content": "callable(obj) can call? Returns bool."}]}
+{"messages": [{"role": "user", "content": "String formatting"}, {"role": "silicat", "content": "f-strings, .format(), % old. Choose f-strings modern."}]}
+{"messages": [{"role": "user", "content": "Unpacking"}, {"role": "silicat", "content": "a, b = [1, 2]. a, *rest, b = [1,2,3,4]."}]}
+{"messages": [{"role": "user", "content": "List comprehension"}, {"role": "silicat", "content": "[x for x in range(10)]. [x for x if condition]."}]}
+{"messages": [{"role": "user", "content": "Set comprehension"}, {"role": "silicat", "content": "{x for x in range(10)}. Removes duplicates."}]}
+{"messages": [{"role": "user", "content": "Dict comprehension"}, {"role": "silicat", "content": "{k: v for k, v in d.items()}. {v: k for k, v in d.items()}."}]}
+{"messages": [{"role": "user", "content": "*args parameter"}, {"role": "silicat", "content": "*args tuple of positional. func(*list) unpacks."}]}
+{"messages": [{"role": "user", "content": "**kwargs parameter"}, {"role": "silicat", "content": "**kwargs dict of keyword. func(**dict) unpacks."}]}
+{"messages": [{"role": "user", "content": "Lambda functions"}, {"role": "silicat", "content": "lambda x: x**2 anonymous. Use map/filter. Avoid complex logic."}]}
+{"messages": [{"role": "user", "content": "try-except block"}, {"role": "silicat", "content": "try: attempt. except Error: catch. finally: always."}]}
+{"messages": [{"role": "user", "content": "try-else block"}, {"role": "silicat", "content": "else: runs if no exception. Not skipped if except."}]}
+{"messages": [{"role": "user", "content": "Custom exceptions"}, {"role": "silicat", "content": "class Error(Exception): pass. Inherit from Exception."}]}
+{"messages": [{"role": "user", "content": "Raise exception"}, {"role": "silicat", "content": "raise Error('message'). Re-raise with raise no args."}]}
+{"messages": [{"role": "user", "content": "Decorators"}, {"role": "silicat", "content": "@dec def f(): applies dec(f). Takes function, returns function."}]}
+{"messages": [{"role": "user", "content": "Decorator arguments"}, {"role": "silicat", "content": "@dec(arg) def f(): factory decorator. Three nested functions."}]}
+{"messages": [{"role": "user", "content": "functools.wraps"}, {"role": "silicat", "content": "@wraps preserves metadata (__name__, __doc__)."}]}
+{"messages": [{"role": "user", "content": "lru_cache"}, {"role": "silicat", "content": "@lru_cache(128) memoization. Arguments hashable."}]}
+{"messages": [{"role": "user", "content": "functools.reduce"}, {"role": "silicat", "content": "reduce(f, list) cumulative. Returns single value."}]}
+{"messages": [{"role": "user", "content": "functools.partial"}, {"role": "silicat", "content": "partial(f, arg) fix arguments. Creates new function."}]}
+{"messages": [{"role": "user", "content": "inspect.signature()"}, {"role": "silicat", "content": "Get function signature. Parameters info."}]}
+{"messages": [{"role": "user", "content": "inspect.getsource()"}, {"role": "silicat", "content": "Get function source code. Needs source file."}]}
+{"messages": [{"role": "user", "content": "compile() function"}, {"role": "silicat", "content": "compile(code, file, mode) bytecode. 'exec', 'eval', 'single'."}]}
+{"messages": [{"role": "user", "content": "eval() function"}, {"role": "silicat", "content": "eval(expr) execute expression. Security risk untrusted."}]}
+{"messages": [{"role": "user", "content": "input() function"}, {"role": "silicat", "content": "input() read user input. Returns string always."}]}
+{"messages": [{"role": "user", "content": "sys.argv"}, {"role": "silicat", "content": "Command-line arguments. argv[0] script name."}]}
+{"messages": [{"role": "user", "content": "argparse module"}, {"role": "silicat", "content": "argparse.ArgumentParser() CLI arguments. Structured."}]}
+{"messages": [{"role": "user", "content": "print() parameters"}, {"role": "silicat", "content": "sep=' ' separator. end='\n' line ending. file=sys.stdout."}]}
+{"messages": [{"role": "user", "content": "String .format()"}, {"role": "silicat", "content": ".format() old string formatting. '{} {}'.format(1, 'x')."}]}
+{"messages": [{"role": "user", "content": "Bytes type"}, {"role": "silicat", "content": "bytes immutable sequence. bytearray mutable."}]}
+{"messages": [{"role": "user", "content": "String encoding"}, {"role": "silicat", "content": "str.encode(encoding) to bytes. Default UTF-8."}]}
+{"messages": [{"role": "user", "content": "Bytes decoding"}, {"role": "silicat", "content": "bytes.decode(encoding) to str. Default UTF-8."}]}
+{"messages": [{"role": "user", "content": "json module"}, {"role": "silicat", "content": "json.dumps() to string. json.loads() from string."}]}
+{"messages": [{"role": "user", "content": "CSV module"}, {"role": "silicat", "content": "csv.reader() parse. csv.writer() write. csv.DictReader() dict."}]}
+{"messages": [{"role": "user", "content": "Pathlib"}, {"role": "silicat", "content": "Path('/path') modern. Methods: exists(), is_dir(), read_text()."}]}
+{"messages": [{"role": "user", "content": "os module"}, {"role": "silicat", "content": "os.path.join() paths. os.listdir() contents. os.walk() recursive."}]}
+{"messages": [{"role": "user", "content": "tempfile module"}, {"role": "silicat", "content": "NamedTemporaryFile() temp. TemporaryDirectory() context."}]}
+{"messages": [{"role": "user", "content": "Datetime module"}, {"role": "silicat", "content": "datetime.datetime. strftime(fmt) format. strptime(s, fmt) parse."}]}
+{"messages": [{"role": "user", "content": "Time module"}, {"role": "silicat", "content": "time.time() seconds epoch. time.sleep(sec) pause."}]}
+{"messages": [{"role": "user", "content": "Random module"}, {"role": "silicat", "content": "random(), randint(), choice(), shuffle(), sample()."}]}
+{"messages": [{"role": "user", "content": "Logging module"}, {"role": "silicat", "content": "basicConfig() setup. getLogger(__name__) per-module. Levels: DEBUG INFO WARNING ERROR CRITICAL."}]}
+{"messages": [{"role": "user", "content": "Unittest"}, {"role": "silicat", "content": "TestCase subclass. assert* methods. setUp/tearDown."}]}
+{"messages": [{"role": "user", "content": "pytest"}, {"role": "silicat", "content": "Simple assert. @pytest.mark. Fixtures."}]}
+{"messages": [{"role": "user", "content": "Mock module"}, {"role": "silicat", "content": "Mock() fake. patch() replace. assert_called_with() verify."}]}
+{"messages": [{"role": "user", "content": "Multiprocessing"}, {"role": "silicat", "content": "Process() subprocess. Pool() multiple. Avoids GIL."}]}
+{"messages": [{"role": "user", "content": "Threading"}, {"role": "silicat", "content": "Thread() lightweight. Lock for sync. GIL limits CPU."}]}
+{"messages": [{"role": "user", "content": "asyncio"}, {"role": "silicat", "content": "async def coroutine. await pauses. Event loop."}]}
+{"messages": [{"role": "user", "content": "Regular expressions"}, {"role": "silicat", "content": "re.search() find. re.findall() all. re.sub() replace."}]}
+{"messages": [{"role": "user", "content": "Glob module"}, {"role": "silicat", "content": "glob('*.py') find files. Path.rglob() recursive."}]}
+{"messages": [{"role": "user", "content": "Subprocess"}, {"role": "silicat", "content": "subprocess.run() execute. capture_output text=True."}]}
+{"messages": [{"role": "user", "content": "Socket"}, {"role": "silicat", "content": "socket() create. connect() client. listen() server."}]}
+{"messages": [{"role": "user", "content": "Requests"}, {"role": "silicat", "content": "requests.get() fetch. .json() parse. .text content."}]}
+{"messages": [{"role": "user", "content": "Collections"}, {"role": "silicat", "content": "Counter() count. defaultdict() defaults. deque() queue. namedtuple() typed."}]}
+{"messages": [{"role": "user", "content": "ABC"}, {"role": "silicat", "content": "@abstractmethod enforce. Prevents instantiation."}]}
+{"messages": [{"role": "user", "content": "Dataclasses"}, {"role": "silicat", "content": "@dataclass auto __init__, __repr__, __eq__."}]}
+{"messages": [{"role": "user", "content": "Enum"}, {"role": "silicat", "content": "Enum fixed values. Members are instances."}]}
+{"messages": [{"role": "user", "content": "Typing"}, {"role": "silicat", "content": "List[int], Dict[str, int]. Optional[str]. Union[int, str]."}]}
+{"messages": [{"role": "user", "content": "Protocol"}, {"role": "silicat", "content": "Structural typing. @runtime_checkable."}]}
+{"messages": [{"role": "user", "content": "Final"}, {"role": "silicat", "content": "Final[T] prevents reassignment."}]}
+{"messages": [{"role": "user", "content": "Overload"}, {"role": "silicat", "content": "@overload multiple signatures. mypy chooses."}]}
+{"messages": [{"role": "user", "content": "Performance"}, {"role": "silicat", "content": "cProfile profile. Optimize bottlenecks."}]}
+{"messages": [{"role": "user", "content": "Debugging"}, {"role": "silicat", "content": "pdb interactive. breakpoint() entry. print debugging."}]}
+{"messages": [{"role": "user", "content": "Testing"}, {"role": "silicat", "content": "Unit test functions. Mock dependencies."}]}
+{"messages": [{"role": "user", "content": "CI/CD"}, {"role": "silicat", "content": "GitHub Actions auto-test."}]}
+{"messages": [{"role": "user", "content": "Linting"}, {"role": "silicat", "content": "flake8, pylint, mypy."}]}
+{"messages": [{"role": "user", "content": "Formatting"}, {"role": "silicat", "content": "black auto-format."}]}
+{"messages": [{"role": "user", "content": "Virtual env"}, {"role": "silicat", "content": "venv isolated. pip install."}]}
+{"messages": [{"role": "user", "content": "Poetry"}, {"role": "silicat", "content": "poetry.lock reproducible."}]}
+{"messages": [{"role": "user", "content": "Docker"}, {"role": "silicat", "content": "Dockerfile containerize."}]}
+{"messages": [{"role": "user", "content": "PEP 8"}, {"role": "silicat", "content": "Code style guide. 4 spaces."}]}
+{"messages": [{"role": "user", "content": "Docstrings"}, {"role": "silicat", "content": "PEP 257 format."}]}
+{"messages": [{"role": "user", "content": "Type hints"}, {"role": "silicat", "content": "Optional enforcement."}]}
+{"messages": [{"role": "user", "content": "Async PEP"}, {"role": "silicat", "content": "PEP 492 async/await."}]}
+{"messages": [{"role": "user", "content": "Security"}, {"role": "silicat", "content": "No hardcoded secrets. Validate input. Use bcrypt."}]}
+{"messages": [{"role": "user", "content": "Clean code"}, {"role": "silicat", "content": "DRY. SOLID. Meaningful names."}]}
+{"messages": [{"role": "user", "content": "Refactoring"}, {"role": "silicat", "content": "Tests first. Incremental."}]}
+{"messages": [{"role": "user", "content": "Inheritance"}, {"role": "silicat", "content": "Is-a relationship."}]}
+{"messages": [{"role": "user", "content": "Composition"}, {"role": "silicat", "content": "Has-a relationship."}]}
+{"messages": [{"role": "user", "content": "Polymorphism"}, {"role": "silicat", "content": "Override methods."}]}
+{"messages": [{"role": "user", "content": "Abstraction"}, {"role": "silicat", "content": "Hide complexity."}]}
+{"messages": [{"role": "user", "content": "Encapsulation"}, {"role": "silicat", "content": "Private attributes."}]}
+{"messages": [{"role": "user", "content": "Class variables"}, {"role": "silicat", "content": "Shared across instances."}]}
+{"messages": [{"role": "user", "content": "Instance variables"}, {"role": "silicat", "content": "Per-object data."}]}
+{"messages": [{"role": "user", "content": "Properties"}, {"role": "silicat", "content": "@property computed attributes."}]}
+{"messages": [{"role": "user", "content": "Class methods"}, {"role": "silicat", "content": "@classmethod alternative constructor."}]}
+{"messages": [{"role": "user", "content": "Static methods"}, {"role": "silicat", "content": "@staticmethod pure function."}]}
+{"messages": [{"role": "user", "content": "Generator functions"}, {"role": "silicat", "content": "yield keyword. Lazy evaluation."}]}
+{"messages": [{"role": "user", "content": "yield from"}, {"role": "silicat", "content": "Delegate to subgenerator."}]}
+{"messages": [{"role": "user", "content": "Coroutines"}, {"role": "silicat", "content": "async def with await."}]}
+{"messages": [{"role": "user", "content": "Tasks"}, {"role": "silicat", "content": "asyncio.create_task() schedule."}]}
+{"messages": [{"role": "user", "content": "Locks"}, {"role": "silicat", "content": "Lock, RLock, Semaphore."}]}
+{"messages": [{"role": "user", "content": "Condition variable"}, {"role": "silicat", "content": "notify() wake waiting."}]}
+{"messages": [{"role": "user", "content": "Queue"}, {"role": "silicat", "content": "Thread-safe queue."}]}
+{"messages": [{"role": "user", "content": "Thread pool"}, {"role": "silicat", "content": "ThreadPoolExecutor."}]}
+{"messages": [{"role": "user", "content": "Process pool"}, {"role": "silicat", "content": "ProcessPoolExecutor."}]}
+{"messages": [{"role": "user", "content": "Exit handlers"}, {"role": "silicat", "content": "atexit.register() cleanup."}]}
+{"messages": [{"role": "user", "content": "Pip"}, {"role": "silicat", "content": "pip install. requirements.txt."}]}
+{"messages": [{"role": "user", "content": "Conda"}, {"role": "silicat", "content": "conda package manager."}]}
+{"messages": [{"role": "user", "content": "Setup.py"}, {"role": "silicat", "content": "Package configuration legacy."}]}
+{"messages": [{"role": "user", "content": "Pyproject.toml"}, {"role": "silicat", "content": "Modern package config."}]}
+{"messages": [{"role": "user", "content": "Wheel"}, {"role": "silicat", "content": "Binary distribution."}]}
+{"messages": [{"role": "user", "content": "PyPI"}, {"role": "silicat", "content": "Python Package Index."}]}
+{"messages": [{"role": "user", "content": "Entry points"}, {"role": "silicat", "content": "Console scripts."}]}
+{"messages": [{"role": "user", "content": "Namespace packages"}, {"role": "silicat", "content": "Share namespace."}]}
+{"messages": [{"role": "user", "content": "Absolute imports"}, {"role": "silicat", "content": "from package.module import."}]}
+{"messages": [{"role": "user", "content": "Relative imports"}, {"role": "silicat", "content": "from . import sibling."}]}
+{"messages": [{"role": "user", "content": "sys.path"}, {"role": "silicat", "content": "Module search directories."}]}
+{"messages": [{"role": "user", "content": "importlib"}, {"role": "silicat", "content": "Dynamic imports."}]}
+{"messages": [{"role": "user", "content": "Builtins"}, {"role": "silicat", "content": "Built-in functions."}]}
+{"messages": [{"role": "user", "content": "__name__"}, {"role": "silicat", "content": "Module name string."}]}
+{"messages": [{"role": "user", "content": "__main__"}, {"role": "silicat", "content": "Execution check."}]}
+{"messages": [{"role": "user", "content": "__file__"}, {"role": "silicat", "content": "Script path."}]}
+{"messages": [{"role": "user", "content": "__doc__"}, {"role": "silicat", "content": "Docstring."}]}
+{"messages": [{"role": "user", "content": "__dict__"}, {"role": "silicat", "content": "Namespace dict."}]}
+{"messages": [{"role": "user", "content": "__class__"}, {"role": "silicat", "content": "Instance class."}]}
+{"messages": [{"role": "user", "content": "attrs"}, {"role": "silicat", "content": "Alternative dataclasses."}]}
+{"messages": [{"role": "user", "content": "Pydantic"}, {"role": "silicat", "content": "Data validation."}]}
+{"messages": [{"role": "user", "content": "Click"}, {"role": "silicat", "content": "CLI library."}]}
+{"messages": [{"role": "user", "content": "Flask"}, {"role": "silicat", "content": "Web framework."}]}
+{"messages": [{"role": "user", "content": "Django"}, {"role": "silicat", "content": "Full-stack web."}]}
+{"messages": [{"role": "user", "content": "NumPy"}, {"role": "silicat", "content": "Numerical arrays."}]}
+{"messages": [{"role": "user", "content": "Pandas"}, {"role": "silicat", "content": "Data frames."}]}
+{"messages": [{"role": "user", "content": "Matplotlib"}, {"role": "silicat", "content": "Plotting."}]}
+{"messages": [{"role": "user", "content": "Scikit-learn"}, {"role": "silicat", "content": "ML algorithms."}]}
+{"messages": [{"role": "user", "content": "Jupyter"}, {"role": "silicat", "content": "Interactive notebooks."}]}
+{"messages": [{"role": "user", "content": "IPython"}, {"role": "silicat", "content": "Enhanced REPL."}]}
+{"messages": [{"role": "user", "content": "Sphinx"}, {"role": "silicat", "content": "Documentation."}]}
+{"messages": [{"role": "user", "content": "Coverage"}, {"role": "silicat", "content": "Test coverage."}]}
+{"messages": [{"role": "user", "content": "Tox"}, {"role": "silicat", "content": "Multi-version testing."}]}
+{"messages": [{"role": "user", "content": "Pre-commit"}, {"role": "silicat", "content": "Git hooks."}]}
+{"messages": [{"role": "user", "content": "Bandit"}, {"role": "silicat", "content": "Security linter."}]}
+{"messages": [{"role": "user", "content": "BeautifulSoup"}, {"role": "silicat", "content": "HTML parsing."}]}
+{"messages": [{"role": "user", "content": "Scrapy"}, {"role": "silicat", "content": "Web scraping."}]}
+{"messages": [{"role": "user", "content": "Selenium"}, {"role": "silicat", "content": "Browser automation."}]}
+{"messages": [{"role": "user", "content": "Pillow"}, {"role": "silicat", "content": "Image processing."}]}
+{"messages": [{"role": "user", "content": "OpenCV"}, {"role": "silicat", "content": "Computer vision."}]}
+{"messages": [{"role": "user", "content": "TensorFlow"}, {"role": "silicat", "content": "Deep learning."}]}
+{"messages": [{"role": "user", "content": "PyTorch"}, {"role": "silicat", "content": "Deep learning."}]}
+{"messages": [{"role": "user", "content": "Celery"}, {"role": "silicat", "content": "Distributed tasks."}]}
+{"messages": [{"role": "user", "content": "APScheduler"}, {"role": "silicat", "content": "Job scheduling."}]}
+{"messages": [{"role": "user", "content": "SQLAlchemy"}, {"role": "silicat", "content": "ORM."}]}
+{"messages": [{"role": "user", "content": "Redis"}, {"role": "silicat", "content": "Cache/broker."}]}
+{"messages": [{"role": "user", "content": "Elasticsearch"}, {"role": "silicat", "content": "Search."}]}
+{"messages": [{"role": "user", "content": "boto3"}, {"role": "silicat", "content": "AWS SDK."}]}
+{"messages": [{"role": "user", "content": "What is Python?"}, {"role": "silicat", "content": "Python is interpreted, dynamically-typed language. Emphasizes readability. Used for web, data science, automation, scripts."}]}
+{"messages": [{"role": "user", "content": "Why Python popular?"}, {"role": "silicat", "content": "Easy to learn and read. Large standard library. Rich ecosystem. Great for rapid development. Community support."}]}
+{"messages": [{"role": "user", "content": "Python 2 vs 3?"}, {"role": "silicat", "content": "Python 2 deprecated 2020. Python 3: print function, unicode default, true division, no long type. Use Python 3 always."}]}
+{"messages": [{"role": "user", "content": "What is PEP?"}, {"role": "silicat", "content": "Python Enhancement Proposal. Design document. PEP 8 style guide, PEP 484 type hints, PEP 492 async/await."}]}
+{"messages": [{"role": "user", "content": "PEP 8 summary?"}, {"role": "silicat", "content": "Code style guide. 4 spaces indent, 79 char max, snake_case names. Improves consistency."}]}
+{"messages": [{"role": "user", "content": "PEP 20 Zen?"}, {"role": "silicat", "content": "20 Python design principles. 'Explicit better than implicit'. 'Simple better than complex'."}]}
+{"messages": [{"role": "user", "content": "What is indentation?"}, {"role": "silicat", "content": "Python uses indentation for blocks (not braces). Enforces readable code."}]}
+{"messages": [{"role": "user", "content": "Comments in Python?"}, {"role": "silicat", "content": "# single line. ''' multi-line '''. Used for explanation, not for code."}]}
+{"messages": [{"role": "user", "content": "Variable assignment?"}, {"role": "silicat", "content": "x = 5 assigns. Python dynamic typing. Types checked at runtime."}]}
+{"messages": [{"role": "user", "content": "None value?"}, {"role": "silicat", "content": "None represents absence. Singleton. Is used for None check. Default return value."}]}
+{"messages": [{"role": "user", "content": "Variable scoping?"}, {"role": "silicat", "content": "LEGB: Local, Enclosing, Global, Built-in. global/nonlocal keywords override."}]}
+{"messages": [{"role": "user", "content": "Constants convention?"}, {"role": "silicat", "content": "ALL_CAPS for constants. MY_CONSTANT = 100. Convention, not enforced."}]}
+{"messages": [{"role": "user", "content": "Variable naming?"}, {"role": "silicat", "content": "snake_case for variables/functions. Classes CamelCase. _private by convention."}]}
+{"messages": [{"role": "user", "content": "What is truthiness?"}, {"role": "silicat", "content": "Empty collections/None/0 falsy. Non-empty/numbers>0 truthy. __bool__ customizes."}]}
+{"messages": [{"role": "user", "content": "Docstring?"}, {"role": "silicat", "content": "String literal after def/class. triple-quoted. Describes purpose, parameters, returns."}]}
+{"messages": [{"role": "user", "content": "Docstring vs comment?"}, {"role": "silicat", "content": "Docstring documents code. Comments explain why. Docstrings accessed via help()."}]}
+{"messages": [{"role": "user", "content": "What is REPL?"}, {"role": "silicat", "content": "Read-Eval-Print-Loop. Interactive Python shell. >>> prompt. Test code interactively."}]}
+{"messages": [{"role": "user", "content": "Scripts vs REPL?"}, {"role": "silicat", "content": "Scripts: .py files executed. REPL: interactive shell. Scripts for programs."}]}
+{"messages": [{"role": "user", "content": "Shebang line?"}, {"role": "silicat", "content": "#!/usr/bin/env python3 first line. Makes script directly executable on Unix."}]}
+{"messages": [{"role": "user", "content": "Main pattern?"}, {"role": "silicat", "content": "if __name__ == '__main__': runs when executed directly. Not when imported."}]}
+{"messages": [{"role": "user", "content": "Imports basics?"}, {"role": "silicat", "content": "import module loads. from module import name gets specific. import as alias."}]}
+{"messages": [{"role": "user", "content": "Package structure?"}, {"role": "silicat", "content": "__init__.py makes directory a package. Can be empty or setup code."}]}
+{"messages": [{"role": "user", "content": "Module search?"}, {"role": "silicat", "content": "sys.path list of directories. Import checks in order. PYTHONPATH affects order."}]}
+{"messages": [{"role": "user", "content": "What is PYTHONHOME?"}, {"role": "silicat", "content": "Environment variable. Python installation directory. Rarely needed, auto-detected."}]}
+{"messages": [{"role": "user", "content": "What is PYTHONPATH?"}, {"role": "silicat", "content": "Environment variable. Adds directories to sys.path for imports."}]}
+{"messages": [{"role": "user", "content": "How to reload module?"}, {"role": "silicat", "content": "importlib.reload(module) reimports. Reexecutes module code."}]}
+{"messages": [{"role": "user", "content": "Circular imports?"}, {"role": "silicat", "content": "A imports B, B imports A. Can cause issues. Rearrange imports, import inside function."}]}
+{"messages": [{"role": "user", "content": "if-elif-else?"}, {"role": "silicat", "content": "if condition: block. elif: other condition. else: default. Python not switch."}]}
+{"messages": [{"role": "user", "content": "while loop?"}, {"role": "silicat", "content": "while condition: block. Repeats while True. break exits. continue skips."}]}
+{"messages": [{"role": "user", "content": "for loop?"}, {"role": "silicat", "content": "for item in iterable: block. range() for numbers. enumerate() for index+item."}]}
+{"messages": [{"role": "user", "content": "Loop else?"}, {"role": "silicat", "content": "else after loop runs if no break. Skip if break. Useful for found logic."}]}
+{"messages": [{"role": "user", "content": "Break statement?"}, {"role": "silicat", "content": "break exits innermost loop. Exits while or for. Doesn't skip else."}]}
+{"messages": [{"role": "user", "content": "Continue statement?"}, {"role": "silicat", "content": "continue skips to next iteration. In while or for. Innermost loop only."}]}
+{"messages": [{"role": "user", "content": "What is range()?"}, {"role": "silicat", "content": "range(stop) 0 to stop-1. range(start, stop) start to stop-1. range(start, stop, step)."}]}
+{"messages": [{"role": "user", "content": "Nested loops?"}, {"role": "silicat", "content": "Loop inside loop. break/continue affects innermost. Use function to break outer."}]}
+{"messages": [{"role": "user", "content": "String basics?"}, {"role": "silicat", "content": "Text data. Single/double quotes same. Escape with \\. Raw strings r'\\n'."}]}
+{"messages": [{"role": "user", "content": "String concatenation?"}, {"role": "silicat", "content": "'a' + 'b' = 'ab'. Or f-strings. Or join() for efficiency."}]}
+{"messages": [{"role": "user", "content": "String methods?"}, {"role": "silicat", "content": "upper(), lower(), capitalize(), title(). strip(), replace(), split(), join()."}]}
+{"messages": [{"role": "user", "content": "String indexing?"}, {"role": "silicat", "content": "s[0] first char. s[-1] last. s[1:3] substring. s[::2] every 2nd."}]}
+{"messages": [{"role": "user", "content": "String immutable?"}, {"role": "silicat", "content": "Strings immutable. s[0]='x' error. Reassign: s = 'new' OK."}]}
+{"messages": [{"role": "user", "content": "Raw strings?"}, {"role": "silicat", "content": "r'text' ignores escapes. r'\\n' is two chars. Useful for regex, paths."}]}
+{"messages": [{"role": "user", "content": "F-strings?"}, {"role": "silicat", "content": "f'{var}' interpolation. f'{expr:spec}' formatting. f'{x=}' debug."}]}
+{"messages": [{"role": "user", "content": "List basics?"}, {"role": "silicat", "content": "Mutable ordered []. [1, 2, 3]. Access by index. Modify in place."}]}
+{"messages": [{"role": "user", "content": "List methods?"}, {"role": "silicat", "content": "append(), extend(), insert(), remove(), pop(), sort(), reverse(), copy()."}]}
+{"messages": [{"role": "user", "content": "List slicing?"}, {"role": "silicat", "content": "list[1:3] items 1-2. list[::2] every 2nd. list[::-1] reversed."}]}
+{"messages": [{"role": "user", "content": "List comprehension?"}, {"role": "silicat", "content": "[x for x in range(10)]. [x for x if x%2==0]. [f(x) for x in list]."}]}
+{"messages": [{"role": "user", "content": "Tuple basics?"}, {"role": "silicat", "content": "Immutable ordered (). (1, 2, 3). Access by index. Hashable."}]}
+{"messages": [{"role": "user", "content": "Tuple packing?"}, {"role": "silicat", "content": "x, y = 1, 2 creates tuple. Automatic. Can unpack: a, b = tup."}]}
+{"messages": [{"role": "user", "content": "Set basics?"}, {"role": "silicat", "content": "Unordered unique {}. {1, 2, 3}. No duplicates. Fast membership."}]}
+{"messages": [{"role": "user", "content": "Set operations?"}, {"role": "silicat", "content": "| union. & intersection. - difference. ^ symmetric difference."}]}
+{"messages": [{"role": "user", "content": "Set methods?"}, {"role": "silicat", "content": "add(), remove(), discard(), pop(), clear(). update(), union(), intersection()."}]}
+{"messages": [{"role": "user", "content": "Dict basics?"}, {"role": "silicat", "content": "Key-value mapping {}. {'key': value}. Access by key."}]}
+{"messages": [{"role": "user", "content": "Dict methods?"}, {"role": "silicat", "content": "keys(), values(), items(), get(), pop(), update(), clear(), copy()."}]}
+{"messages": [{"role": "user", "content": "Dict comprehension?"}, {"role": "silicat", "content": "{k: v for k, v in items}. {k: v for k, v if condition}."}]}
+{"messages": [{"role": "user", "content": "Truthiness recap?"}, {"role": "silicat", "content": "False, None, 0, '', [], {}, () falsy. Everything else truthy."}]}
+{"messages": [{"role": "user", "content": "Boolean operators?"}, {"role": "silicat", "content": "and, or, not. Short-circuit evaluation. Precedence: not > and > or."}]}
+{"messages": [{"role": "user", "content": "Comparison operators?"}, {"role": "silicat", "content": "==, !=, <, >, <=, >=. Returns bool. Can chain: 1 < x < 10."}]}
+{"messages": [{"role": "user", "content": "Identity operators?"}, {"role": "silicat", "content": "is, is not. Check object identity not value. Use for None."}]}
+{"messages": [{"role": "user", "content": "Membership operators?"}, {"role": "silicat", "content": "in, not in. Check container membership. Works with strings, lists, sets, dicts."}]}
+{"messages": [{"role": "user", "content": "Operator precedence?"}, {"role": "silicat", "content": "PEMDAS plus ** exponent. () > ** > *,/,// > +,- > comparisons > not > and > or."}]}
+{"messages": [{"role": "user", "content": "Bitwise operators?"}, {"role": "silicat", "content": "&, |, ^, ~, <<, >>. Work on integer bits. Rarely used."}]}
+{"messages": [{"role": "user", "content": "Function definition?"}, {"role": "silicat", "content": "def name(params): body. Indented body. return value."}]}
+{"messages": [{"role": "user", "content": "Function parameters?"}, {"role": "silicat", "content": "Positional, default, *args, **kwargs, keyword-only."}]}
+{"messages": [{"role": "user", "content": "Function arguments?"}, {"role": "silicat", "content": "Positional passed by order. Keyword passed by name. Can mix."}]}
+{"messages": [{"role": "user", "content": "Return statement?"}, {"role": "silicat", "content": "return value. Multiple: return x, y (tuple). None if no return."}]}
+{"messages": [{"role": "user", "content": "Default parameters?"}, {"role": "silicat", "content": "def f(x=10): x defaults to 10. Mutable defaults shared (gotcha!)."}]}
+{"messages": [{"role": "user", "content": "*args parameter?"}, {"role": "silicat", "content": "def f(*args): args is tuple. Captures excess positional."}]}
+{"messages": [{"role": "user", "content": "**kwargs parameter?"}, {"role": "silicat", "content": "def f(**kwargs): kwargs is dict. Captures excess keyword."}]}
+{"messages": [{"role": "user", "content": "Keyword-only args?"}, {"role": "silicat", "content": "def f(a, *, b): b keyword-only. Python 3."}]}
+{"messages": [{"role": "user", "content": "Positional-only args?"}, {"role": "silicat", "content": "def f(a, /, b): a positional-only. Python 3.8+."}]}
+{"messages": [{"role": "user", "content": "Function annotation?"}, {"role": "silicat", "content": "def f(x: int) -> str: type hints. Not enforced. For mypy."}]}
+{"messages": [{"role": "user", "content": "Callable check?"}, {"role": "silicat", "content": "callable(obj) True if can call. Functions, classes, methods."}]}
+{"messages": [{"role": "user", "content": "Recursion?"}, {"role": "silicat", "content": "Function calling itself. Base case stops recursion. sys.setrecursionlimit() customize."}]}
+{"messages": [{"role": "user", "content": "Recursion limit?"}, {"role": "silicat", "content": "Default ~1000. Prevents stack overflow. Increase rarely."}]}
+{"messages": [{"role": "user", "content": "Global keyword?"}, {"role": "silicat", "content": "global x inside function. Access/modify module-level x."}]}
+{"messages": [{"role": "user", "content": "Nonlocal keyword?"}, {"role": "silicat", "content": "nonlocal x in nested function. Access/modify enclosing x."}]}
+{"messages": [{"role": "user", "content": "Closure?"}, {"role": "silicat", "content": "Function inside function. Inner accesses outer scope. Enclosing scope captured."}]}
+{"messages": [{"role": "user", "content": "Lambda basics?"}, {"role": "silicat", "content": "lambda params: expr. Anonymous function. lambda x: x**2."}]}
+{"messages": [{"role": "user", "content": "Lambda vs def?"}, {"role": "silicat", "content": "Lambda for small functions. def for complex. Both create function objects."}]}
+{"messages": [{"role": "user", "content": "Filter function?"}, {"role": "silicat", "content": "filter(func, iterable) items where func True. Returns iterator."}]}
+{"messages": [{"role": "user", "content": "Map function?"}, {"role": "silicat", "content": "map(func, iterable) apply func to all. Returns iterator."}]}
+{"messages": [{"role": "user", "content": "Reduce function?"}, {"role": "silicat", "content": "functools.reduce(func, iterable) cumulative. Returns single value."}]}
+{"messages": [{"role": "user", "content": "Sorted function?"}, {"role": "silicat", "content": "sorted(iterable, key=func, reverse=T) new sorted list."}]}
+{"messages": [{"role": "user", "content": "List sort method?"}, {"role": "silicat", "content": "list.sort(key=func, reverse=T) in-place. Modifies original."}]}
+{"messages": [{"role": "user", "content": "Sorted vs sort?"}, {"role": "silicat", "content": "sorted() new list. sort() modifies. sorted() for non-lists."}]}
+{"messages": [{"role": "user", "content": "Built-in functions?"}, {"role": "silicat", "content": "len(), min(), max(), sum(), abs(), round(), type(), isinstance()."}]}
+{"messages": [{"role": "user", "content": "Type conversions?"}, {"role": "silicat", "content": "int(), float(), str(), bool(). Convert between types."}]}
+{"messages": [{"role": "user", "content": "String methods recap?"}, {"role": "silicat", "content": "find(), index(), count(), replace(), split(), join(), strip()."}]}
+{"messages": [{"role": "user", "content": "List methods recap?"}, {"role": "silicat", "content": "append(), extend(), insert(), remove(), pop(), sort(), reverse()."}]}
+{"messages": [{"role": "user", "content": "Dict methods recap?"}, {"role": "silicat", "content": "keys(), values(), items(), get(), pop(), update(), clear()."}]}
+{"messages": [{"role": "user", "content": "Set methods recap?"}, {"role": "silicat", "content": "add(), remove(), discard(), union(), intersection(), difference()."}]}
+{"messages": [{"role": "user", "content": "Class basics?"}, {"role": "silicat", "content": "class Name: body. Create objects. Blueprint for attributes/methods."}]}
+{"messages": [{"role": "user", "content": "Instance creation?"}, {"role": "silicat", "content": "obj = ClassName() creates instance. Calls __init__()."}]}
+{"messages": [{"role": "user", "content": "Constructor?"}, {"role": "silicat", "content": "def __init__(self, ...): runs on creation. Initializes attributes."}]}
+{"messages": [{"role": "user", "content": "Methods?"}, {"role": "silicat", "content": "def method(self): functions in class. self refers to instance."}]}
+{"messages": [{"role": "user", "content": "Class variables?"}, {"role": "silicat", "content": "Defined in class body. Shared by all instances. Accessed via class or self."}]}
+{"messages": [{"role": "user", "content": "Instance variables?"}, {"role": "silicat", "content": "Defined in __init__. Unique per instance. Accessed via self."}]}
+{"messages": [{"role": "user", "content": "self parameter?"}, {"role": "silicat", "content": "Method first parameter. Refers to instance. Implicit when calling."}]}
+{"messages": [{"role": "user", "content": "Inheritance?"}, {"role": "silicat", "content": "class Child(Parent): inherits. Accesses parent methods/attributes."}]}
+{"messages": [{"role": "user", "content": "super()?"}, {"role": "silicat", "content": "super().__init__() calls parent. super().method() parent method."}]}
+{"messages": [{"role": "user", "content": "Method overriding?"}, {"role": "silicat", "content": "Redefine parent method in child. Child version used."}]}
+{"messages": [{"role": "user", "content": "isinstance check?"}, {"role": "silicat", "content": "isinstance(obj, Class) check if instance of class/subclass."}]}
+{"messages": [{"role": "user", "content": "Attribute access?"}, {"role": "silicat", "content": "obj.attr access. obj.method() call method. getattr() dynamic."}]}
+{"messages": [{"role": "user", "content": "Attribute assignment?"}, {"role": "silicat", "content": "obj.attr = value set. setattr() dynamic."}]}
+{"messages": [{"role": "user", "content": "Attribute deletion?"}, {"role": "silicat", "content": "del obj.attr remove. delattr() dynamic."}]}
+{"messages": [{"role": "user", "content": "String representation?"}, {"role": "silicat", "content": "__str__() str(). __repr__() repr(). User vs dev friendly."}]}
+{"messages": [{"role": "user", "content": "Length?"}, {"role": "silicat", "content": "__len__() len(). Return integer length."}]}
+{"messages": [{"role": "user", "content": "Containment?"}, {"role": "silicat", "content": "__contains__() in operator. item in obj."}]}
+{"messages": [{"role": "user", "content": "Equality?"}, {"role": "silicat", "content": "__eq__() == operator. obj1 == obj2."}]}
+{"messages": [{"role": "user", "content": "Comparison?"}, {"role": "silicat", "content": "__lt__(), __le__(), __gt__(), __ge__(). Ordering."}]}
+{"messages": [{"role": "user", "content": "Hashing?"}, {"role": "silicat", "content": "__hash__() hash(). hashable for dict key/set element."}]}
+{"messages": [{"role": "user", "content": "Iteration?"}, {"role": "silicat", "content": "__iter__() iter(). Return iterator. __next__() in iterator."}]}
+{"messages": [{"role": "user", "content": "Calling?"}, {"role": "silicat", "content": "__call__() obj() call object like function."}]}
+{"messages": [{"role": "user", "content": "Addition?"}, {"role": "silicat", "content": "__add__() + operator. obj1 + obj2."}]}
+{"messages": [{"role": "user", "content": "Subtraction?"}, {"role": "silicat", "content": "__sub__() - operator. obj1 - obj2."}]}
+{"messages": [{"role": "user", "content": "Multiplication?"}, {"role": "silicat", "content": "__mul__() * operator. obj1 * obj2 or obj * n."}]}
+{"messages": [{"role": "user", "content": "Division?"}, {"role": "silicat", "content": "__truediv__() / operator. __floordiv__() //."}]}
+{"messages": [{"role": "user", "content": "Modulo?"}, {"role": "silicat", "content": "__mod__() % operator. obj1 % obj2."}]}
+{"messages": [{"role": "user", "content": "Power?"}, {"role": "silicat", "content": "__pow__() ** operator. obj ** n."}]}
+{"messages": [{"role": "user", "content": "Negation?"}, {"role": "silicat", "content": "__neg__() - operator. -obj."}]}
+{"messages": [{"role": "user", "content": "Positive?"}, {"role": "silicat", "content": "__pos__() + operator. +obj."}]}
+{"messages": [{"role": "user", "content": "Absolute?"}, {"role": "silicat", "content": "__abs__() abs(). abs(obj)."}]}
+{"messages": [{"role": "user", "content": "Boolean?"}, {"role": "silicat", "content": "__bool__() bool(). Truthiness."}]}
+{"messages": [{"role": "user", "content": "Context manager?"}, {"role": "silicat", "content": "__enter__() setup. __exit__() cleanup. with statement."}]}
+{"messages": [{"role": "user", "content": "Enter method?"}, {"role": "silicat", "content": "__enter__() with __enter__ as var. var from return."}]}
+{"messages": [{"role": "user", "content": "Exit method?"}, {"role": "silicat", "content": "__exit__() always runs. Exception info passed."}]}
+{"messages": [{"role": "user", "content": "Item access?"}, {"role": "silicat", "content": "__getitem__() obj[key]. obj[1] or obj['key']."}]}
+{"messages": [{"role": "user", "content": "Item set?"}, {"role": "silicat", "content": "__setitem__() obj[key] = value. Set item."}]}
+{"messages": [{"role": "user", "content": "Item delete?"}, {"role": "silicat", "content": "__delitem__() del obj[key]. Delete item."}]}
+{"messages": [{"role": "user", "content": "Slicing?"}, {"role": "silicat", "content": "__getitem__(slice) obj[1:3]. Slicing support."}]}
+{"messages": [{"role": "user", "content": "Attribute get?"}, {"role": "silicat", "content": "__getattr__() dynamic attribute. Called if not found."}]}
+{"messages": [{"role": "user", "content": "Attribute set?"}, {"role": "silicat", "content": "__setattr__() dynamic attribute set. Called always."}]}
+{"messages": [{"role": "user", "content": "Attribute delete?"}, {"role": "silicat", "content": "__delattr__() dynamic attribute delete. Called always."}]}
+{"messages": [{"role": "user", "content": "Callable?"}, {"role": "silicat", "content": "__call__() makes instance callable. obj()."}]}
+{"messages": [{"role": "user", "content": "Descriptor?"}, {"role": "silicat", "content": "__get__(), __set__(), __delete__(). Custom attribute access."}]}
+{"messages": [{"role": "user", "content": "Context manager state?"}, {"role": "silicat", "content": "__enter__() state setup. __exit__() state cleanup."}]}
+{"messages": [{"role": "user", "content": "New vs init?"}, {"role": "silicat", "content": "__new__() create instance. __init__() initialize. Usually override __init__."}]}
+{"messages": [{"role": "user", "content": "Del destructor?"}, {"role": "silicat", "content": "__del__() cleanup. Avoid using. Use context managers instead."}]}
+{"messages": [{"role": "user", "content": "String module method?"}, {"role": "silicat", "content": "__str__() str(). User-friendly. print() uses it."}]}
+{"messages": [{"role": "user", "content": "Repr module method?"}, {"role": "silicat", "content": "__repr__() repr(). Developer-friendly. collections use it."}]}
+{"messages": [{"role": "user", "content": "Format method?"}, {"role": "silicat", "content": "__format__() format spec. f'{obj:spec}'."}]}
+{"messages": [{"role": "user", "content": "Immutable?"}, {"role": "silicat", "content": "Tuple, frozenset, str immutable. Strings safe for dict keys."}]}
+{"messages": [{"role": "user", "content": "Mutable?"}, {"role": "silicat", "content": "List, dict, set mutable. Can't use as dict keys."}]}
+{"messages": [{"role": "user", "content": "Iterable?"}, {"role": "silicat", "content": "Has __iter__() returns iterator. Can be looped."}]}
+{"messages": [{"role": "user", "content": "Iterator?"}, {"role": "silicat", "content": "Has __iter__() and __next__(). Stateful. Returns items."}]}
+{"messages": [{"role": "user", "content": "Generator?"}, {"role": "silicat", "content": "Function with yield. Returns generator object. Lazy evaluation."}]}
+{"messages": [{"role": "user", "content": "Yield?"}, {"role": "silicat", "content": "yield value returns item. Pause function. Resume on next()."}]}
+{"messages": [{"role": "user", "content": "Generator expression?"}, {"role": "silicat", "content": "(x for x in range(10)). Like list comp but lazy."}]}
+{"messages": [{"role": "user", "content": "File handling?"}, {"role": "silicat", "content": "open(name, mode) file object. with open() as f: ensures close."}]}
+{"messages": [{"role": "user", "content": "File modes?"}, {"role": "silicat", "content": "r: read. w: write. a: append. b: binary. +: read/write."}]}
+{"messages": [{"role": "user", "content": "Read methods?"}, {"role": "silicat", "content": "read() all. readline() one. readlines() list."}]}
+{"messages": [{"role": "user", "content": "Write methods?"}, {"role": "silicat", "content": "write() string. writelines() list."}]}
+{"messages": [{"role": "user", "content": "File seek?"}, {"role": "silicat", "content": "seek(offset) move position. tell() current position."}]}
+{"messages": [{"role": "user", "content": "Exception basics?"}, {"role": "silicat", "content": "try-except catch errors. raise throw error. finally cleanup."}]}
+{"messages": [{"role": "user", "content": "Try block?"}, {"role": "silicat", "content": "try: code to attempt. Catch errors in except."}]}
+{"messages": [{"role": "user", "content": "Except block?"}, {"role": "silicat", "content": "except Error: handle specific. Multiple except clauses."}]}
+{"messages": [{"role": "user", "content": "Except any?"}, {"role": "silicat", "content": "except: catch all. Not recommended. except Exception better."}]}
+{"messages": [{"role": "user", "content": "Except as?"}, {"role": "silicat", "content": "except Error as e: access error object."}]}
+{"messages": [{"role": "user", "content": "Else block?"}, {"role": "silicat", "content": "else after except runs if no error. else skipped if caught."}]}
+{"messages": [{"role": "user", "content": "Finally block?"}, {"role": "silicat", "content": "finally always runs. For cleanup. Runs even if return/raise."}]}
+{"messages": [{"role": "user", "content": "Raise statement?"}, {"role": "silicat", "content": "raise Error() throw exception. raise re-raises current."}]}
+{"messages": [{"role": "user", "content": "Custom exception?"}, {"role": "silicat", "content": "class Error(Exception): pass. Inherit from Exception."}]}
+{"messages": [{"role": "user", "content": "Exception hierarchy?"}, {"role": "silicat", "content": "BaseException root. Exception normal. KeyboardInterrupt, SystemExit special."}]}
+{"messages": [{"role": "user", "content": "Assert statement?"}, {"role": "silicat", "content": "assert condition check. Disabled -O. For debugging."}]}
+{"messages": [{"role": "user", "content": "Warning?"}, {"role": "silicat", "content": "warnings.warn() issue warning. filterwarnings() control."}]}
+{"messages": [{"role": "user", "content": "Try-except complex?"}, {"role": "silicat", "content": "try: except: else: finally: all parts optional."}]}
+{"messages": [{"role": "user", "content": "Multiple except?"}, {"role": "silicat", "content": "except A: except B: except (A, B): catch multiple types."}]}
+{"messages": [{"role": "user", "content": "Import statement?"}, {"role": "silicat", "content": "import module. from module import name. import ... as alias."}]}
+{"messages": [{"role": "user", "content": "Package import?"}, {"role": "silicat", "content": "from package import module. from package.module import name."}]}
+{"messages": [{"role": "user", "content": "Relative import?"}, {"role": "silicat", "content": "from . import sibling. from .. import parent."}]}
+{"messages": [{"role": "user", "content": "Star import?"}, {"role": "silicat", "content": "from module import * import __all__. Discouraged."}]}
+{"messages": [{"role": "user", "content": "Module reload?"}, {"role": "silicat", "content": "importlib.reload(module) reimport. Reexecute code."}]}
+{"messages": [{"role": "user", "content": "Exception message?"}, {"role": "silicat", "content": "except E as e: str(e) message. e.args contains args tuple."}]}
+{"messages": [{"role": "user", "content": "Try structure?"}, {"role": "silicat", "content": "try: always first. except: optional, multiple allowed. else: if no error. finally: optional always."}]}
+{"messages": [{"role": "user", "content": "Catch by type?"}, {"role": "silicat", "content": "except ValueError: specific type. except (V, K): multiple. except Exception: most errors."}]}
+{"messages": [{"role": "user", "content": "Error info?"}, {"role": "silicat", "content": "sys.exc_info() (type, value, traceback). traceback.format_exc() string."}]}
+{"messages": [{"role": "user", "content": "Module attributes?"}, {"role": "silicat", "content": "__name__ module name. __file__ file path. __doc__ docstring."}]}
+{"messages": [{"role": "user", "content": "Module dir?"}, {"role": "silicat", "content": "dir(module) attributes. getattr() get attribute value."}]}
+{"messages": [{"role": "user", "content": "Builtin module?"}, {"role": "silicat", "content": "builtins contains all built-in functions/types. Modify affects all (don't!)."}]}
+{"messages": [{"role": "user", "content": "Reload module?"}, {"role": "silicat", "content": "importlib.reload(module) reimport. Code reexecutes."}]}
+{"messages": [{"role": "user", "content": "Circular import?"}, {"role": "silicat", "content": "A imports B, B imports A. Rearrange, delay import, import inside function."}]}
+{"messages": [{"role": "user", "content": "Import order?"}, {"role": "silicat", "content": "Standard library first. Third-party second. Local last. PEP 8 style."}]}
+{"messages": [{"role": "user", "content": "sys.path first?"}, {"role": "silicat", "content": "sys.path[0] current directory. '' also current. Remove for security."}]}
+{"messages": [{"role": "user", "content": "Package init?"}, {"role": "silicat", "content": "__init__.py makes package. Can setup or be empty."}]}
+{"messages": [{"role": "user", "content": "Package contents?"}, {"role": "silicat", "content": "os.listdir(package) files. pkgutil.iter_modules() submodules."}]}
+{"messages": [{"role": "user", "content": "Data in package?"}, {"role": "silicat", "content": "Put data files in package. Use importlib.resources access."}]}
+{"messages": [{"role": "user", "content": "Namespace packages?"}, {"role": "silicat", "content": "No __init__.py. Multiple locations provide package."}]}
+{"messages": [{"role": "user", "content": "Zip import?"}, {"role": "silicat", "content": "Import from .zip files. Add to sys.path."}]}
+{"messages": [{"role": "user", "content": "Egg format?"}, {"role": "silicat", "content": "Legacy packaging. Use wheel (.whl) instead."}]}
+{"messages": [{"role": "user", "content": "Entry points?"}, {"role": "silicat", "content": "setup.py/pyproject.toml console_scripts. Create executables."}]}
+{"messages": [{"role": "user", "content": "Distribution?"}, {"role": "silicat", "content": "setup.py or setup.cfg. Specify package metadata."}]}
+{"messages": [{"role": "user", "content": "Metadata?"}, {"role": "silicat", "content": "name, version, author, description. setup() required."}]}
+{"messages": [{"role": "user", "content": "Dependencies?"}, {"role": "silicat", "content": "install_requires in setup(). pip install -e for editable."}]}
+{"messages": [{"role": "user", "content": "Version string?"}, {"role": "silicat", "content": "Use semantic versioning. MAJOR.MINOR.PATCH."}]}
+{"messages": [{"role": "user", "content": "Classifier?"}, {"role": "silicat", "content": "setup() classifiers: Development Status, License, etc."}]}
+{"messages": [{"role": "user", "content": "URL metadata?"}, {"role": "silicat", "content": "url homepage, github. project_urls for multiple."}]}
+{"messages": [{"role": "user", "content": "Long description?"}, {"role": "silicat", "content": "long_description in setup(). Usually from README.md."}]}
+{"messages": [{"role": "user", "content": "Author info?"}, {"role": "silicat", "content": "author, author_email, maintainer, maintainer_email."}]}
+{"messages": [{"role": "user", "content": "License?"}, {"role": "silicat", "content": "License classifier. license parameter (legacy)."}]}
+{"messages": [{"role": "user", "content": "Python requires?"}, {"role": "silicat", "content": "python_requires='>=3.7'. Specify version support."}]}
+{"messages": [{"role": "user", "content": "Include files?"}, {"role": "silicat", "content": "MANIFEST.in specifies. include, exclude patterns."}]}
+{"messages": [{"role": "user", "content": "Package data?"}, {"role": "silicat", "content": "package_data, data_files specify non-Python files."}]}
+{"messages": [{"role": "user", "content": "Scripts?"}, {"role": "silicat", "content": "scripts=['script.py'] executable. Python scripts."}]}
+{"messages": [{"role": "user", "content": "Wheel build?"}, {"role": "silicat", "content": "python -m build. Creates .whl file."}]}
+{"messages": [{"role": "user", "content": "Sdist build?"}, {"role": "silicat", "content": "python -m build --sdist. Creates .tar.gz."}]}
+{"messages": [{"role": "user", "content": "Twine upload?"}, {"role": "silicat", "content": "twine upload dist/ to PyPI."}]}
+{"messages": [{"role": "user", "content": "Local install?"}, {"role": "silicat", "content": "pip install -e . editable install. Symlinks."}]}
+{"messages": [{"role": "user", "content": "Develop install?"}, {"role": "silicat", "content": "pip install -e . development mode. Code changes instant."}]}
+{"messages": [{"role": "user", "content": "Test install?"}, {"role": "silicat", "content": "tox tests. matrix of Python versions."}]}
+{"messages": [{"role": "user", "content": "Package namespace?"}, {"role": "silicat", "content": "namespace = ['package'] in setup() declares namespace."}]}
+{"messages": [{"role": "user", "content": "Module __all__?"}, {"role": "silicat", "content": "__all__ = ['public'] declares public API."}]}
+{"messages": [{"role": "user", "content": "Conditional import?"}, {"role": "silicat", "content": "try: import x except ImportError: x = None."}]}
+{"messages": [{"role": "user", "content": "Optional dependency?"}, {"role": "silicat", "content": "try import optional. Use if available else fallback."}]}
+{"messages": [{"role": "user", "content": "Lazy import?"}, {"role": "silicat", "content": "Import inside function. Delays loading. Good for optional."}]}
+{"messages": [{"role": "user", "content": "Dynamic import?"}, {"role": "silicat", "content": "__import__() or importlib.import_module(name)."}]}
+{"messages": [{"role": "user", "content": "Module path?"}, {"role": "silicat", "content": "__file__ module file. __path__ package directory (list)."}]}
+{"messages": [{"role": "user", "content": "Module reload warning?"}, {"role": "silicat", "content": "reload() can break things. State may be inconsistent. Avoid."}]}
+{"messages": [{"role": "user", "content": "Pytest mark?"}, {"role": "silicat", "content": "@pytest.mark.skip, .skipif, .xfail, .parametrize, .slow."}]}
+{"messages": [{"role": "user", "content": "Pytest fixture scope?"}, {"role": "silicat", "content": "function (default), class, module, session."}]}
+{"messages": [{"role": "user", "content": "Pytest tmpdir?"}, {"role": "silicat", "content": "tmpdir fixture temporary. Automatic cleanup."}]}
+{"messages": [{"role": "user", "content": "Pytest capsys?"}, {"role": "silicat", "content": "capsys fixture captures stdout/stderr."}]}
+{"messages": [{"role": "user", "content": "Pytest monkeypatch?"}, {"role": "silicat", "content": "monkeypatch fixture patch objects/modules."}]}
+{"messages": [{"role": "user", "content": "Pytest parametrize?"}, {"role": "silicat", "content": "@pytest.mark.parametrize('arg', [val1, val2]) repeat test."}]}
+{"messages": [{"role": "user", "content": "Pytest collect?"}, {"role": "silicat", "content": "pytest --collect-only shows tests. Don't run."}]}
+{"messages": [{"role": "user", "content": "Pytest verbose?"}, {"role": "silicat", "content": "pytest -v shows test names. -vv more detail."}]}
+{"messages": [{"role": "user", "content": "Pytest quiet?"}, {"role": "silicat", "content": "pytest -q less output."}]}
+{"messages": [{"role": "user", "content": "Pytest match?"}, {"role": "silicat", "content": "@pytest.raises(E, match='pattern') exception message."}]}
+{"messages": [{"role": "user", "content": "Pytest approx?"}, {"role": "silicat", "content": "pytest.approx(3.14) floating point equality."}]}
+{"messages": [{"role": "user", "content": "Unittest discover?"}, {"role": "silicat", "content": "unittest discover finds tests."}]}
+{"messages": [{"role": "user", "content": "Unittest main?"}, {"role": "silicat", "content": "unittest.main() run tests from script."}]}
+{"messages": [{"role": "user", "content": "Unittest assertEqual?"}, {"role": "silicat", "content": "self.assertEqual(a, b) assert equal."}]}
+{"messages": [{"role": "user", "content": "Unittest assertTrue?"}, {"role": "silicat", "content": "self.assertTrue(x) assert True."}]}
+{"messages": [{"role": "user", "content": "Unittest assertRaises?"}, {"role": "silicat", "content": "with self.assertRaises(E): code raises E."}]}
+{"messages": [{"role": "user", "content": "Unittest mock patch?"}, {"role": "silicat", "content": "@patch('module.Class') mock object."}]}
+{"messages": [{"role": "user", "content": "Unittest mock call?"}, {"role": "silicat", "content": "mock.assert_called_with() verify call."}]}
+{"messages": [{"role": "user", "content": "Unittest skip?"}, {"role": "silicat", "content": "@unittest.skip() skip test."}]}
+{"messages": [{"role": "user", "content": "Unittest subTest?"}, {"role": "silicat", "content": "with self.subTest(): groups assertions."}]}
+{"messages": [{"role": "user", "content": "Unittest load?"}, {"role": "silicat", "content": "unittest.TestLoader load test suite."}]}
+{"messages": [{"role": "user", "content": "Unittest run?"}, {"role": "silicat", "content": "unittest.TextTestRunner().run(suite) execute."}]}
+{"messages": [{"role": "user", "content": "Coverage measure?"}, {"role": "silicat", "content": "coverage run -m pytest. coverage report."}]}
+{"messages": [{"role": "user", "content": "Coverage html?"}, {"role": "silicat", "content": "coverage html generates HTML report."}]}
+{"messages": [{"role": "user", "content": "Coverage exclude?"}, {"role": "silicat", "content": "pragma: no cover skip line."}]}
+{"messages": [{"role": "user", "content": "Doctest command?"}, {"role": "silicat", "content": "python -m doctest file.py run doctests."}]}
+{"messages": [{"role": "user", "content": "Doctest verbose?"}, {"role": "silicat", "content": "python -m doctest -v shows all tests."}]}
+{"messages": [{"role": "user", "content": "Doctest ellipsis?"}, {"role": "silicat", "content": ">>> result  # doctest: +ELLIPSIS match ..."}]}
+{"messages": [{"role": "user", "content": "Doctest normalize?"}, {"role": "silicat", "content": "doctest.NORMALIZE_WHITESPACE ignore whitespace."}]}
+{"messages": [{"role": "user", "content": "Doctest output?"}, {"role": "silicat", "content": ">>> output from code. >>> ... continuation."}]}
+{"messages": [{"role": "user", "content": "Doctest exception?"}, {"role": "silicat", "content": ">>> 1/0 raises exception. Expected in docstring."}]}
+{"messages": [{"role": "user", "content": "Type checking mypy?"}, {"role": "silicat", "content": "mypy script.py static type check."}]}
+{"messages": [{"role": "user", "content": "Mypy strict?"}, {"role": "silicat", "content": "mypy --strict strict checking."}]}
+{"messages": [{"role": "user", "content": "Mypy config?"}, {"role": "silicat", "content": "mypy.ini configure mypy behavior."}]}
+{"messages": [{"role": "user", "content": "Mypy skip?"}, {"role": "silicat", "content": "# type: ignore skip line. Use rarely."}]}
+{"messages": [{"role": "user", "content": "Mypy ignore error?"}, {"role": "silicat", "content": "# type: ignore[error-code] skip specific error."}]}
+{"messages": [{"role": "user", "content": "Lint flake8?"}, {"role": "silicat", "content": "flake8 script.py lint style."}]}
+{"messages": [{"role": "user", "content": "Lint pylint?"}, {"role": "silicat", "content": "pylint script.py stricter linting."}]}
+{"messages": [{"role": "user", "content": "Format black?"}, {"role": "silicat", "content": "black script.py auto-format code."}]}
+{"messages": [{"role": "user", "content": "Sort imports?"}, {"role": "silicat", "content": "isort script.py sort imports. Group stdlib/third/local."}]}
+{"messages": [{"role": "user", "content": "Pre-commit hook?"}, {"role": "silicat", "content": ".pre-commit-config.yaml configure. pre-commit run runs."}]}
+{"messages": [{"role": "user", "content": "CI GitHub Actions?"}, {"role": "silicat", "content": ".github/workflows/yaml configure. on: push trigger."}]}
+{"messages": [{"role": "user", "content": "CI matrix?"}, {"role": "silicat", "content": "strategy: matrix: python-version test multiple versions."}]}
+{"messages": [{"role": "user", "content": "CI artifacts?"}, {"role": "silicat", "content": "Upload test reports. Save coverage reports."}]}
+{"messages": [{"role": "user", "content": "Poetry lock?"}, {"role": "silicat", "content": "poetry.lock reproducible deps. Commit to git."}]}
+{"messages": [{"role": "user", "content": "Poetry add?"}, {"role": "silicat", "content": "poetry add package adds to pyproject.toml."}]}
+{"messages": [{"role": "user", "content": "Poetry publish?"}, {"role": "silicat", "content": "poetry publish to PyPI. Requires credentials."}]}
+{"messages": [{"role": "user", "content": "Conda environment?"}, {"role": "silicat", "content": "conda create -n env python=3.9 create."}]}
+{"messages": [{"role": "user", "content": "Conda activate?"}, {"role": "silicat", "content": "conda activate env enter environment."}]}
+{"messages": [{"role": "user", "content": "Conda deactivate?"}, {"role": "silicat", "content": "conda deactivate leave environment."}]}
+{"messages": [{"role": "user", "content": "Conda export?"}, {"role": "silicat", "content": "conda env export > env.yml save."}]}
+{"messages": [{"role": "user", "content": "Conda import?"}, {"role": "silicat", "content": "conda env create -f env.yml load."}]}
+{"messages": [{"role": "user", "content": "Venv create?"}, {"role": "silicat", "content": "python -m venv env create. source env/bin/activate enter."}]}
+{"messages": [{"role": "user", "content": "Venv deactivate?"}, {"role": "silicat", "content": "deactivate leave venv."}]}
+{"messages": [{"role": "user", "content": "Pip freeze?"}, {"role": "silicat", "content": "pip freeze > requirements.txt save deps."}]}
+{"messages": [{"role": "user", "content": "Pip install requires?"}, {"role": "silicat", "content": "pip install -r requirements.txt install from file."}]}
+{"messages": [{"role": "user", "content": "Pip upgrade?"}, {"role": "silicat", "content": "pip install --upgrade package upgrade."}]}
+{"messages": [{"role": "user", "content": "Pip uninstall?"}, {"role": "silicat", "content": "pip uninstall package remove."}]}
+{"messages": [{"role": "user", "content": "Pip list?"}, {"role": "silicat", "content": "pip list show installed."}]}
