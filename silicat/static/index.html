@@ -10,7 +10,7 @@
 <header>
   <h1>Silicat</h1>
   <div id="status" class="status">connecting…</div>
-  <button id="new-chat-btn" class="new-chat-btn">+ New chat</button>
+  <button id="new-chat-btn" class="new-chat-btn" aria-label="New conversation">+ New chat</button>
 </header>
 
 <main>
@@ -21,19 +21,20 @@
       id="input"
       rows="2"
       placeholder="Ask Silicat to write some code…"
+      aria-label="Chat message input"
       autofocus
     ></textarea>
-    <button id="send" type="submit">Send</button>
+    <button id="send" type="submit" aria-label="Send message">Send</button>
   </form>
 </main>
 
 <aside id="controls" class="controls">
   <details>
     <summary>Sampling</summary>
-    <label>temperature <input id="temperature" type="number" step="0.05" min="0.05" max="2" value="0.9" /></label>
-    <label>top_k <input id="top_k" type="number" step="1" min="0" max="500" value="40" /></label>
-    <label>top_p <input id="top_p" type="number" step="0.05" min="0" max="1" value="0.95" /></label>
-    <label>max_new_tokens <input id="max_new_tokens" type="number" step="16" min="16" max="1024" value="256" /></label>
+    <label for="temperature">temperature <input id="temperature" type="number" step="0.05" min="0.05" max="2" value="0.9" /></label>
+    <label for="top_k">top_k <input id="top_k" type="number" step="1" min="0" max="500" value="40" /></label>
+    <label for="top_p">top_p <input id="top_p" type="number" step="0.05" min="0" max="1" value="0.95" /></label>
+    <label for="max_new_tokens">max_new_tokens <input id="max_new_tokens" type="number" step="16" min="16" max="1024" value="256" /></label>
   </details>
 </aside>
 

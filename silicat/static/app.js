@@ -70,7 +70,7 @@ function renderRecentList() {
     return;
   }
   list.innerHTML = convs.map(c => `
-    <button class="conv-item${c.id === currentConvId ? " active" : ""}" data-id="${escapeHtml(c.id)}">
+    <button class="conv-item${c.id === currentConvId ? " active" : ""}" data-id="${escapeHtml(c.id)}" aria-label="Open conversation: ${escapeHtml(c.title)}">
       <span class="conv-title">${escapeHtml(c.title)}</span>
       <span class="conv-ts">${formatTs(c.ts)}</span>
     </button>
