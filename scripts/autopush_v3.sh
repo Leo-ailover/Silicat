@@ -33,7 +33,7 @@ except Exception as e:
 " 2>/dev/null) || continue
 
     echo "[autopush_v3] halving checkpoint at step $STEP..."
-    python -m silicat.halve --ckpt "$CKPT" --out "$CKPT" 2>/dev/null || true
+    python -m silicat.halve --src "$CKPT" --dst "$CKPT" 2>/dev/null || true
 
     echo "[autopush_v3] splitting..."
     cd checkpoints
