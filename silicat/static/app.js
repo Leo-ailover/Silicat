@@ -183,6 +183,14 @@ async function streamReply(replyEl) {
   return accumulated;
 }
 
+function updateSendButtonState() {
+  if (sendBtn) {
+    sendBtn.disabled = !input.value.trim();
+  }
+}
+
+input.addEventListener("input", updateSendButtonState);
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const text = input.value.trim();
@@ -200,17 +208,20 @@ form.addEventListener("submit", async (e) => {
     saveCurrentConversation();
   }
 
-  sendBtn.disabled = false;
+  updateSendButtonState();
   input.focus();
 });
 
 document.getElementById("new-chat-btn")?.addEventListener("click", startNewChat);
 
 renderRecentList();
+updateSendButtonState();
 
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
-    form.requestSubmit();
+    if (input.value.trim()) {
+      form.requestSubmit();
+    }
   }
 });
