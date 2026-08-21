@@ -10,20 +10,21 @@
 <header>
   <h1>Silicat</h1>
   <div id="status" class="status">connecting…</div>
-  <button id="new-chat-btn" class="new-chat-btn">+ New chat</button>
+  <button id="new-chat-btn" class="new-chat-btn" aria-label="Start a new chat">+ New chat</button>
 </header>
 
 <main>
-  <section id="chat" class="chat" aria-live="polite"></section>
+  <section id="chat" class="chat" aria-live="polite" aria-label="Chat history"></section>
 
-  <form id="composer" class="composer">
+  <form id="composer" class="composer" aria-label="Chat composer">
     <textarea
       id="input"
       rows="2"
       placeholder="Ask Silicat to write some code…"
+      aria-label="Message prompt"
       autofocus
     ></textarea>
-    <button id="send" type="submit">Send</button>
+    <button id="send" type="submit" aria-label="Send message" disabled>Send</button>
   </form>
 </main>
 
