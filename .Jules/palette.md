@@ -1,0 +1,3 @@
+## 2026-08-22 - Welcome Empty State & Keyboard Navigation Guidance
+**Learning:** Chat applications without initial onboarding or message empty states present a blank dark screen that leaves users uncertain about how to interact or send multi-line messages. Combining a minimal welcome banner with key interaction hints (`<kbd>Enter</kbd>` and `<kbd>Shift+Enter</kbd>`) alongside `:focus-visible` states immediately clarifies interaction modes.
+**Action:** Always provide an explicit empty state in chat interfaces that dynamically clears on first message submission and outlines key interaction shortcuts.

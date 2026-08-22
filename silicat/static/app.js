@@ -33,6 +33,18 @@ function saveCurrentConversation() {
   renderRecentList();
 }
 
+function renderEmptyState() {
+  if (messages.length === 0) {
+    chat.innerHTML = `
+      <div class="empty-state">
+        <h2>Welcome to Silicat</h2>
+        <p>Ask a question or request code to get started.<br />
+        Press <kbd>Enter</kbd> to send, <kbd>Shift+Enter</kbd> for a new line.</p>
+      </div>
+    `;
+  }
+}
+
 function loadConversation(id) {
   const conv = savedConversations().find(c => c.id === id);
   if (!conv) return;
@@ -40,7 +52,11 @@ function loadConversation(id) {
   messages.push(...conv.messages);
   currentConvId = id;
   chat.innerHTML = "";
-  for (const m of messages) addMessage(m.role, m.content);
+  if (messages.length === 0) {
+    renderEmptyState();
+  } else {
+    for (const m of messages) addMessage(m.role, m.content);
+  }
   renderRecentList();
 }
 
@@ -49,6 +65,7 @@ function startNewChat() {
   messages.length = 0;
   currentConvId = newId();
   chat.innerHTML = "";
+  renderEmptyState();
   renderRecentList();
   input.focus();
 }
@@ -115,6 +132,8 @@ function renderMarkdown(text) {
 }
 
 function addMessage(role, text = "") {
+  const empty = chat.querySelector(".empty-state");
+  if (empty) empty.remove();
   const el = document.createElement("div");
   el.className = `msg ${role}`;
   el.innerHTML = `<div class="who">${role}</div><div class="body"></div>`;
@@ -207,6 +226,7 @@ form.addEventListener("submit", async (e) => {
 document.getElementById("new-chat-btn")?.addEventListener("click", startNewChat);
 
 renderRecentList();
+renderEmptyState();
 
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
