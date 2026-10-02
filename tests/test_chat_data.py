@@ -55,7 +55,7 @@ def test_no_exact_duplicate_rows_and_balanced_fences(train_rows):
         seen.add(key)
         for m in r["messages"]:
             if m["role"] == "silicat":
-                assert m["content"].count("```") % 2 == 0, f"unbalanced code fence in row {i}"
+                assert len(re.findall(r"^```", m["content"], re.M)) % 2 == 0, f"unbalanced code fence in row {i}"
 
 
 def test_train_and_eval_prompts_are_disjoint(train_rows, eval_rows):

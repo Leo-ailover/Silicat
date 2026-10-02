@@ -1,7 +1,5 @@
-import json
 
 import pytest
-import torch
 
 from conftest import tiny_v3
 from silicat import checkpoint as C

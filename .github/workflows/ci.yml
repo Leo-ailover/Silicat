@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    # not checkpoints/** or data/**: the autopush bot commits those every few hundred steps
+    paths: ["silicat/**", "tests/**", "pyproject.toml", "requirements*.txt", ".github/workflows/**"]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          # the repo history holds ~800 MB of legacy checkpoints; only fetch what the tests read
+          sparse-checkout: |
+            silicat
+            tests
+            pyproject.toml
+            requirements.txt
+            requirements-dev.txt
+            README.md
+            LICENSE
+            checkpoints/tokenizer_v2
+            data/silicat_chat_v3.jsonl
+            data/silicat_chat_eval.jsonl
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install (CPU torch)
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements-dev.txt
+      - name: Lint
+        run: ruff check silicat tests
+      - name: Tests
+        run: python -m pytest tests

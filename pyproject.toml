@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "silicat"
+version = "0.1.0"
+description = "A from-scratch GPT-style Python coding assistant (PyTorch, no pretrained weights)."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.5",
+    "numpy>=1.24",
+    "tokenizers>=0.15",
+    "tqdm>=4.65",
+]
+
+[project.optional-dependencies]
+serve = ["fastapi>=0.110", "uvicorn[standard]>=0.27", "sse-starlette>=2.0,<4", "pydantic>=2.5"]
+hf = ["datasets>=2.14"]
+dev = ["pytest>=7.4", "httpx>=0.27", "ruff>=0.5", "fastapi>=0.110", "uvicorn[standard]>=0.27", "sse-starlette>=2.0,<4", "pydantic>=2.5"]
+
+[tool.setuptools]
+packages = ["silicat"]
+
+[tool.setuptools.package-data]
+silicat = ["static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = ["data/synth", "data/legacy", "notebooks"]
+
+[tool.ruff.lint]
+select = ["E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# unused imports in modules owned elsewhere; remove these entries once the imports are gone
+"silicat/model.py" = ["F401"]
+"silicat/verify.py" = ["F401"]
