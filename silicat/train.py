@@ -117,6 +117,29 @@ def _resolve_precision(args: argparse.Namespace, device: str):
     return (lambda: nullcontext()), "fp32"
 
 
+def _maybe_compile(model, args: argparse.Namespace, device: str):
+    """torch.compile the training forward (pretrain only: fixed shapes). Measured on the 4-core CPU box
+    (12L/768d, bs8x512, bf16): 5.8 s/step eager -> 3.6 s/step compiled, same losses, ~2 GB less RSS, but
+    ~50-80 s one-off compile. Optimizer/checkpoints keep using the uncompiled `model` (same parameters,
+    no `_orig_mod.` key prefix); eval stays eager. Falls back to eager if no C++ compiler on CPU."""
+    mode = args.compile
+    if mode == "off" or args.stage != "pretrain":
+        return model
+    if mode == "auto":
+        import shutil
+        if device == "cpu" and not (shutil.which("g++") or shutil.which("c++")):
+            return model
+        if device not in ("cpu", "cuda"):
+            return model
+    try:
+        c = torch.compile(model)
+    except Exception as e:
+        print(f"WARNING: torch.compile unavailable ({e}); eager", flush=True)
+        return model
+    print("torch.compile: on (first step takes ~1 min to compile)", flush=True)
+    return c
+
+
 def _get_batch(
     data: np.ndarray,
     batch_size: int,
@@ -288,6 +311,7 @@ def pretrain(args: argparse.Namespace) -> None:
             )
         archive_existing(ckpt_name)
     optim = model.configure_optimizer(args.lr, args.weight_decay)
+    fwd = _maybe_compile(model, args, device)
     if res is not None:
         ck, src = res
         if ck.get("stage", "pretrain") == "chat":
@@ -353,8 +377,17 @@ def pretrain(args: argparse.Namespace) -> None:
             for k in range(accum):
                 gen = torch.Generator().manual_seed(args.seed * 1_000_003 + step * accum + k)
                 x, y = _get_batch(train_data, args.batch_size, args.block_size, device, gen)
-                with ctx():
-                    _, loss = model(x, targets=y)
+                try:
+                    with ctx():
+                        _, loss = fwd(x, targets=y)
+                except Exception as e:
+                    if fwd is model:
+                        raise
+                    print(f"WARNING: torch.compile failed ({type(e).__name__}: {str(e)[:200]}); "
+                          "falling back to eager", flush=True)
+                    fwd = model
+                    with ctx():
+                        _, loss = fwd(x, targets=y)
                 (loss / accum).backward()
                 loss_val += loss.item() / accum
             if not math.isfinite(loss_val):
@@ -687,6 +720,8 @@ def _cli() -> None:
                    help="auto: bf16 autocast on CUDA / CPUs with AMX or avx512_bf16")
     p.add_argument("--amp", action="store_true", help="deprecated alias for --precision bf16")
     p.add_argument("--grad-accum", type=int, default=1, help="micro-batches per optimizer step")
+    p.add_argument("--compile", choices=["auto", "on", "off"], default="auto",
+                   help="torch.compile the pretrain forward (auto: on if a C++ compiler exists / CUDA)")
     p.add_argument("--seed", type=int, default=1337)
     p.add_argument("--resume", action="store_true")
     p.add_argument("--require-resume", action="store_true", help="with --resume: fail if nothing to resume")

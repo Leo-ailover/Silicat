@@ -91,7 +91,10 @@ def inject(lines: list[str], kind: str, rng: random.Random):
 
 def mine_blocks(max_lines: int = 22, max_chars: int = 900) -> list[tuple[str, str]]:
     args = B.parse_args([])
-    train, _ = B.build(args, exclude=frozenset({"paste_code"}), write=False)
+    # Mine ONLY from the base silicat_chat.jsonl: other synth files change over time and would make
+    # this generator's output (and so silicat_chat_v3.jsonl) irreproducible.
+    others = frozenset(f.stem for f in B.SYNTH_DIR.glob("*.jsonl"))
+    train, _ = B.build(args, exclude=others, write=False)
     seen, blocks = set(), []
     for r in train:
         if r.source in B.SYNTHETIC_SOURCES or len(r.msgs) != 2:

@@ -77,3 +77,14 @@ def test_corpus_has_no_chat_or_synth_repeats():
 
     _, per, k = C.strip_trailing_repeats(t)
     assert k == 1
+
+
+def test_paste_code_reproducible_and_independent_of_other_synth(tmp_path):
+    """gen_paste_code.py must regenerate the committed paste_code.jsonl byte for byte; it mines only
+    silicat_chat.jsonl, so editing other synth files cannot change it."""
+    import subprocess
+
+    out = tmp_path / "pc.jsonl"
+    subprocess.run([sys.executable, str(DATA / "synth" / "gen_paste_code.py"), "--out", str(out)],
+                   check=True, capture_output=True)
+    assert out.read_bytes() == (DATA / "synth" / "paste_code.jsonl").read_bytes()

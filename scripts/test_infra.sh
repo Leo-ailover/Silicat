@@ -108,6 +108,13 @@ m1="$(stat -c %Y "$SILICAT_CKPT_DIR/latest_v3.pt")"; sleep 1
 timeout 100 bash "$S/watchdog.sh" >"$W/wd2.log" 2>&1; check "second launch exits 0 immediately" test $? -eq 0
 check "checkpoint not rewritten" test "$(stat -c %Y "$SILICAT_CKPT_DIR/latest_v3.pt")" = "$m1"
 
+echo "== watchdog: finished run after a wipe (parts + manifest only, no live latest_v3.pt) reaches DONE"
+mv "$SILICAT_CKPT_DIR/latest_v3.pt" "$W/live.bak"; rm -f "$SILICAT_CKPT_DIR/latest_v3.fp16.pt"
+SKIP_BOOTSTRAP=1 BACKOFF_BASE=1 timeout 100 bash "$S/watchdog.sh" >"$W/wd2b.log" 2>&1; check "wiped finished run exits 0" test $? -eq 0
+check "wiped finished run reaches DONE" grep -q 'DONE final checkpoint' "$W/wd2b.log"
+check "not restarted in a loop" test "$(grep -c TRAIN_START "$W/wd2b.log")" -le 1
+mv "$W/live.bak" "$SILICAT_CKPT_DIR/latest_v3.pt"
+
 echo "== watchdog: flag mismatch, crash loop backoff, single instance, SIGTERM"
 TRAIN_CMD="python -m silicat.train --bogus-flag 1" timeout 60 bash "$S/watchdog.sh" >"$W/wd3.log" 2>&1; rc=$?
 check "unknown flag aborts rc 1" bash -c "test $rc -eq 1 && grep -q 'unknown_flag=--bogus-flag' $W/wd3.log"

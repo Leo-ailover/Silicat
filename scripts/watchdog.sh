@@ -105,13 +105,24 @@ while [ "$stop" -eq 0 ]; do
         if [ -n "$train_pid" ] && ! kill -0 "$train_pid" 2>/dev/null; then
             wait "$train_pid"; rc=$?
             ran=$((SECONDS - train_start)); train_pid=""
-            cs=""; [ "$rc" -eq 0 ] && cs="$(ckpt_step "$LIVE_PT" 2>/dev/null)"
+            cs=""
+            if [ "$rc" -eq 0 ]; then
+                # after a wipe the live fp32 file may not exist: fall back to the fp16 export, then the manifest
+                cs="$(ckpt_step "$LIVE_PT" 2>/dev/null)"
+                [ -n "$cs" ] || cs="$(ckpt_step "$EXPORT_PT" 2>/dev/null)"
+                [ -n "$cs" ] || cs="$(manifest_field step 2>/dev/null)"
+            fi
             if [ "$rc" -eq 0 ] && [ "${cs:-0}" -ge "$MAX_STEPS" ]; then
                 wl "TRAIN_EXIT rc=0 ran=${ran}s step=$cs -> finished, not restarting"
                 train_done=1
             elif [ "$rc" -eq 0 ]; then
                 wl "TRAIN_EXIT rc=0 early_stop step=${cs:-?} ran=${ran}s restart_in=${BACKOFF_BASE}s"
                 next_train=$((SECONDS + BACKOFF_BASE))
+                fails=$((fails + 1))    # a trainer that keeps exiting 0 early must not loop forever
+                if [ "$MAX_FAST_FAILS" -gt 0 ] && [ "$fails" -ge "$MAX_FAST_FAILS" ]; then
+                    wl "GIVING_UP after $fails consecutive early rc=0 exits; fix the cause then restart bootstrap.sh"
+                    stop=2; break
+                fi
             elif [ "$rc" -eq 75 ]; then
                 wl "TRAIN_EXIT rc=75 another trainer holds $(lock_path trainer); retry in 60s"
                 next_train=$((SECONDS + 60))

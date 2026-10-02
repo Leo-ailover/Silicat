@@ -88,7 +88,8 @@ Notes:
 - `--resume` continues from `checkpoints/latest_v3.pt` (full fp32 + AdamW state), else from the committed fp16 parts with a fresh optimizer and a short LR re-warmup (`--rewarmup`, default 100 steps). With nothing to resume it starts at step 0 (`--require-resume` makes that an error). Starting **without** `--resume` when a checkpoint exists is refused unless `--fresh` (archives the old one to `checkpoints/old/<timestamp>/`).
 - `SIGTERM`/`SIGINT` finish the current step, save and exit 0. Exit code 0 means "finished or cleanly stopped"; any error is non-zero.
 - Other flags: `--seed`, `--precision auto|fp32|bf16`, `--grad-accum`, `--save-interval`, `--eval-interval`, `--eval-windows`, `--chat-epochs`, `--patience`, `--chat-data`, `--chat-eval-data`. See `python -m silicat.train --help`.
-- Try everything quickly with a toy model: `--n-layer 2 --n-head 4 --n-kv-head 2 --n-embd 32 --block-size 32 --batch-size 2 --max-steps 5` (this is what `tests/test_train_smoke.py` runs).
+- Try everything quickly with a toy model, **isolated from the real checkpoints** (a toy `latest_v3.pt` in `checkpoints/` makes the real `--resume` run, and so the watchdog, fail with "checkpoint config differs" and look like a step-5 checkpoint to bootstrap/autopush):
+  `SILICAT_CKPT_DIR=$(mktemp -d) python -m silicat.train --stage pretrain --v3 --n-layer 2 --n-head 4 --n-kv-head 2 --n-embd 32 --block-size 32 --batch-size 2 --max-steps 5` (this is what `tests/test_train_smoke.py` runs). Never share `checkpoints/` between a toy and a real run.
 
 ## Serving
 
