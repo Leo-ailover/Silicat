@@ -6,53 +6,52 @@
     "length_filter": true
   },
   "total": {
-    "read": 16013,
-    "kept_train": 8170,
+    "read": 16162,
+    "kept_train": 8166,
     "kept_eval": 300,
     "dropped_by_reason": {
       "derived_from_eval": 1,
-      "exact_duplicate": 150,
+      "exact_duplicate": 143,
       "identity_conflict": 4,
       "malformed_json": 9,
-      "near_duplicate": 280,
+      "near_duplicate": 271,
       "off_topic": 75,
       "placeholder_answer": 1,
       "role_order": 1,
-      "same_prompt_duplicate": 318,
+      "same_prompt_duplicate": 327,
       "syntax_error": 7,
-      "telegraphic": 857,
+      "telegraphic": 848,
       "template_junk": 1664,
       "too_long": 28,
       "unterminated_fence": 2,
-      "upgraded": 4146
+      "upgraded": 4315
     }
   },
   "fixes_applied": {
-    "comment_value_fixes": 10,
+    "comment_value_fixes": 9,
     "fence_tagged_python": 3,
     "fence_tagged_text": 16,
-    "imports_added": 89,
+    "imports_added": 85,
     "literal_api_fixes": 5,
-    "python_fragment_kept": 1,
     "python_relabelled_text": 3,
     "trimmed_multiturn": 4
   },
   "train_token_len": {
-    "mean": 146.5,
-    "p50": 152,
-    "p95": 263,
+    "mean": 148.5,
+    "p50": 154,
+    "p95": 264,
     "max": 507
   },
-  "train_multi_turn_rows": 201,
+  "train_multi_turn_rows": 197,
   "per_source": {
     "algorithms": {
       "read": 228,
-      "kept_train": 112,
+      "kept_train": 107,
       "kept_eval": 4,
       "dropped": {
-        "near_duplicate": 7,
+        "near_duplicate": 6,
         "same_prompt_duplicate": 13,
-        "upgraded": 92
+        "upgraded": 98
       }
     },
     "async_web": {
@@ -67,31 +66,31 @@
     },
     "core_python": {
       "read": 487,
-      "kept_train": 262,
+      "kept_train": 257,
       "kept_eval": 10,
       "dropped": {
         "same_prompt_duplicate": 24,
         "telegraphic": 1,
-        "upgraded": 190
+        "upgraded": 195
       }
     },
     "datasci": {
       "read": 276,
-      "kept_train": 56,
+      "kept_train": 47,
       "kept_eval": 2,
       "dropped": {
         "malformed_json": 2,
         "same_prompt_duplicate": 1,
-        "upgraded": 215
+        "upgraded": 224
       }
     },
     "debug_test": {
       "read": 292,
-      "kept_train": 266,
+      "kept_train": 265,
       "kept_eval": 11,
       "dropped": {
         "same_prompt_duplicate": 3,
-        "upgraded": 12
+        "upgraded": 13
       }
     },
     "identity": {
@@ -102,53 +101,53 @@
     },
     "more_algorithms": {
       "read": 153,
-      "kept_train": 71,
+      "kept_train": 70,
       "kept_eval": 3,
       "dropped": {
         "near_duplicate": 3,
         "same_prompt_duplicate": 6,
-        "upgraded": 70
+        "upgraded": 71
       }
     },
     "more_algorithms2": {
       "read": 400,
-      "kept_train": 4,
+      "kept_train": 3,
       "kept_eval": 0,
       "dropped": {
         "near_duplicate": 5,
-        "telegraphic": 323,
-        "upgraded": 68
+        "telegraphic": 319,
+        "upgraded": 73
       }
     },
     "more_batch2_early": {
       "read": 216,
-      "kept_train": 60,
+      "kept_train": 50,
       "kept_eval": 2,
       "dropped": {
         "exact_duplicate": 4,
         "near_duplicate": 29,
         "same_prompt_duplicate": 2,
         "telegraphic": 9,
-        "upgraded": 110
+        "upgraded": 120
       }
     },
     "more_concurrency": {
       "read": 550,
-      "kept_train": 59,
+      "kept_train": 46,
       "kept_eval": 2,
       "dropped": {
-        "same_prompt_duplicate": 7,
+        "same_prompt_duplicate": 6,
         "telegraphic": 48,
-        "upgraded": 434
+        "upgraded": 448
       }
     },
     "more_core": {
       "read": 313,
-      "kept_train": 243,
+      "kept_train": 242,
       "kept_eval": 10,
       "dropped": {
-        "same_prompt_duplicate": 22,
-        "upgraded": 38
+        "same_prompt_duplicate": 21,
+        "upgraded": 40
       }
     },
     "more_databases": {
@@ -209,12 +208,12 @@
     },
     "more_hard_algorithms": {
       "read": 503,
-      "kept_train": 3,
+      "kept_train": 0,
       "kept_eval": 0,
       "dropped": {
         "off_topic": 71,
         "telegraphic": 32,
-        "upgraded": 397
+        "upgraded": 400
       }
     },
     "more_hard_algorithms2": {
@@ -257,34 +256,34 @@
     },
     "more_interview2": {
       "read": 500,
-      "kept_train": 12,
+      "kept_train": 0,
       "kept_eval": 0,
       "dropped": {
-        "same_prompt_duplicate": 6,
+        "same_prompt_duplicate": 5,
         "telegraphic": 147,
-        "upgraded": 335
+        "upgraded": 348
       }
     },
     "more_math": {
       "read": 500,
-      "kept_train": 194,
-      "kept_eval": 8,
+      "kept_train": 187,
+      "kept_eval": 7,
       "dropped": {
-        "exact_duplicate": 9,
-        "near_duplicate": 77,
-        "upgraded": 212
+        "exact_duplicate": 2,
+        "near_duplicate": 76,
+        "upgraded": 228
       }
     },
     "more_oop": {
       "read": 399,
-      "kept_train": 11,
+      "kept_train": 2,
       "kept_eval": 0,
       "dropped": {
         "near_duplicate": 1,
         "off_topic": 3,
         "same_prompt_duplicate": 18,
         "telegraphic": 63,
-        "upgraded": 303
+        "upgraded": 312
       }
     },
     "more_packaging": {
@@ -297,11 +296,11 @@
     },
     "more_patterns": {
       "read": 182,
-      "kept_train": 4,
+      "kept_train": 0,
       "kept_eval": 0,
       "dropped": {
-        "telegraphic": 78,
-        "upgraded": 100
+        "telegraphic": 77,
+        "upgraded": 105
       }
     },
     "more_realworld2": {
@@ -315,12 +314,12 @@
     },
     "more_realworld3": {
       "read": 500,
-      "kept_train": 18,
+      "kept_train": 17,
       "kept_eval": 0,
       "dropped": {
         "same_prompt_duplicate": 28,
         "template_junk": 443,
-        "upgraded": 11
+        "upgraded": 12
       }
     },
     "more_stdlib": {
@@ -335,24 +334,23 @@
     },
     "more_strings": {
       "read": 267,
-      "kept_train": 1,
+      "kept_train": 0,
       "kept_eval": 0,
       "dropped": {
         "exact_duplicate": 6,
-        "same_prompt_duplicate": 1,
-        "telegraphic": 147,
-        "upgraded": 112
+        "telegraphic": 143,
+        "upgraded": 118
       }
     },
     "more_testing": {
       "read": 539,
-      "kept_train": 30,
-      "kept_eval": 1,
+      "kept_train": 14,
+      "kept_eval": 0,
       "dropped": {
         "off_topic": 1,
         "same_prompt_duplicate": 10,
         "telegraphic": 9,
-        "upgraded": 488
+        "upgraded": 505
       }
     },
     "more_web": {
@@ -386,34 +384,34 @@
     },
     "realworld": {
       "read": 419,
-      "kept_train": 221,
-      "kept_eval": 9,
+      "kept_train": 214,
+      "kept_eval": 8,
       "dropped": {
         "exact_duplicate": 1,
         "malformed_json": 2,
         "same_prompt_duplicate": 1,
-        "upgraded": 185
+        "upgraded": 193
       }
     },
     "silicat_chat": {
       "read": 1410,
-      "kept_train": 597,
-      "kept_eval": 23,
+      "kept_train": 566,
+      "kept_eval": 22,
       "dropped": {
         "identity_conflict": 3,
-        "near_duplicate": 155,
+        "near_duplicate": 148,
         "placeholder_answer": 1,
-        "same_prompt_duplicate": 95,
+        "same_prompt_duplicate": 96,
         "syntax_error": 1,
-        "upgraded": 535
+        "upgraded": 573
       }
     },
     "upgraded_00": {
       "read": 321,
-      "kept_train": 307,
+      "kept_train": 306,
       "kept_eval": 12,
       "dropped": {
-        "same_prompt_duplicate": 2
+        "same_prompt_duplicate": 3
       }
     },
     "upgraded_01": {
@@ -426,18 +424,18 @@
     },
     "upgraded_02": {
       "read": 322,
-      "kept_train": 301,
+      "kept_train": 300,
       "kept_eval": 12,
       "dropped": {
-        "same_prompt_duplicate": 9
+        "same_prompt_duplicate": 10
       }
     },
     "upgraded_03": {
       "read": 299,
-      "kept_train": 285,
+      "kept_train": 284,
       "kept_eval": 11,
       "dropped": {
-        "same_prompt_duplicate": 3
+        "same_prompt_duplicate": 4
       }
     },
     "upgraded_04": {
@@ -491,10 +489,10 @@
     },
     "upgraded_10": {
       "read": 311,
-      "kept_train": 291,
-      "kept_eval": 12,
+      "kept_train": 290,
+      "kept_eval": 11,
       "dropped": {
-        "same_prompt_duplicate": 8
+        "same_prompt_duplicate": 10
       }
     },
     "upgraded_11": {
@@ -503,6 +501,14 @@
       "kept_eval": 11,
       "dropped": {
         "same_prompt_duplicate": 3
+      }
+    },
+    "upgraded_12": {
+      "read": 149,
+      "kept_train": 137,
+      "kept_eval": 5,
+      "dropped": {
+        "same_prompt_duplicate": 7
       }
     }
   },
