@@ -12,6 +12,16 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+def make_adamw(groups, lr: float, betas: tuple[float, float], device) -> torch.optim.Optimizer:
+    """AdamW, using the fused kernel (~5x faster step, same updates) where available."""
+    if torch.device(device).type in ("cuda", "cpu"):
+        try:
+            return torch.optim.AdamW(groups, lr=lr, betas=betas, fused=True)
+        except (RuntimeError, ValueError, TypeError):
+            pass
+    return torch.optim.AdamW(groups, lr=lr, betas=betas)
+
+
 @dataclass
 class GPTConfig:
     vocab_size: int = 8192
@@ -119,16 +129,16 @@ class GPT(nn.Module):
         if targets is not None:
             per_tok = F.cross_entropy(
                 logits.view(-1, logits.size(-1)),
-                targets.view(-1),
+                targets.reshape(-1),
                 ignore_index=-100,
                 reduction="none",
             )
             if loss_mask is not None:
-                mask = loss_mask.view(-1).to(per_tok.dtype)
+                mask = loss_mask.reshape(-1).to(per_tok.dtype)
                 denom = mask.sum().clamp(min=1.0)
                 loss = (per_tok * mask).sum() / denom
-            else:
-                loss = per_tok.mean()
+            else:  # mean over non-ignored targets (ignore_index=-100)
+                loss = per_tok.sum() / (targets.reshape(-1) != -100).sum().clamp(min=1)
         return logits, loss
 
     def configure_optimizer(
@@ -149,4 +159,4 @@ class GPT(nn.Module):
             {"params": decay, "weight_decay": weight_decay},
             {"params": no_decay, "weight_decay": 0.0},
         ]
-        return torch.optim.AdamW(groups, lr=lr, betas=betas)
+        return make_adamw(groups, lr, betas, next(self.parameters()).device)

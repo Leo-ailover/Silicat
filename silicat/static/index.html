@@ -14,7 +14,7 @@
 </header>
 
 <main>
-  <section id="chat" class="chat" aria-live="polite"></section>
+  <section id="chat" class="chat" role="log" aria-live="off"></section>
 
   <form id="composer" class="composer">
     <textarea
@@ -24,6 +24,7 @@
       autofocus
     ></textarea>
     <button id="send" type="submit">Send</button>
+    <button id="stop" type="button" hidden>Stop</button>
   </form>
 </main>
 
@@ -33,7 +34,7 @@
     <label>temperature <input id="temperature" type="number" step="0.05" min="0.05" max="2" value="0.9" /></label>
     <label>top_k <input id="top_k" type="number" step="1" min="0" max="500" value="40" /></label>
     <label>top_p <input id="top_p" type="number" step="0.05" min="0" max="1" value="0.95" /></label>
-    <label>max_new_tokens <input id="max_new_tokens" type="number" step="16" min="16" max="1024" value="256" /></label>
+    <label>max_new_tokens <input id="max_new_tokens" type="number" step="16" min="16" max="496" value="256" /></label>
   </details>
 </aside>
 

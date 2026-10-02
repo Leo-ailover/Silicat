@@ -1612,7 +1612,7 @@ add("how do I convert a string to title case but keep acronyms",
 add("how to map each item to a (value, is_even) tuple",
     "```python\n[(n, n % 2 == 0) for n in nums]\n```")
 
-print(len(E))
-with open("/home/user/Silicat/data/synth/core_python.jsonl", "w") as f:
+print(len(E), file=__import__("sys").stderr)
+with open(str(__import__("pathlib").Path(__file__).resolve().parent / "core_python.jsonl"), "w") as f:
     for ex in E:
         f.write(json.dumps(ex, ensure_ascii=False) + "\n")

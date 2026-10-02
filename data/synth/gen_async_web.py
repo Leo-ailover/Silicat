@@ -1196,9 +1196,9 @@ add(
 )
 
 # Build file
-out_path = "/home/user/Silicat/data/synth/async_web.jsonl"
+out_path = str(__import__("pathlib").Path(__file__).resolve().parent / "async_web.jsonl")
 with open(out_path, "w") as f:
     for ex in examples:
         f.write(json.dumps(ex, ensure_ascii=False) + "\n")
 
-print("wrote", len(examples), "examples to", out_path)
+print("wrote", len(examples), "examples to", out_path, file=__import__("sys").stderr)

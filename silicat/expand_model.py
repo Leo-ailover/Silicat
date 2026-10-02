@@ -1,73 +1,82 @@
-"""Expand a 12-layer 91M model to 24-layer 176M by duplicating all layers.
+"""Grow a model in depth by layer stacking: new layer i is copied from source
+layer i % src_n (works for v1 GPT and v3 GPTV3 checkpoints).
 
-This is a depth-growth / layer-stacking technique: each of the 24 output
-layers is initialised from one of the 12 source layers (layer i → i%12).
-The model inherits pretrained representations and skips a full re-pretrain.
+For v3 the NoPE/RoPE pattern is baked into layer index, so it is only preserved
+when src_n % nope_every == 0 and n_layer % src_n == 0.
 
 Usage:
-    python -m silicat.expand_model \
-        --src checkpoints/latest.pt \
-        --dst checkpoints/expanded.pt \
-        --n-layer 24
+    python -m silicat.expand_model --src checkpoints/latest_v3.pt \
+        --dst checkpoints/expanded_v3.pt --n-layer 24
 """
 from __future__ import annotations
 
 import argparse
+import re
 from pathlib import Path
 
 import torch
 
-from .model import GPT, GPTConfig
+from .checkpoint import CKPT_DIR, build_model, load_checkpoint, save_checkpoint, state_to_fp32
+from .assemble import ensure_assembled
+
+_BLOCK = re.compile(r"^blocks\.(\d+)\.(.*)$")
 
 
 def expand(src_path: Path, dst_path: Path, n_layer: int) -> None:
-    ck = torch.load(src_path, map_location="cpu")
-    old_cfg = GPTConfig(**ck["config"])
-    src_n = old_cfg.n_layer
+    src_path = Path(src_path)
+    if not src_path.exists():
+        src_path = ensure_assembled(src_path)
+    ck = load_checkpoint(src_path)
+    cfg_d = dict(ck["config"])
+    src_n = cfg_d["n_layer"]
+    src_sd = state_to_fp32(ck["model"])
+    print(f"Source: {src_n} layers  {sum(v.numel() for v in src_sd.values()) / 1e6:.1f}M tensor elements")
 
-    print(f"Source: {src_n} layers  {sum(v.numel() for v in ck['model'].values())/1e6:.1f}M params")
+    if n_layer < src_n or n_layer % src_n:
+        raise SystemExit(f"--n-layer must be a multiple of the source depth {src_n}")
+    if "n_kv_head" in cfg_d and src_n % cfg_d.get("nope_every", 4):
+        raise SystemExit(
+            f"source depth {src_n} is not a multiple of nope_every={cfg_d['nope_every']}: "
+            "stacking would move layers between RoPE and NoPE slots"
+        )
 
-    # Build new config — same width, more layers
-    new_cfg = GPTConfig(
-        vocab_size=old_cfg.vocab_size,
-        block_size=old_cfg.block_size,
-        n_layer=n_layer,
-        n_head=old_cfg.n_head,
-        n_embd=old_cfg.n_embd,
-        dropout=old_cfg.dropout,
-        bias=old_cfg.bias,
-    )
-    new_model = GPT(new_cfg)
+    cfg_d["n_layer"] = n_layer
+    new_model, new_cfg, arch = build_model(cfg_d)
     new_sd = new_model.state_dict()
-    src_sd = ck["model"]
-
-    copied = 0
+    tied_head = arch == "v3"
+    filled = set()
     for key in new_sd:
-        if key.startswith("transformer.h."):
-            # transformer.h.{i}.xxx  →  map i → i % src_n
-            parts = key.split(".")
-            layer_idx = int(parts[2])
-            src_key = ".".join(parts[:2] + [str(layer_idx % src_n)] + parts[3:])
-            if src_key in src_sd:
-                new_sd[key] = src_sd[src_key].clone()
-                copied += 1
-        elif key in src_sd:
-            new_sd[key] = src_sd[key].clone()
-            copied += 1
-
+        if tied_head and key == "head.weight":
+            continue  # tied to tok_emb.weight
+        m = _BLOCK.match(key)
+        sk = f"blocks.{int(m.group(1)) % src_n}.{m.group(2)}" if m else key
+        if sk not in src_sd:
+            raise KeyError(f"source checkpoint has no tensor {sk!r} (needed for {key!r})")
+        if src_sd[sk].shape != new_sd[key].shape:
+            raise ValueError(f"shape mismatch {key}: {tuple(src_sd[sk].shape)} vs {tuple(new_sd[key].shape)}")
+        new_sd[key] = src_sd[sk].detach().clone()
+        filled.add(key)
+    if tied_head and "head.weight" in new_sd:
+        new_sd["head.weight"] = new_sd["tok_emb.weight"]
     new_model.load_state_dict(new_sd)
-    total = sum(p.numel() for p in new_model.parameters())
-    print(f"Target: {n_layer} layers  {total/1e6:.1f}M params  ({copied} tensors copied)")
 
-    dst_path.parent.mkdir(parents=True, exist_ok=True)
-    torch.save({"model": new_sd, "config": new_cfg.__dict__, "step": 0}, dst_path)
-    print(f"Saved → {dst_path}")
+    # verify
+    got = new_model.state_dict()
+    for key in filled:
+        m = _BLOCK.match(key)
+        sk = f"blocks.{int(m.group(1)) % src_n}.{m.group(2)}" if m else key
+        assert torch.equal(got[key], src_sd[sk]), key
+    total = sum(p.numel() for p in new_model.parameters())
+    print(f"Target: {n_layer} layers  {total / 1e6:.1f}M params  ({len(filled)}/{len(new_sd)} tensors copied)")
+
+    save_checkpoint(dst_path, new_model, new_cfg, 0, extra={"stage": "pretrain"})
+    print("Note: copied o_proj/down weights are not rescaled for the deeper stack; use a LR warmup.")
 
 
 def _cli() -> None:
     p = argparse.ArgumentParser()
-    p.add_argument("--src", default="checkpoints/latest.pt")
-    p.add_argument("--dst", default="checkpoints/expanded.pt")
+    p.add_argument("--src", default=str(CKPT_DIR / "latest.pt"))
+    p.add_argument("--dst", default=str(CKPT_DIR / "expanded.pt"))
     p.add_argument("--n-layer", type=int, default=24)
     args = p.parse_args()
     expand(Path(args.src), Path(args.dst), args.n_layer)

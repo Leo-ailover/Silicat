@@ -19,6 +19,14 @@ class Message:
     content: str
 
 
+def _head(m: Message, user: int, sil: int) -> int:
+    if m.role == "user":
+        return user
+    if m.role == "silicat":
+        return sil
+    raise ValueError(f"unknown role {m.role!r} (expected 'user' or 'silicat')")
+
+
 def format_prompt(messages: list[Message], tok: Tokenizer) -> list[int]:
     """Render a conversation into token ids, ending with `<|silicat|>` so the
     model is primed to generate its reply."""
@@ -27,8 +35,7 @@ def format_prompt(messages: list[Message], tok: Tokenizer) -> list[int]:
     end = tok.special_id("<|end|>")
     ids: list[int] = []
     for m in messages:
-        head = user if m.role == "user" else sil
-        ids.append(head)
+        ids.append(_head(m, user, sil))
         ids.extend(tok.encode(m.content))
         ids.append(end)
     ids.append(sil)
@@ -47,8 +54,7 @@ def format_for_training(
     ids: list[int] = []
     mask: list[int] = []
     for m in messages:
-        head = user if m.role == "user" else sil
-        ids.append(head)
+        ids.append(_head(m, user, sil))
         mask.append(0)
         body = tok.encode(m.content)
         ids.extend(body)
@@ -57,3 +63,44 @@ def format_for_training(
         ids.append(end)
         mask.append(1 if is_sil else 0)
     return ids, mask
+
+
+def fit_prompt(
+    messages: list[Message], tok: Tokenizer, max_prompt_tokens: int
+) -> tuple[list[int], bool]:
+    """Like `format_prompt` but guaranteed to be <= max_prompt_tokens ids.
+
+    Drops the oldest turns whole (so the prompt still starts with `<|user|>`),
+    always keeps the last turn, and if that alone is too long keeps the TAIL of
+    its token ids. Returns (ids, truncated)."""
+    user = tok.special_id("<|user|>")
+    sil = tok.special_id("<|silicat|>")
+    end = tok.special_id("<|end|>")
+    turns = [(_head(m, user, sil), tok.encode(m.content)) for m in messages]
+    budget = max(max_prompt_tokens, 4) - 1  # trailing <|silicat|>
+    sizes = [len(b) + 2 for _, b in turns]
+    # candidate start turns: user turns (newest last); the last turn is always allowed
+    starts = [i for i, (h, _) in enumerate(turns) if h == user] or [max(len(turns) - 1, 0)]
+    start = starts[-1]
+    for i in starts:
+        if sum(sizes[i:]) <= budget:
+            start = i
+            break
+    kept = turns[start:]
+    truncated = start > 0
+    if kept and sum(sizes[start:]) > budget:
+        truncated = True
+        rest = sum(sizes[start + 1:])
+        room = max(budget - rest - 2, 0)
+        h, body = kept[0]
+        kept[0] = (h, body[-room:] if room else [])
+        if rest >= budget - 2:  # later turns alone overflow: keep only the tail of the last one
+            h, body = kept[-1]
+            kept = [(h, body[-max(budget - 2, 0):])]
+    ids: list[int] = []
+    for h, body in kept:
+        ids.append(h)
+        ids.extend(body)
+        ids.append(end)
+    ids.append(sil)
+    return ids, truncated

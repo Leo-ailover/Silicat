@@ -12,7 +12,9 @@ in 2025-2026 (Qwen3 / SmolLM3 / Llama-3 design choices):
   - QK-Norm: RMSNorm on per-head queries and keys before attention, which
     prevents attention-logit blow-up and stabilises training
   - SwiGLU feed-forward instead of GELU MLP (better quality per parameter)
-  - Weight tying between token embedding and the output head
+  - Weight tying between token embedding and the output head (the head reuses
+    `tok_emb.weight` directly, so the state_dict holds a single copy)
+  - Exact KV cache (`KVCache`) for fast incremental decoding
 
 Still small and readable; still one file.
 """
@@ -24,6 +26,8 @@ from dataclasses import dataclass
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+from .model import make_adamw
 
 
 @dataclass
@@ -57,12 +61,14 @@ class RMSNorm(nn.Module):
         return (x * self.weight).to(dtype)
 
 
-def _build_rope(head_dim: int, max_seq: int, theta: float, device=None):
-    """Return (cos, sin) tables of shape (max_seq, head_dim)."""
-    inv_freq = 1.0 / (theta ** (torch.arange(0, head_dim, 2, dtype=torch.float32) / head_dim))
-    t = torch.arange(max_seq, dtype=torch.float32)
-    freqs = torch.outer(t, inv_freq)          # (max_seq, head_dim/2)
-    emb = torch.cat([freqs, freqs], dim=-1)   # (max_seq, head_dim)
+def _rope_tables(start: int, length: int, head_dim: int, theta: float, device) -> tuple[torch.Tensor, torch.Tensor]:
+    """fp32 (cos, sin) tables of shape (length, head_dim) for positions start..start+length-1.
+
+    Computed on the fly (not buffers) so they never follow the model dtype."""
+    inv_freq = 1.0 / (theta ** (torch.arange(0, head_dim, 2, dtype=torch.float32, device=device) / head_dim))
+    t = torch.arange(start, start + length, dtype=torch.float32, device=device)
+    freqs = torch.outer(t, inv_freq)          # (length, head_dim/2)
+    emb = torch.cat([freqs, freqs], dim=-1)   # (length, head_dim)
     return emb.cos(), emb.sin()
 
 
@@ -73,15 +79,43 @@ def _rotate_half(x: torch.Tensor) -> torch.Tensor:
 
 
 def _apply_rope(x: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor) -> torch.Tensor:
-    # x: (B, n_head, T, head_dim); cos/sin: (T, head_dim)
-    cos = cos.unsqueeze(0).unsqueeze(0)
-    sin = sin.unsqueeze(0).unsqueeze(0)
-    return (x * cos) + (_rotate_half(x) * sin)
+    # x: (B, n_head, T, head_dim); cos/sin: (T, head_dim), fp32. Rotate in fp32, keep x's dtype.
+    xf = x.float()
+    return ((xf * cos) + (_rotate_half(xf) * sin)).to(x.dtype)
+
+
+class KVCache:
+    """Per-request key/value cache for incremental decoding (batch size fixed at first use).
+
+    Not an nn.Module/buffer: it never touches state_dict. Holds post-QK-norm,
+    post-RoPE keys at n_kv_head width (GQA-sized). `length` is advanced once per
+    model forward by GPTV3.forward, so every layer sees the same past."""
+
+    def __init__(self, n_layer: int, block_size: int):
+        self.n_layer = n_layer
+        self.block_size = block_size
+        self.k: list[torch.Tensor | None] = [None] * n_layer
+        self.v: list[torch.Tensor | None] = [None] * n_layer
+        self.length = 0
+
+    def reset(self) -> None:
+        self.length = 0
+
+    def update(self, layer: int, k: torch.Tensor, v: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        B, H, T, D = k.shape
+        if self.k[layer] is None:
+            self.k[layer] = k.new_empty(B, H, self.block_size, D)
+            self.v[layer] = v.new_empty(B, H, self.block_size, D)
+        s, e = self.length, self.length + T
+        self.k[layer][:, :, s:e] = k
+        self.v[layer][:, :, s:e] = v
+        return self.k[layer][:, :, :e], self.v[layer][:, :, :e]
 
 
 class Attention(nn.Module):
-    def __init__(self, cfg: GPTConfigV3, use_rope: bool):
+    def __init__(self, cfg: GPTConfigV3, use_rope: bool, layer_idx: int = 0):
         super().__init__()
+        self.layer_idx = layer_idx
         assert cfg.n_embd % cfg.n_head == 0
         assert cfg.n_head % cfg.n_kv_head == 0
         self.n_head = cfg.n_head
@@ -99,7 +133,9 @@ class Attention(nn.Module):
         self.q_norm = RMSNorm(self.head_dim, eps=cfg.norm_eps)
         self.k_norm = RMSNorm(self.head_dim, eps=cfg.norm_eps)
 
-    def forward(self, x: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor) -> torch.Tensor:
+    def forward(
+        self, x: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor, cache: KVCache | None = None
+    ) -> torch.Tensor:
         B, T, C = x.shape
         q = self.q_proj(x).view(B, T, self.n_head, self.head_dim)
         k = self.k_proj(x).view(B, T, self.n_kv_head, self.head_dim)
@@ -113,16 +149,29 @@ class Attention(nn.Module):
         k = k.transpose(1, 2)   # (B, n_kv_head, T, hd)
         v = v.transpose(1, 2)
 
-        if self.use_rope:
-            q = _apply_rope(q, cos[:T], sin[:T])
-            k = _apply_rope(k, cos[:T], sin[:T])
+        if self.use_rope:       # cos/sin already cover positions [past, past+T)
+            q = _apply_rope(q, cos, sin)
+            k = _apply_rope(k, cos, sin)
 
-        y = F.scaled_dot_product_attention(
-            q, k, v,
-            dropout_p=self.dropout if self.training else 0.0,
-            is_causal=True,
-            enable_gqa=True,
-        )
+        if cache is None:
+            y = F.scaled_dot_product_attention(
+                q, k, v,
+                dropout_p=self.dropout if self.training else 0.0,
+                is_causal=True,
+                enable_gqa=True,
+            )
+        else:
+            past = cache.length
+            k, v = cache.update(self.layer_idx, k, v)
+            mask = None
+            causal = False
+            if past == 0:
+                causal = True
+            elif T > 1:  # chunked prefill onto a non-empty cache
+                mask = torch.ones(T, past + T, dtype=torch.bool, device=q.device).tril(diagonal=past)
+            y = F.scaled_dot_product_attention(
+                q, k, v, attn_mask=mask, dropout_p=0.0, is_causal=causal, enable_gqa=True
+            )
         y = y.transpose(1, 2).contiguous().view(B, T, self.n_head * self.head_dim)
         return self.o_proj(y)
 
@@ -148,12 +197,14 @@ class Block(nn.Module):
         # NoPE on every Nth layer (1-indexed: layers 4, 8, 12, ... skip RoPE)
         use_rope = ((layer_idx + 1) % cfg.nope_every) != 0
         self.attn_norm = RMSNorm(cfg.n_embd, eps=cfg.norm_eps)
-        self.attn = Attention(cfg, use_rope=use_rope)
+        self.attn = Attention(cfg, use_rope=use_rope, layer_idx=layer_idx)
         self.mlp_norm = RMSNorm(cfg.n_embd, eps=cfg.norm_eps)
         self.mlp = SwiGLU(cfg)
 
-    def forward(self, x: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor) -> torch.Tensor:
-        x = x + self.attn(self.attn_norm(x), cos, sin)
+    def forward(
+        self, x: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor, cache: KVCache | None = None
+    ) -> torch.Tensor:
+        x = x + self.attn(self.attn_norm(x), cos, sin, cache)
         x = x + self.mlp(self.mlp_norm(x))
         return x
 
@@ -166,12 +217,7 @@ class GPTV3(nn.Module):
         self.drop = nn.Dropout(cfg.dropout)
         self.blocks = nn.ModuleList([Block(cfg, i) for i in range(cfg.n_layer)])
         self.norm_f = RMSNorm(cfg.n_embd, eps=cfg.norm_eps)
-        self.head = nn.Linear(cfg.n_embd, cfg.vocab_size, bias=False)
-        self.head.weight = self.tok_emb.weight  # weight tying
-
-        cos, sin = _build_rope(cfg.head_dim, cfg.block_size, cfg.rope_theta)
-        self.register_buffer("rope_cos", cos, persistent=False)
-        self.register_buffer("rope_sin", sin, persistent=False)
+        # output head = tok_emb.weight (tied; no separate parameter / state_dict key)
 
         self.apply(self._init_weights)
         # scaled init for residual projections (GPT-2 trick)
@@ -188,41 +234,61 @@ class GPTV3(nn.Module):
         elif isinstance(m, nn.Embedding):
             nn.init.normal_(m.weight, mean=0.0, std=0.02)
 
-    def num_params(self) -> int:
-        # subtract tied head (shares tok_emb) to report unique params
+    def num_params(self, non_embedding: bool = False) -> int:
+        """Unique trainable params (the tied embedding/head counts once)."""
         n = sum(p.numel() for p in self.parameters() if p.requires_grad)
-        return n
+        return n - self.tok_emb.weight.numel() if non_embedding else n
+
+    def new_cache(self) -> KVCache:
+        return KVCache(self.cfg.n_layer, self.cfg.block_size)
 
     def forward(
         self,
         idx: torch.Tensor,
         targets: torch.Tensor | None = None,
         loss_mask: torch.Tensor | None = None,
+        cache: KVCache | None = None,
+        last_only: bool = False,
     ) -> tuple[torch.Tensor, torch.Tensor | None]:
-        B, T = idx.shape
-        assert T <= self.cfg.block_size, f"sequence length {T} > block size {self.cfg.block_size}"
-        x = self.drop(self.tok_emb(idx))
-        cos = self.rope_cos.to(x.device)
-        sin = self.rope_sin.to(x.device)
-        for block in self.blocks:
-            x = block(x, cos, sin)
-        x = self.norm_f(x)
-        logits = self.head(x)
+        """Return (logits, loss).
 
+        - Training/eval: logits are (B, T, V). With targets AND loss_mask, the head
+          is applied only to masked positions and logits are the selected rows
+          (n_sel, V); loss is the masked mean (identical to the dense computation).
+        - cache: decode incrementally; idx holds only the new tokens, positions
+          start at cache.length. Cache is advanced by T. Eval use only.
+        - last_only: logits for the final position only, (B, 1, V). No targets."""
+        B, T = idx.shape
+        start = cache.length if cache is not None else 0
+        if start + T > self.cfg.block_size:
+            raise ValueError(f"sequence length {start + T} > block size {self.cfg.block_size}")
+        if last_only and targets is not None:
+            raise ValueError("last_only cannot be combined with targets")
+        x = self.drop(self.tok_emb(idx))
+        cos, sin = _rope_tables(start, T, self.cfg.head_dim, self.cfg.rope_theta, x.device)
+        for block in self.blocks:
+            x = block(x, cos, sin, cache)
+        if cache is not None:
+            cache.length += T
+        if last_only:
+            x = x[:, -1:]
+        x = self.norm_f(x)
+
+        if targets is not None and loss_mask is not None:
+            sel = loss_mask.reshape(-1).bool()
+            h = x.reshape(-1, x.size(-1))[sel]
+            tgt = targets.reshape(-1)[sel]
+            logits = F.linear(h, self.tok_emb.weight)
+            denom = sel.sum().clamp(min=1).to(torch.float32)
+            loss = F.cross_entropy(logits.float(), tgt, ignore_index=-100, reduction="sum") / denom
+            return logits, loss
+
+        logits = F.linear(x, self.tok_emb.weight)
         loss = None
         if targets is not None:
-            per_tok = F.cross_entropy(
-                logits.view(-1, logits.size(-1)),
-                targets.view(-1),
-                ignore_index=-100,
-                reduction="none",
+            loss = F.cross_entropy(
+                logits.reshape(-1, logits.size(-1)), targets.reshape(-1), ignore_index=-100
             )
-            if loss_mask is not None:
-                mask = loss_mask.view(-1).to(per_tok.dtype)
-                denom = mask.sum().clamp(min=1.0)
-                loss = (per_tok * mask).sum() / denom
-            else:
-                loss = per_tok.mean()
         return logits, loss
 
     def configure_optimizer(
@@ -243,4 +309,4 @@ class GPTV3(nn.Module):
             {"params": decay, "weight_decay": weight_decay},
             {"params": no_decay, "weight_decay": 0.0},
         ]
-        return torch.optim.AdamW(groups, lr=lr, betas=betas)
+        return make_adamw(groups, lr, betas, next(self.parameters()).device)

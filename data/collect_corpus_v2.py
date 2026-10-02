@@ -8,16 +8,23 @@ Sources (all local or raw.githubusercontent.com — no HuggingFace):
   5. TinyShakespeare from raw.githubusercontent.com
   6. Existing chat JSONL (question + answer as plain text)
 
-Output: data/corpus_v2.txt
+NOT REPRODUCIBLE: the committed data/corpus_v2.txt was built from /tmp clones and
+the original site-packages (all gone after a container wipe) plus a manual append
+of corpus_synth.txt. It is now the frozen raw source for data/build_corpus.py,
+which cleans/dedupes/shuffles it. This script therefore writes
+data/corpus_v2_rebuild.txt by default and refuses to overwrite corpus_v2.txt
+without --force. Chat transcripts are no longer mixed into pretraining (SFT data;
+different template) unless --with-chat is given.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import urllib.request
 from pathlib import Path
 
 
-OUT = Path("data/corpus_v2.txt")
+OUT = Path("data/corpus_v2_rebuild.txt")
 
 PY_ROOTS = [
     "/usr/lib/python3.11",
@@ -42,8 +49,9 @@ def _read_py_files(roots: list[str], max_chars_per_file: int = 8000) -> list[str
     for root in roots:
         p = Path(root)
         if not p.exists():
+            print(f"  WARNING: root {root} missing, skipped")
             continue
-        for f in p.rglob("*.py"):
+        for f in sorted(p.rglob("*.py")):
             if any(part in SKIP_DIRS for part in f.parts):
                 continue
             try:
@@ -62,8 +70,9 @@ def _read_notebooks(roots: list[str], max_chars_per_cell: int = 4000) -> list[st
     for root in roots:
         p = Path(root)
         if not p.exists():
+            print(f"  WARNING: root {root} missing, skipped")
             continue
-        for f in p.rglob("*.ipynb"):
+        for f in sorted(p.rglob("*.ipynb")):
             try:
                 nb = json.loads(f.read_text(encoding="utf-8", errors="ignore"))
             except (json.JSONDecodeError, OSError):
@@ -85,8 +94,9 @@ def _read_markdown(roots: list[str], max_chars_per_file: int = 6000) -> list[str
     for root in roots:
         p = Path(root)
         if not p.exists():
+            print(f"  WARNING: root {root} missing, skipped")
             continue
-        for f in p.rglob("*.md"):
+        for f in sorted(p.rglob("*.md")):
             if any(part in SKIP_DIRS for part in f.parts):
                 continue
             try:
@@ -96,7 +106,7 @@ def _read_markdown(roots: list[str], max_chars_per_file: int = 6000) -> list[str
             if len(text) < 100:
                 continue
             docs.append(text[:max_chars_per_file])
-        for f in p.rglob("*.rst"):
+        for f in sorted(p.rglob("*.rst")):
             if any(part in SKIP_DIRS for part in f.parts):
                 continue
             try:
@@ -148,7 +158,15 @@ def _load_chat_jsonl(path: Path) -> list[str]:
 
 
 def main() -> None:
-    OUT.parent.mkdir(exist_ok=True)
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", type=Path, default=OUT)
+    ap.add_argument("--force", action="store_true", help="allow overwriting data/corpus_v2.txt")
+    ap.add_argument("--with-chat", action="store_true")
+    args = ap.parse_args()
+    out = args.out
+    if out.name == "corpus_v2.txt" and out.exists() and not args.force:
+        raise SystemExit(f"refusing to overwrite committed {out} (see module docstring); use --out or --force")
+    out.parent.mkdir(exist_ok=True)
     docs: list[str] = []
 
     print("Collecting Python code...")
@@ -165,18 +183,19 @@ def main() -> None:
     if shakespeare:
         docs.append(shakespeare)
 
-    print("Loading chat examples...")
-    docs.extend(_load_chat_jsonl(Path("data/silicat_chat.jsonl")))
+    if args.with_chat:
+        print("Loading chat examples...")
+        docs.extend(_load_chat_jsonl(Path("data/silicat_chat.jsonl")))
 
     print(f"\nTotal documents: {len(docs):,}")
 
-    with OUT.open("w", encoding="utf-8") as f:
+    with out.open("w", encoding="utf-8") as f:
         for doc in docs:
             f.write(doc.strip())
             f.write("\n\n")
 
-    size_mb = OUT.stat().st_size / 1e6
-    print(f"Wrote {OUT} ({size_mb:.1f} MB)")
+    size_mb = out.stat().st_size / 1e6
+    print(f"Wrote {out} ({size_mb:.1f} MB)")
 
 
 if __name__ == "__main__":

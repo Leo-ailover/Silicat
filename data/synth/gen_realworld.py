@@ -5666,9 +5666,9 @@ _load()
 ])
 
 # Write out
-out_path = "/home/user/Silicat/data/synth/realworld.jsonl"
+out_path = str(__import__("pathlib").Path(__file__).resolve().parent / "realworld.jsonl")
 with open(out_path, "w", encoding="utf-8") as f:
     for ex in examples:
         f.write(json.dumps(ex, ensure_ascii=False) + "\n")
 
-print(f"Wrote {len(examples)} examples to {out_path}")
+print(f"Wrote {len(examples)} examples to {out_path}", file=__import__("sys").stderr)

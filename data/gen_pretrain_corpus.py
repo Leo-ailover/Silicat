@@ -1,13 +1,17 @@
 """Generate a large synthetic Python pretraining corpus.
 
-Writes to data/corpus_synth.txt — append to corpus_v2.txt afterward.
-Target: ~200MB of diverse Python + explanation text.
+Writes data/corpus_synth.txt: the UNIQUE snippets (~40 KB, 261 snippets), each once, separated
+by a form-feed line ("\\n\\x0c\\n") so build_corpus.py --include-synth can recover
+snippet boundaries. Do not append it to corpus_v2.txt by hand (already done once
+in the committed corpus; data/build_corpus.py handles it).
+Usage: python data/gen_pretrain_corpus.py [out_path]
 """
 import random
 import sys
+from pathlib import Path
 
 random.seed(42)
-OUT = "data/corpus_synth.txt"
+OUT = sys.argv[1] if len(sys.argv) > 1 else str(Path(__file__).resolve().parent / "corpus_synth.txt")
 
 lines = []
 
@@ -1513,12 +1517,12 @@ all_snippets = (
 # shuffle so patterns are spread out during training
 random.shuffle(all_snippets)
 
-# write — repeat 3x to get more tokens
+# unique snippets only (loops with constant bodies emit identical text)
+all_snippets = [x for x in dict.fromkeys(all_snippets) if x.strip()]
+
 with open(OUT, "w", encoding="utf-8") as f:
-    for rep in range(3):
-        for snippet in all_snippets:
-            f.write(snippet + "\n")
+    f.write("\n\x0c\n".join(all_snippets) + "\n")
 
 import os
 size = os.path.getsize(OUT)
-print(f"Wrote {len(all_snippets)*3} snippets → {OUT}  ({size/1024/1024:.1f} MB)")
+print(f"Wrote {len(all_snippets)} unique snippets -> {OUT}  ({size/1024/1024:.2f} MB)", file=sys.stderr)

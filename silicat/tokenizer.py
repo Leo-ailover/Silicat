@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Iterable
 
 from tokenizers import ByteLevelBPETokenizer
-from tokenizers.processors import TemplateProcessing
 
 
 SPECIAL_TOKENS = ["<|pad|>", "<|user|>", "<|silicat|>", "<|end|>"]
@@ -25,12 +24,20 @@ class Tokenizer:
             vocab_filename=str(self.path / "vocab.json"),
             merges_filename=str(self.path / "merges.txt"),
         )
-        # special tokens are not added by ByteLevelBPETokenizer.from_file —
-        # add them explicitly so encode/decode round-trip correctly.
-        self.tk.add_special_tokens(SPECIAL_TOKENS)
+        # The specials live in vocab.json at ids 0..3 (train_tokenizer passes
+        # special_tokens=). Do NOT call add_special_tokens: that makes literal
+        # "<|end|>" etc. in user/corpus text encode to control ids (injection).
+        for i, s in enumerate(SPECIAL_TOKENS):
+            if self.tk.token_to_id(s) != i:
+                raise ValueError(
+                    f"tokenizer at {self.path} has {s} at id {self.tk.token_to_id(s)}, expected {i}"
+                )
 
     def encode(self, text: str) -> list[int]:
         return self.tk.encode(text).ids
+
+    def encode_batch(self, texts: list[str]) -> list[list[int]]:
+        return [e.ids for e in self.tk.encode_batch(texts)]
 
     def decode(self, ids: Iterable[int]) -> str:
         return self.tk.decode(list(ids), skip_special_tokens=False)
@@ -69,7 +76,7 @@ def _cli() -> None:
     sub = p.add_subparsers(dest="cmd", required=True)
     t = sub.add_parser("train")
     t.add_argument("--files", nargs="+", required=True)
-    t.add_argument("--out", default="checkpoints/tokenizer")
+    t.add_argument("--out", required=True, help="output dir, e.g. checkpoints/tokenizer_v2")
     t.add_argument("--vocab-size", type=int, default=8192)
     args = p.parse_args()
     if args.cmd == "train":

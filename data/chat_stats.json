@@ -1,0 +1,391 @@
+{
+  "args": {
+    "block_size": 512,
+    "eval_size": 300,
+    "seed": 0,
+    "length_filter": true
+  },
+  "total": {
+    "read": 12362,
+    "kept_train": 8478,
+    "kept_eval": 300,
+    "dropped_by_reason": {
+      "exact_duplicate": 294,
+      "identity_conflict": 3,
+      "malformed_json": 9,
+      "near_duplicate": 312,
+      "placeholder_answer": 1,
+      "role_order": 1,
+      "same_prompt_duplicate": 316,
+      "syntax_error": 7,
+      "telegraphic": 945,
+      "template_junk": 1664,
+      "too_long": 30,
+      "unterminated_fence": 2
+    }
+  },
+  "fixes_applied": {
+    "comment_value_fixes": 12,
+    "fence_tagged_python": 4,
+    "fence_tagged_text": 18,
+    "imports_added": 131,
+    "literal_api_fixes": 5,
+    "python_fragment_kept": 11,
+    "python_relabelled_text": 3,
+    "python_trivially_fixed": 1,
+    "trimmed_multiturn": 4
+  },
+  "train_token_len": {
+    "mean": 86.2,
+    "p50": 62,
+    "p95": 247,
+    "max": 512
+  },
+  "train_multi_turn_rows": 387,
+  "per_source": {
+    "algorithms": {
+      "read": 228,
+      "kept_train": 194,
+      "kept_eval": 8,
+      "dropped": {
+        "near_duplicate": 9,
+        "same_prompt_duplicate": 17
+      }
+    },
+    "async_web": {
+      "read": 213,
+      "kept_train": 203,
+      "kept_eval": 8,
+      "dropped": {
+        "malformed_json": 2
+      }
+    },
+    "core_python": {
+      "read": 487,
+      "kept_train": 444,
+      "kept_eval": 17,
+      "dropped": {
+        "near_duplicate": 2,
+        "same_prompt_duplicate": 23,
+        "telegraphic": 1
+      }
+    },
+    "datasci": {
+      "read": 276,
+      "kept_train": 263,
+      "kept_eval": 10,
+      "dropped": {
+        "malformed_json": 2,
+        "same_prompt_duplicate": 1
+      }
+    },
+    "debug_test": {
+      "read": 292,
+      "kept_train": 279,
+      "kept_eval": 11,
+      "dropped": {
+        "same_prompt_duplicate": 2
+      }
+    },
+    "identity": {
+      "read": 58,
+      "kept_train": 58,
+      "kept_eval": 0,
+      "dropped": {}
+    },
+    "more_algorithms": {
+      "read": 153,
+      "kept_train": 139,
+      "kept_eval": 5,
+      "dropped": {
+        "near_duplicate": 4,
+        "same_prompt_duplicate": 5
+      }
+    },
+    "more_algorithms2": {
+      "read": 400,
+      "kept_train": 30,
+      "kept_eval": 1,
+      "dropped": {
+        "near_duplicate": 5,
+        "same_prompt_duplicate": 11,
+        "telegraphic": 353
+      }
+    },
+    "more_batch2_early": {
+      "read": 216,
+      "kept_train": 145,
+      "kept_eval": 6,
+      "dropped": {
+        "exact_duplicate": 5,
+        "near_duplicate": 34,
+        "same_prompt_duplicate": 15,
+        "telegraphic": 11
+      }
+    },
+    "more_concurrency": {
+      "read": 550,
+      "kept_train": 473,
+      "kept_eval": 18,
+      "dropped": {
+        "same_prompt_duplicate": 11,
+        "telegraphic": 48
+      }
+    },
+    "more_core": {
+      "read": 313,
+      "kept_train": 282,
+      "kept_eval": 11,
+      "dropped": {
+        "same_prompt_duplicate": 20
+      }
+    },
+    "more_databases": {
+      "read": 121,
+      "kept_train": 114,
+      "kept_eval": 4,
+      "dropped": {
+        "near_duplicate": 1,
+        "syntax_error": 2
+      }
+    },
+    "more_databases2": {
+      "read": 411,
+      "kept_train": 15,
+      "kept_eval": 0,
+      "dropped": {
+        "exact_duplicate": 93,
+        "near_duplicate": 1,
+        "syntax_error": 2,
+        "template_junk": 300
+      }
+    },
+    "more_databases3": {
+      "read": 500,
+      "kept_train": 74,
+      "kept_eval": 3,
+      "dropped": {
+        "template_junk": 423
+      }
+    },
+    "more_datasci": {
+      "read": 42,
+      "kept_train": 39,
+      "kept_eval": 2,
+      "dropped": {
+        "same_prompt_duplicate": 1
+      }
+    },
+    "more_debug": {
+      "read": 143,
+      "kept_train": 97,
+      "kept_eval": 4,
+      "dropped": {
+        "exact_duplicate": 42
+      }
+    },
+    "more_functional": {
+      "read": 146,
+      "kept_train": 140,
+      "kept_eval": 5,
+      "dropped": {
+        "same_prompt_duplicate": 1
+      }
+    },
+    "more_hard_algorithms": {
+      "read": 503,
+      "kept_train": 453,
+      "kept_eval": 18,
+      "dropped": {
+        "telegraphic": 32
+      }
+    },
+    "more_hard_algorithms2": {
+      "read": 92,
+      "kept_train": 84,
+      "kept_eval": 3,
+      "dropped": {
+        "syntax_error": 1,
+        "too_long": 4
+      }
+    },
+    "more_hard_algorithms3": {
+      "read": 22,
+      "kept_train": 12,
+      "kept_eval": 0,
+      "dropped": {
+        "too_long": 10
+      }
+    },
+    "more_hard_algorithms4": {
+      "read": 500,
+      "kept_train": 0,
+      "kept_eval": 0,
+      "dropped": {
+        "near_duplicate": 1,
+        "same_prompt_duplicate": 1,
+        "template_junk": 498
+      }
+    },
+    "more_interview": {
+      "read": 117,
+      "kept_train": 96,
+      "kept_eval": 4,
+      "dropped": {
+        "syntax_error": 1,
+        "too_long": 14,
+        "unterminated_fence": 2
+      }
+    },
+    "more_interview2": {
+      "read": 500,
+      "kept_train": 314,
+      "kept_eval": 12,
+      "dropped": {
+        "same_prompt_duplicate": 17,
+        "telegraphic": 157
+      }
+    },
+    "more_math": {
+      "read": 500,
+      "kept_train": 290,
+      "kept_eval": 11,
+      "dropped": {
+        "exact_duplicate": 117,
+        "near_duplicate": 81,
+        "same_prompt_duplicate": 1
+      }
+    },
+    "more_oop": {
+      "read": 399,
+      "kept_train": 300,
+      "kept_eval": 12,
+      "dropped": {
+        "exact_duplicate": 1,
+        "near_duplicate": 1,
+        "same_prompt_duplicate": 21,
+        "telegraphic": 64
+      }
+    },
+    "more_packaging": {
+      "read": 498,
+      "kept_train": 479,
+      "kept_eval": 19,
+      "dropped": {}
+    },
+    "more_patterns": {
+      "read": 182,
+      "kept_train": 90,
+      "kept_eval": 4,
+      "dropped": {
+        "same_prompt_duplicate": 5,
+        "telegraphic": 83
+      }
+    },
+    "more_realworld2": {
+      "read": 126,
+      "kept_train": 119,
+      "kept_eval": 5,
+      "dropped": {
+        "same_prompt_duplicate": 2
+      }
+    },
+    "more_realworld3": {
+      "read": 500,
+      "kept_train": 25,
+      "kept_eval": 1,
+      "dropped": {
+        "same_prompt_duplicate": 31,
+        "template_junk": 443
+      }
+    },
+    "more_stdlib": {
+      "read": 145,
+      "kept_train": 138,
+      "kept_eval": 5,
+      "dropped": {
+        "malformed_json": 1,
+        "same_prompt_duplicate": 1
+      }
+    },
+    "more_strings": {
+      "read": 267,
+      "kept_train": 36,
+      "kept_eval": 1,
+      "dropped": {
+        "exact_duplicate": 33,
+        "same_prompt_duplicate": 10,
+        "telegraphic": 187
+      }
+    },
+    "more_testing": {
+      "read": 539,
+      "kept_train": 498,
+      "kept_eval": 19,
+      "dropped": {
+        "same_prompt_duplicate": 13,
+        "telegraphic": 9
+      }
+    },
+    "more_web": {
+      "read": 180,
+      "kept_train": 172,
+      "kept_eval": 7,
+      "dropped": {
+        "role_order": 1
+      }
+    },
+    "oop": {
+      "read": 213,
+      "kept_train": 202,
+      "kept_eval": 8,
+      "dropped": {
+        "malformed_json": 2,
+        "same_prompt_duplicate": 1
+      }
+    },
+    "paste_code": {
+      "read": 701,
+      "kept_train": 699,
+      "kept_eval": 0,
+      "dropped": {
+        "too_long": 2
+      }
+    },
+    "realworld": {
+      "read": 419,
+      "kept_train": 398,
+      "kept_eval": 16,
+      "dropped": {
+        "exact_duplicate": 2,
+        "malformed_json": 2,
+        "same_prompt_duplicate": 1
+      }
+    },
+    "silicat_chat": {
+      "read": 1410,
+      "kept_train": 1084,
+      "kept_eval": 42,
+      "dropped": {
+        "exact_duplicate": 1,
+        "identity_conflict": 3,
+        "near_duplicate": 173,
+        "placeholder_answer": 1,
+        "same_prompt_duplicate": 105,
+        "syntax_error": 1
+      }
+    }
+  },
+  "skipped_lines": [
+    "async_web.jsonl:1: malformed json: 'wrote 212 examples to /home/user/Silicat/data/synth/async_we'",
+    "async_web.jsonl:2: malformed json: 'c function in Python?\"}, {\"role\": \"silicat\", \"content\": \"Use'",
+    "datasci.jsonl:1: malformed json: 'Wrote 275 examples to /home/user/Silicat/data/synth/datasci.'",
+    "datasci.jsonl:2: malformed json: 'array from a Python list?\"}, {\"role\": \"silicat\", \"content\": '",
+    "more_stdlib.jsonl:145: malformed json: ']}'",
+    "more_web.jsonl:93: role_order",
+    "oop.jsonl:1: malformed json: 'wrote 212 examples to /home/user/Silicat/data/synth/oop.json'",
+    "oop.jsonl:2: malformed json: 'hon class called Dog with a name and a bark method.\"}, {\"rol'",
+    "realworld.jsonl:1: malformed json: 'Wrote 418 examples to /home/user/Silicat/data/synth/realworl'",
+    "realworld.jsonl:2: malformed json: 'a whole text file and return its contents as a string.\"}, {\"'"
+  ]
+}

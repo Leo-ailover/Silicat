@@ -1,23 +1,41 @@
+# python / tooling
 __pycache__/
 *.py[cod]
 *.egg-info/
 .venv/
 .env
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.DS_Store
+.vscode/
+build/
+dist/
 
+# checkpoints: everything is ignored except what must survive a container wipe
+# (v3 fp16 export parts + manifest written by scripts/autopush_v3.sh, tokenizers, and the v1 parts used by the server)
 checkpoints/*
 !checkpoints/latest.pt.part*
-!checkpoints/latest_v2.pt.part*
+!checkpoints/latest_v3.fp16.pt.part*
+!checkpoints/latest_v3.manifest.json
 !checkpoints/tokenizer/
 !checkpoints/tokenizer_v2/
+
+# data caches / derived token bins (rebuilt by `python -m silicat.dataset --v2`, see scripts/bootstrap.sh)
 data/corpus.txt
 data/meta.json
 data/*.bin
 data/cache/
 data/*.tmp
 
-.ipynb_checkpoints/
-.DS_Store
+# ops state: logs, push markers, locks, temp files
 *.log
+*.log.1
 nohup.out
-!checkpoints/latest_v3.pt.part*
-.last_push_v3
+.last_push*
+.pending_push*
+*.tmp
+*.tmp.*
+*.lock
+*.assembling

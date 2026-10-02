@@ -1154,9 +1154,9 @@ add_multi([
 ])
 
 # Write out
-out_path = "/home/user/Silicat/data/synth/algorithms.jsonl"
+out_path = str(__import__("pathlib").Path(__file__).resolve().parent / "algorithms.jsonl")
 with open(out_path, "w") as f:
     for ex in examples:
         f.write(json.dumps(ex, ensure_ascii=False) + "\n")
 
-print(f"Wrote {len(examples)} examples to {out_path}")
+print(f"Wrote {len(examples)} examples to {out_path}", file=__import__("sys").stderr)

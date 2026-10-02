@@ -1,0 +1,32 @@
+{
+  "input_sha256": "6d6f2886c59efa844d3ab4cec8519b8e7f1e7f4e1125b01a6b037c6a770ea569",
+  "output_sha256": "55760cf851723b9325afac039e6d01b55333435bc99a5b312c67e97ec2b3de07",
+  "seed": 0,
+  "options": {
+    "include_synth": false,
+    "add_stdlib": false,
+    "drop_shakespeare": false
+  },
+  "stats": {
+    "chars_input": 40297028,
+    "chars_chat_region_dropped": 252436,
+    "n_chat_user_lines_dropped": 1327,
+    "chars_synth_region_dropped": 934173,
+    "synth_repetitions_found": 3,
+    "chars_in_shakespeare": 1115393,
+    "chars_in_code_docs": 37995026,
+    "chars_license_comment_blocks": 170012,
+    "chars_charmap_tables": 122829,
+    "chars_meta_copyright_lines": 39907,
+    "scrubbed_emails": 235,
+    "scrubbed_home_paths": 31,
+    "chars_pdsh_boilerplate": 55724,
+    "chars_duplicate_paragraphs": 556918,
+    "n_duplicate_paragraphs": 1537,
+    "n_duplicate_chunks": 0,
+    "chars_output": 38135215,
+    "n_documents_output": 5280,
+    "fraction_chars_changed": 0.0536
+  },
+  "note": "val split in silicat.dataset.prepare_v2 is the tail 5%; documents are shuffled so it is a mix of sources. Rebuild bins: python -m silicat.dataset --v2"
+}
