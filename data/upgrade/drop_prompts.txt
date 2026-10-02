@@ -1,0 +1,76 @@
+# Off-topic ML/stats theory one-liners (no Python angle): dropped by build_chat_dataset.py
+Explain the online routing protocol
+What is the image segmentation
+What is the Delaunay flip
+What is the recurrent neural network
+Explain the random forest ensemble
+What is the LSTM for time series
+Explain the adversarial examples
+Explain the ant colony optimization
+What is the union bound and Chernoff
+What is the 3D convolution video
+What is the misinformation detection
+What is the path analysis
+What is the neural network approximation
+What is the intention-to-treat
+What is the coreference resolution
+Explain the open-domain QA
+What is the task-oriented dialogue
+Explain the subgradient method
+What is the bagging vs boosting
+What is the depth prediction
+What is the surrogacy
+Explain the node classification
+Explain the flow-based model
+Explain the scheduled sampling
+What is the minimum st-cut max flow
+What is the DenseNet densely connected
+Explain the mask RCNN
+Explain the series parallel graph
+What is the persistent segment tree
+What is the skeleton-based action
+What is the Mediator pattern?
+What is the CP decomposition
+Explain the weak periodicity
+What is the YOLO real-time
+Explain the matroid definition
+What is the Wasserstein GAN
+What is the reinforcement learning MDP
+What is the neural verification
+What is the class imbalance handling
+What is the Observer pattern?
+Explain the Voronoi dual
+Explain the rotating calipers
+Explain the pointer network
+Explain the MobileNet lightweight
+Explain the mixture of experts
+Explain the VLSI layout
+What is the GPT autoregressive
+What is the zero-shot learning
+Explain the natural language inference
+What is the stochastic gradient descent
+Explain the structural equation model
+What is the paging replacement
+What is the purpose of __slots__?
+Explain the exploding gradient
+What is the contextual embedding BERT
+What is the dimensionality reduction PCA
+Explain the entity linking
+What is the Occam razor principle
+What is the syntax for multiple mark conditions?
+Explain the temporal relation extraction
+What is the faster RCNN
+What is the palindrome factorization
+Explain the Hamiltonian Monte Carlo
+Explain the clinical trial phases
+Explain the contextual bandit extension
+What is the deep learning recommendation
+Explain the abstractive summarization
+What is the derandomization technique
+What is the point cloud processing PointNet
+Explain the sequential analysis
+Explain the horizon evaluation
+What is the attribute extraction
+Explain the contrastive learning
+Explain the semantic similarity
+What is the EfficientNet compound scaling

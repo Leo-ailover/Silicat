@@ -473,6 +473,10 @@ def build(args: argparse.Namespace, exclude: frozenset[str] = frozenset(), write
 
     # upgraded rows (data/synth/upgraded_*.jsonl, field "replaces" = original prompt) retire the originals
     replaced = {norm_key(p) for r in rows for p in r.replaces}
+    drop_file = ROOT / "data" / "upgrade" / "drop_prompts.txt"
+    if drop_file.exists():  # off-topic rows retired by hand review
+        off = {norm_key(l) for l in drop_file.read_text(encoding="utf-8").splitlines() if l.strip() and not l.startswith("#")}
+        rows = [r for r in rows if norm_key(r.prompt) not in off or drops[r.source].update(["off_topic"])]
     if replaced:
         rows = [r for r in rows if r.replaces or norm_key(r.prompt) not in replaced or drops[r.source].update(["upgraded"])]
 
