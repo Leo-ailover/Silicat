@@ -105,9 +105,13 @@ while [ "$stop" -eq 0 ]; do
         if [ -n "$train_pid" ] && ! kill -0 "$train_pid" 2>/dev/null; then
             wait "$train_pid"; rc=$?
             ran=$((SECONDS - train_start)); train_pid=""
-            if [ "$rc" -eq 0 ]; then
-                wl "TRAIN_EXIT rc=0 ran=${ran}s -> finished, not restarting"
+            cs=""; [ "$rc" -eq 0 ] && cs="$(ckpt_step "$LIVE_PT" 2>/dev/null)"
+            if [ "$rc" -eq 0 ] && [ "${cs:-0}" -ge "$MAX_STEPS" ]; then
+                wl "TRAIN_EXIT rc=0 ran=${ran}s step=$cs -> finished, not restarting"
                 train_done=1
+            elif [ "$rc" -eq 0 ]; then
+                wl "TRAIN_EXIT rc=0 early_stop step=${cs:-?} ran=${ran}s restart_in=${BACKOFF_BASE}s"
+                next_train=$((SECONDS + BACKOFF_BASE))
             elif [ "$rc" -eq 75 ]; then
                 wl "TRAIN_EXIT rc=75 another trainer holds $(lock_path trainer); retry in 60s"
                 next_train=$((SECONDS + 60))

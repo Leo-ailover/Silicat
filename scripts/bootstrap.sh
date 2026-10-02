@@ -88,7 +88,8 @@ if [ "$DO_GIT" -eq 1 ]; then
 fi
 
 # ---------------------------------------------------------------- 3 checkpoint
-CK_OUT="$("$PY" - "$CKPT_DIR" "$CKPT_NAME" "$DRY" "$MANIFEST" <<'PYEOF'
+verify_ckpt() {   # $1 = checkpoint name, $2 = its manifest
+CK_OUT="$("$PY" - "$CKPT_DIR" "$1" "$DRY" "$2" <<'PYEOF'
 import hashlib, json, os, re, sys, time
 from pathlib import Path
 ckdir, name, dry, mpath = Path(sys.argv[1]), sys.argv[2], sys.argv[3] == "1", Path(sys.argv[4])
@@ -172,6 +173,12 @@ PYEOF
 )" || { echo "$CK_OUT" | sed 's/^/  /'; fail "$(echo "$CK_OUT" | grep '^FAIL ' | head -n 1 | cut -c6-)"; }
 echo "$CK_OUT" | grep -v '^STEP ' | sed "s/^/[bootstrap] ckpt: /"
 STEP="$(echo "$CK_OUT" | sed -n 's/^STEP //p' | tail -n 1)"
+}
+verify_ckpt "$CKPT_NAME" "$MANIFEST"
+# the chat fine-tune (pushed by scripts/run_chat.sh) is verified/assembled too, but never drives the pretrain STEP
+if [ "$CKPT_NAME" != chat_v3 ] && [ -f "$CKPT_DIR/chat_v3.manifest.json" ]; then
+    PRE_STEP="$STEP"; verify_ckpt chat_v3 "$CKPT_DIR/chat_v3.manifest.json"; STEP="$PRE_STEP"
+fi
 
 # ---------------------------------------------------------------- 4 data
 if [ "$DO_DATA" -eq 1 ]; then
@@ -219,5 +226,5 @@ fi
 
 [ "$DRY" -eq 1 ] && bl "dry-run: nothing was changed"
 free_gb=$(( $(df -Pk "$REPO_DIR" | awk 'NR==2{print $4}') / 1048576 ))
-[ "$free_gb" -lt 3 ] && bl "WARN only ${free_gb} GB free disk"
+[ "$free_gb" -lt 6 ] && bl "WARN only ${free_gb} GB free disk"
 echo "BOOTSTRAP ok step=${STEP:-0}"

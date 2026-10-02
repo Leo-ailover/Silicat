@@ -288,6 +288,10 @@ def load_engine(path: str | os.PathLike | None = None, device: str | None = None
     model, cfg, ck = ckpt_mod.load_model(p, device)
     model.eval()
     tok = find_tokenizer(cfg.vocab_size, p.parent)
+    if not p.exists():   # loaded from the assembled fp16 export of committed parts
+        exp = ckpt_mod.export_path(p.name.removesuffix(".pt"), p.parent)
+        if exp.exists():
+            p = exp
     stage = ck.get("stage")
     if stage is None:
         stage = "chat" if p.name.startswith("chat") else "pretrain"

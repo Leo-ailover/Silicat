@@ -280,7 +280,7 @@ def prepare_v2(val_frac: float = 0.05, vocab_size: int = 32768) -> None:
 
     if not CORPUS_V2.exists():
         raise FileNotFoundError(
-            f"{CORPUS_V2} not found — run `python data/collect_corpus_v2.py` first"
+            f"{CORPUS_V2} not found - run `git checkout -- data/corpus_v2.txt` (it is committed), or rebuild with `python data/collect_corpus_v2.py --force` then `python data/build_corpus.py`"
         )
 
     if not (TOK_DIR_V2 / "vocab.json").exists():

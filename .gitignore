@@ -19,6 +19,10 @@ checkpoints/*
 !checkpoints/latest.pt.part*
 !checkpoints/latest_v3.fp16.pt.part*
 !checkpoints/latest_v3.manifest.json
+!checkpoints/chat_v3.fp16.pt.part*
+!checkpoints/chat_v3.manifest.json
+!checkpoints/chat_best_v3.fp16.pt.part*
+!checkpoints/chat_best_v3.manifest.json
 !checkpoints/tokenizer/
 !checkpoints/tokenizer_v2/
 

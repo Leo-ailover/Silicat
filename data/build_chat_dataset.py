@@ -107,7 +107,7 @@ def sha(s: str) -> str:
 
 
 def norm_key(s: str) -> str:
-    return re.sub(r"\s+", " ", s.lower()).strip().rstrip("?!. ")
+    return re.sub(r"\W+", " ", s.lower()).strip()   # punctuation-insensitive: "Pre-commit hook?" == "pre commit hook"
 
 
 # ---- text helpers ---------------------------------------------------------
@@ -387,6 +387,25 @@ class MinHash:
             yield i, hash(sig[i * self.rows : (i + 1) * self.rows])
 
 
+ANSWER_MIN_CHARS = 40   # shorter answers ("Yes.", one-liners) legitimately repeat across prompts
+CODE_MIN_CHARS = 60
+
+
+def answer_keys(r: "Row") -> tuple[set[str], set[int]]:
+    """(exact keys, 5-gram shingles) of the final answer: its normalised text and each code block (long enough only)."""
+    ans = r.answer
+    keys = set()
+    na = norm_key(ans)
+    if len(na) >= ANSWER_MIN_CHARS:
+        keys.add("a:" + na)
+    for kind, _lang, body in split_fences(ans):
+        if kind == "code":
+            nb = re.sub(r"\s+", " ", body).strip()
+            if len(nb) > CODE_MIN_CHARS:
+                keys.add("c:" + nb)
+    return keys, (shingles(ans, 5) if len(na) >= ANSWER_MIN_CHARS else set())
+
+
 def jaccard(a: set[int], b: set[int]) -> float:
     return len(a & b) / len(a | b) if a and b else 0.0
 
@@ -592,10 +611,34 @@ def build(args: argparse.Namespace, exclude: frozenset[str] = frozenset(), write
         if len(pool[s]) >= 20:
             quota[s] += 1
             left -= 1
+    # Answer-level leak guard: an eval row must not share its final answer (exact, any code block, or 5-gram
+    # Jaccard >= 0.6) with ANY other survivor, otherwise train would contain it under a different prompt.
+    akeys = [answer_keys(r) for r in survivors]
+    pos = {id(r): i for i, r in enumerate(survivors)}
+    key_idx: dict[str, list[int]] = defaultdict(list)
+    sh_idx: dict[int, list[int]] = defaultdict(list)
+    for i, (ks, sh) in enumerate(akeys):
+        for k in ks:
+            key_idx[k].append(i)
+        for h in sh:
+            sh_idx[h].append(i)
+
+    def has_answer_twin(r: Row) -> bool:
+        i = pos[id(r)]
+        ks, sh = akeys[i]
+        if any(len(key_idx[k]) > 1 for k in ks):
+            return True
+        shared: Counter = Counter()
+        for h in sh:
+            for j in sh_idx[h]:
+                if j != i:
+                    shared[j] += 1
+        return any(c / (len(sh) + len(akeys[j][1]) - c) >= 0.6 for j, c in shared.items())
+
     eval_rows: list[Row] = []
     for s in sorted(pool):
         ranked = sorted(pool[s], key=lambda r: sha(f"{args.seed}:{norm_key(r.prompt)}"))
-        eval_rows += ranked[: quota[s]]
+        eval_rows += [r for r in ranked if not has_answer_twin(r)][: quota[s]]
     eval_ids = {id(r) for r in eval_rows}
     eval_keys = {norm_key(r.prompt) for r in eval_rows}
     train_rows = []
@@ -614,6 +657,8 @@ def build(args: argparse.Namespace, exclude: frozenset[str] = frozenset(), write
     assert not any(norm_key(r.prompt) in tp for r in eval_rows), "eval/train prompt overlap"
     th = {r.conv_hash() for r in train_rows}
     assert not any(r.conv_hash() in th for r in eval_rows)
+    train_keys = {k for r in train_rows for k in answer_keys(r)[0]}
+    assert not any(answer_keys(r)[0] & train_keys for r in eval_rows), "eval/train answer or code-block overlap"
 
     def dump(path: Path, rs: list[Row]) -> None:
         tmp = path.with_suffix(path.suffix + ".tmp")

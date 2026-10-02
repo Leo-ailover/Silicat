@@ -4,7 +4,7 @@
 
 Silicat is a GPT-style language model written in plain PyTorch, plus a FastAPI/SSE chat server with a framework-free web UI. The current model ("v3") has **100.7M parameters** and is trained **on CPU only** (4 cores, no GPU) in a cloud container that is wiped periodically, so the repo also contains the machinery that keeps training alive across wipes by committing checkpoints to GitHub.
 
-Figures below are a snapshot (as of the v3 overhaul: 100.7M params, ~8.5 s/step at batch 8 x block 512, 8,478 train / 300 eval chat rows). Check `data/meta_v2.json`, `data/chat_stats.json` and the commands' own output for current values.
+Figures below are a snapshot (as of the v3 overhaul: 100.7M params, ~8.5 s/step at batch 8 x block 512, 8,453 train / 300 eval chat rows). Check `data/meta_v2.json`, `data/chat_stats.json` and the commands' own output for current values.
 
 ## Honest expectations
 
@@ -108,11 +108,13 @@ Paths are resolved from the repo root, overridable with `SILICAT_CKPT_DIR` and `
 The container is wiped every few days, and anything not on GitHub is lost. Only what is needed to resume is committed:
 
 1. The trainer writes the live checkpoint `checkpoints/latest_v3.pt` (fp32 + AdamW state, gitignored) every `--save-interval` steps, atomically (tmp file + fsync + rename).
-2. `scripts/autopush_v3.sh` exports it with `python -m silicat.halve` to `latest_v3.fp16.pt` (weights in fp16, tied embedding stored once, **no optimizer state**), splits it into parts of <= 45 MiB (`latest_v3.fp16.pt.partNN`), writes `checkpoints/latest_v3.manifest.json` (step, per-part and whole-file sha256), and commits and pushes every `PUSH_EVERY_STEPS` (default 500) steps. Each push adds ~100 MB to history, hence the shallow-clone advice.
+2. `scripts/autopush_v3.sh` exports it with `python -m silicat.halve` to `latest_v3.fp16.pt` (weights in fp16, tied embedding stored once, **no optimizer state**), splits it into parts of <= 45 MiB (`latest_v3.fp16.pt.partNN`), writes `checkpoints/latest_v3.manifest.json` (step, per-part and whole-file sha256), and commits and pushes every `PUSH_EVERY_STEPS` (default 500) steps. Each push adds ~200 MB to history (about 4 GB over a full 10,000-step run at the default 500-step cadence), hence the shallow-clone advice.
 3. `scripts/watchdog.sh` supervises the trainer and the pusher: restarts them with backoff after crashes, gives up after `MAX_FAST_FAILS` quick failures, and on completion does a final push (exit 0 done, 3 final push pending, 1 error).
 4. After a wipe: clone, then `bash scripts/bootstrap.sh`. It verifies the parts against the manifest, assembles `latest_v3.fp16.pt`, rebuilds the token bins if needed and restarts the watchdog; `train.py --resume` continues from the pushed step with a fresh AdamW state (a short LR re-warmup hides the restart). `python -m silicat.assemble [--refresh] <path>` rebuilds a file from its parts by hand.
 
-Check on it any time with `bash scripts/status.sh`. `bash scripts/test_infra.sh` is a ~2 minute end-to-end test of this machinery (needs the token bins). Never `git add checkpoints/` by hand: `.gitignore` un-ignores only the fp16 parts, the manifest, the tokenizers and the legacy v1 parts. `scripts/autopush.sh` and `train_large.sh` from the v2 era are gone; the notebook and `checkpoints/latest*.pt.part*` (v1/v2) are legacy.
+**The chat stage is not covered by the watchdog.** `chat_v3.pt` (what `serve` prefers) would be lost on a wipe. Run the chat fine-tune with `bash scripts/run_chat.sh [train args]`: it trains, then does `CKPT_NAME=chat_v3 bash scripts/autopush_v3.sh --once`, committing `chat_v3.fp16.pt.partNN` + `chat_v3.manifest.json` (~200 MB of history). `bootstrap.sh` verifies and assembles those parts too. Autopush skips a cycle when less than `MIN_FREE_MB` (3000) of disk is free.
+
+Check on it any time with `bash scripts/status.sh`. `bash scripts/test_infra.sh` is a ~2 minute end-to-end test of this machinery (needs the token bins). Never `git add checkpoints/` by hand: `.gitignore` un-ignores only the fp16 parts (`latest_v3`, `chat_v3`, `chat_best_v3`), the manifests, the tokenizers and the legacy v1 parts. `scripts/autopush.sh` and `train_large.sh` from the v2 era are gone; the notebook and `checkpoints/latest*.pt.part*` (v1/v2) are legacy.
 
 ## Repository layout
 

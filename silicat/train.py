@@ -18,6 +18,7 @@ import json
 import math
 import os
 import signal
+import sys
 import time
 from contextlib import nullcontext
 from pathlib import Path
@@ -58,6 +59,7 @@ class _Stop:
 
     def __init__(self) -> None:
         self.flag = False
+        self.signum = 0
         self._old: dict = {}
 
     def _handler(self, sig, frm) -> None:
@@ -66,6 +68,7 @@ class _Stop:
             os.kill(os.getpid(), sig)
             return
         self.flag = True
+        self.signum = int(sig)
         print(f"\nsignal {sig}: finishing the current step, then saving and exiting", flush=True)
 
     def __enter__(self) -> "_Stop":
@@ -378,7 +381,7 @@ def pretrain(args: argparse.Namespace) -> None:
             if stop.flag:
                 save_checkpoint(CKPT_DIR / f"{ckpt_name}.pt", model, cfg, done, optim, extra)
                 print(f"stopped at step {done}; resume with --resume")
-                return
+                sys.exit(128 + stop.signum)  # non-zero: supervisors must not treat an early stop as done
             if args.save_interval and done % args.save_interval == 0 and done < args.max_steps:
                 save_checkpoint(CKPT_DIR / f"{ckpt_name}.pt", model, cfg, done, optim, extra)
                 last_saved = done
@@ -645,7 +648,7 @@ def chat(args: argparse.Namespace) -> None:
                 stopped = True
                 break
     if stopped:
-        return
+        sys.exit(128 + stop.signum)
 
     if val_rows and best_ckpt.exists():
         bk = torch.load(best_ckpt, map_location=device, weights_only=True)

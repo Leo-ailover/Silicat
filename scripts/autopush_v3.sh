@@ -26,7 +26,10 @@
 #   The save interval of the trainer (--save-interval) is independent: it only controls local saves.
 #
 # Environment: PUSH_EVERY_STEPS (500), MAX_STEPS (10000), POLL_SECS (90), PART_SIZE (45m), PUSH_BACKOFF ("2 4 8 16"), CKPT_NAME (latest_v3),
-#   BRANCH (current branch), REMOTE (origin), CLAUDE_SESSION_URL (optional commit trailer), see common.sh.
+#   BRANCH (current branch), REMOTE (origin), CLAUDE_SESSION_URL (optional commit trailer), MIN_FREE_MB (3000; a cycle is
+#   skipped below this much free disk), see common.sh.
+# Chat stage: the chat fine-tune (the model `serve` prefers) is NOT pushed by the pretrain watchdog. After the chat run use
+#   scripts/run_chat.sh, or by hand:  CKPT_NAME=chat_v3 bash scripts/autopush_v3.sh --once
 # Output (grep-able): "[autopush_v3] <ISO time> <EVENT> k=v ...", events: START SKIP EXPORTED COMMITTED
 #   PUSHED PUSH_FAILED DIVERGED CYCLE_FAILED. Success line: "PUSHED v3 checkpoint at step N ...".
 
@@ -94,7 +97,14 @@ push_pending() {
         fi
         lg "PUSH_FAILED step=$pstep attempt=$attempt err=$(printf '%s' "$err" | tail -n 1 | cut -c1-200)"
         if printf '%s' "$err" | grep -qiE 'non-fast-forward|fetch first|stale info'; then
-            lg "DIVERGED step=$pstep branch=$br (remote has commits we lack; not forcing; reconcile manually: git pull --rebase)"
+            lg "DIVERGED step=$pstep branch=$br (remote has commits we lack; rebasing, never forcing)"
+            if g fetch -q "$REMOTE" "$br" && g rebase --autostash "$REMOTE/$br" >/dev/null 2>&1; then
+                psha="$(g rev-parse HEAD)"; write_atomic "$pstep $psha" "$PENDING"
+                lg "REBASED step=$pstep new_sha=${psha:0:7}"
+                continue
+            fi
+            g rebase --abort 2>/dev/null
+            lg "DIVERGED_UNRESOLVED step=$pstep (rebase failed; reconcile manually)"
             return 1
         fi
     done
@@ -132,6 +142,10 @@ maybe_export() {
         write_atomic "$sig" "$SEEN"; return 0
     fi
 
+    free="$(df -Pk "$CKPT_DIR" | awk 'NR==2{print int($4/1024)}')"
+    if [ "${free:-0}" -lt "${MIN_FREE_MB:-3000}" ]; then
+        lg "SKIP reason=low_disk free_mb=$free min_free_mb=${MIN_FREE_MB:-3000} step=$step"; return 1
+    fi
     rm -rf "$STAGE"; mkdir -p "$STAGE"
     if ! "$PY" -m silicat.halve --src "$LIVE_PT" --dst "$EXPORT_PT" >"$STAGE/halve.out" 2>&1; then
         lg "CYCLE_FAILED reason=halve step=$step err=$(tail -n 1 "$STAGE/halve.out" | cut -c1-200)"
@@ -176,12 +190,13 @@ PYEOF
     touch "$EXPORT_PT"   # export is at least as new as the parts: assemble --refresh will not redo it
     rm -rf "$STAGE"
 
-    git_retry add -A -- "${PATHSPECS[@]}" || { lg "CYCLE_FAILED reason=git_add"; return 1; }
+    git_retry add -f -A -- "${PATHSPECS[@]}" || { lg "CYCLE_FAILED reason=git_add"; return 1; }
     if g diff --cached --quiet -- "${PATHSPECS[@]}"; then
         lg "SKIP reason=identical_to_HEAD step=$step"
         write_atomic "$step" "$PUSH_STAMP"; write_atomic "$sig" "$SEEN"; return 0
     fi
-    local msg="pretrain v3 checkpoint step $step (fp16, $n parts)"
+    local kind=pretrain; case "$CKPT_NAME" in chat*) kind=chat ;; esac
+    local msg="$kind v3 checkpoint $CKPT_NAME step $step (fp16, $n parts)"
     [ -n "${CLAUDE_SESSION_URL:-}" ] && msg="$msg
 
 $CLAUDE_SESSION_URL"
@@ -216,6 +231,7 @@ trap on_term TERM INT
 
 lg "START ckpt=$LIVE_PT branch=$(branch_now || echo '?') push_every=$PUSH_EVERY_STEPS max_steps=$MAX_STEPS poll=${POLL_SECS}s last_pushed=$(last_pushed)"
 rm -rf "$STAGE"
+g config gc.auto 0 2>/dev/null   # never auto-gc ~200 MB blobs mid-training
 while [ "$stop" -eq 0 ]; do
     cycle_locked 0 & cpid=$!
     wait "$cpid"; rc=$?
