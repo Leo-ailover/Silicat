@@ -121,7 +121,7 @@ check "status.sh sees it up" bash -c "bash '$S/status.sh' | grep -q 'STATUS watc
 kill -TERM "$wp"; wait "$wp"; rc=$?
 check "SIGTERM: watchdog exits 143" test "$rc" -eq 143
 check "trainer got the signal and saved" bash -c "grep -q 'finishing the current step' '$LOG_DIR/training_v3_pretrain.log'"
-check "no stray trainer/autopush left" bash -c "! pgrep -f '$W/fresh' >/dev/null"
+check "no stray trainer/autopush left" test -z "$(ps -eo args | grep -E '^(python -m silicat\.train|bash .*autopush_v3)' )"
 sed 's/^/    /' "$W/wd5.log" | cut -c1-200
 echo; [ "$fails" -eq 0 ] && echo "ALL INFRA TESTS PASSED" || echo "$fails INFRA TEST(S) FAILED"
 exit "$fails"
