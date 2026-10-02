@@ -223,13 +223,14 @@ def normalise_message(text: str, st: Counter) -> str:
 # ---- row model ------------------------------------------------------------
 
 class Row:
-    __slots__ = ("source", "line", "msgs", "order", "ids_len", "trimmed", "derived_from")
+    __slots__ = ("source", "line", "msgs", "order", "ids_len", "trimmed", "derived_from", "replaces")
 
     def __init__(self, source: str, line: int, msgs: list[dict], order: int):
         self.source, self.line, self.msgs, self.order = source, line, msgs, order
         self.ids_len = 0
         self.trimmed = False
         self.derived_from = None
+        self.replaces: list[str] = []
 
     @property
     def prompt(self) -> str:
@@ -267,6 +268,8 @@ def load_sources(st_drop: dict[str, Counter], read: Counter, log: list[str]) -> 
                     continue
                 row = Row(src, i, [{"role": m["role"], "content": m["content"]} for m in msgs], order)
                 row.derived_from = obj.get("derived_from")
+                rep = obj.get("replaces")
+                row.replaces = [rep] if isinstance(rep, str) else list(rep or [])
                 rows.append(row)
                 order += 1
     return rows
@@ -467,6 +470,11 @@ def build(args: argparse.Namespace, exclude: frozenset[str] = frozenset(), write
         read.pop(x, None)
     for l in log:
         print("  skip", l)
+
+    # upgraded rows (data/synth/upgraded_*.jsonl, field "replaces" = original prompt) retire the originals
+    replaced = {norm_key(p) for r in rows for p in r.replaces}
+    if replaced:
+        rows = [r for r in rows if r.replaces or norm_key(r.prompt) not in replaced or drops[r.source].update(["upgraded"])]
 
     # normalise + literal fixes
     for r in rows:
