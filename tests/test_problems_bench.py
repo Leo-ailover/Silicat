@@ -80,3 +80,8 @@ def test_extra_pretrain_docs(tmp_path):
     text, shas = extra_pretrain_docs(tmp_path)
     assert text == "first\n\nsecond\n\n"
     assert list(shas) == ["a.jsonl", "b.jsonl"] and all(len(h) == 64 for h in shas.values())
+
+
+def test_expected_outputs_ignores_hash_inside_strings():
+    ex = 'print(valid("#C0FFEE"), valid("#C0FFEE0"))  # True False\nx = "a#b"\nprint(len(x))  # 3'
+    assert bp.expected_outputs(ex) == ["True False", "3"]

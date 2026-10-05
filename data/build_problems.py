@@ -17,12 +17,15 @@ split then writes:
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
+import io
 import json
 import re
 import subprocess
 import sys
 import tempfile
+import tokenize
 from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -49,6 +52,20 @@ def stub_for(p: dict) -> str:
     return f"def {name}(*args, **kwargs):\n    return None\n"
 
 
+def expected_outputs(example: str) -> list[str]:
+    """Trailing `# ...` comments of top-level statements that call print(), in order.
+    Uses real comment tokens, so a '#' inside a string literal is not mistaken for one."""
+    comments = {t.start[0]: t.string[1:].strip()
+                for t in tokenize.generate_tokens(io.StringIO(example).readline) if t.type == tokenize.COMMENT}
+    want = []
+    for stmt in ast.parse(example).body:
+        calls_print = any(isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == "print"
+                          for n in ast.walk(stmt))
+        if calls_print and stmt.end_lineno in comments:
+            want.append(comments[stmt.end_lineno])
+    return want
+
+
 def example_ok(p: dict) -> str | None:
     with tempfile.TemporaryDirectory() as d:
         f = Path(d) / "ex.py"
@@ -59,8 +76,7 @@ def example_ok(p: dict) -> str | None:
             return "example timeout"
     if r.returncode != 0:
         return "example crashes: " + (r.stderr.strip().splitlines() or ["?"])[-1][:120]
-    want = [m.group(1).strip() for line in p["example"].splitlines()
-            if "print(" in line and (m := re.search(r"#\s?(.*)$", line))]
+    want = expected_outputs(p["example"])
     got = [l.strip() for l in r.stdout.splitlines()]
     if want and want != got:
         return f"example output mismatch: expected {want} got {got}"
