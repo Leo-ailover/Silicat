@@ -197,6 +197,8 @@ if meta.exists():
     if m.get("corpus_sha256") and corpus.exists():
         h = hashlib.sha256(corpus.read_bytes()).hexdigest()
         if h != m["corpus_sha256"]: print("corpus_v2.txt changed since the bins were built"); sys.exit()
+    extra = {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted((d/"pretrain").glob("*.jsonl"))}
+    if extra != m.get("extra_sources", {}): print("data/pretrain/*.jsonl changed since the bins were built"); sys.exit()
 PYEOF
 )"
     if [ -z "$NEED" ]; then bl "data: token bins present and consistent"

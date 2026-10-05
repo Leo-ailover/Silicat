@@ -95,22 +95,26 @@ def grade(row: dict, tok=None, execute: bool = True) -> list[str]:
     prose = FENCE_RE.sub("", answer).strip()
     if len(answer) < 150 and not (blocks and len(prose) >= 20):
         reasons.append("depth: too shallow")
-    if answer.count("```") % 2:
-        reasons.append("fences: unterminated")
-    if FILLER_RE.search(answer):
-        reasons.append("style: filler phrase")
-    for lang, code in blocks:
-        if lang.lower() in ("python", "py", ""):
-            try:
-                ast.parse(code)
-            except SyntaxError as e:
-                if lang:  # untagged blocks may be shell/output
-                    reasons.append(f"syntax: {e.msg} (line {e.lineno})")
-                continue
-            if execute and lang:
-                err = run_block(code)
-                if err:
-                    reasons.append(f"executes: {err}")
+    # fences/style/syntax/execution apply to EVERY silicat turn, not just the last one
+    for turn, m in enumerate(msgs[1::2], 1):
+        a = m["content"]
+        at = f" (turn {turn})" if len(msgs) > 2 else ""
+        if a.count("```") % 2:
+            reasons.append(f"fences: unterminated{at}")
+        if FILLER_RE.search(a):
+            reasons.append(f"style: filler phrase{at}")
+        for lang, code in FENCE_RE.findall(a):
+            if lang.lower() in ("python", "py", ""):
+                try:
+                    ast.parse(code)
+                except SyntaxError as e:
+                    if lang:  # untagged blocks may be shell/output
+                        reasons.append(f"syntax: {e.msg} (line {e.lineno}){at}")
+                    continue
+                if execute and lang:
+                    err = run_block(code)
+                    if err:
+                        reasons.append(f"executes: {err}{at}")
     if tok is not None:
         n = sum(len(tok.encode(m["content"]).ids) + 2 for m in msgs)
         if n > BLOCK:

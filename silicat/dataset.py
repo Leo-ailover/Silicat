@@ -25,6 +25,8 @@ TOK_DIR = _CKPT / "tokenizer"
 # v2 paths (new 32k-vocab tokenizer + mixed corpus)
 TOK_DIR_V2 = _CKPT / "tokenizer_v2"
 CORPUS_V2 = DATA_DIR / "corpus_v2.txt"
+# extra pretraining documents (e.g. textbook-style lessons): JSONL, one {"text": ...} per line
+PRETRAIN_EXTRA_DIR = DATA_DIR / "pretrain"
 
 SPLIT_BLOCK = 4096      # tokens per train/val assignment block (multiple of 512)
 SPLIT_SEED = 1234
@@ -271,6 +273,21 @@ def _encode_corpus(tok: Tokenizer, text: str, chunk_chars: int = 200_000) -> np.
     return np.concatenate(parts)
 
 
+def extra_pretrain_docs(root: Path | None = None) -> tuple[str, dict[str, str]]:
+    """Text of every data/pretrain/*.jsonl document ("text" field), joined by blank lines,
+    plus {file name: sha256} so callers can tell when the extra sources changed."""
+    root = PRETRAIN_EXTRA_DIR if root is None else root
+    docs, shas = [], {}
+    for f in sorted(root.glob("*.jsonl")) if root.exists() else []:
+        shas[f.name] = _sha256_file(f)
+        for line in f.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                t = str(json.loads(line).get("text", "")).strip()
+                if t:
+                    docs.append(t)
+    return ("\n\n".join(docs) + "\n\n") if docs else "", shas
+
+
 def prepare_v2(val_frac: float = 0.05, vocab_size: int = 32768) -> None:
     """Build v2 token bins from data/corpus_v2.txt with a 32k-vocab tokenizer.
 
@@ -293,7 +310,12 @@ def prepare_v2(val_frac: float = 0.05, vocab_size: int = 32768) -> None:
     print(f"tokenizer vocab size: {tok.vocab_size}")
 
     print("encoding corpus v2...")
-    arr = _encode_corpus(tok, CORPUS_V2.read_text(encoding="utf-8"))
+    text = CORPUS_V2.read_text(encoding="utf-8")
+    extra, extra_shas = extra_pretrain_docs()
+    if extra:
+        print(f"adding {len(extra):,} chars of extra pretraining docs from {PRETRAIN_EXTRA_DIR.name}/: {', '.join(extra_shas)}")
+        text = text.rstrip("\n") + "\n\n" + extra
+    arr = _encode_corpus(tok, text)
     assert (arr >= 4).all(), "special-token id found in corpus encoding"
     train, val, info = block_split(arr, val_frac)
     for name, a in (("train_v2.bin", train), ("val_v2.bin", val)):
@@ -307,6 +329,8 @@ def prepare_v2(val_frac: float = 0.05, vocab_size: int = 32768) -> None:
         "dtype": "uint32",
         "val_frac": val_frac,
         "corpus_sha256": _sha256_file(CORPUS_V2),
+        "extra_sources": extra_shas,
+        "extra_chars": len(extra),
         "tokenizer_sha256": hashlib.sha256(
             (TOK_DIR_V2 / "vocab.json").read_bytes() + (TOK_DIR_V2 / "merges.txt").read_bytes()
         ).hexdigest(),
